@@ -12,9 +12,15 @@ const Toolbar = ({ title }) => {
       </TouchableOpacity>
       <Text style={styles.appName}>{title}</Text>
       <View style={styles.toolbarIcons}>
+        {/* Wishlist Icon */}
+        <TouchableOpacity onPress={() => navigation.navigate('Wishlist')}>
+          <Text style={styles.icon}>❤️</Text>
+        </TouchableOpacity>
+        {/* Cart Icon */}
         <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
           <Text style={styles.icon}>🛒</Text>
         </TouchableOpacity>
+        {/* Login Icon */}
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.icon}>👤</Text>
         </TouchableOpacity>
