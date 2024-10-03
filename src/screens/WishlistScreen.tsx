@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import ItemList from '../components/ItemList';
+import Toolbar from '../components/Toolbar';
+import Footer from '../components/Footer';
 
 const WishlistScreen = () => {
   const [wishlistItems, setWishlistItems] = useState([
@@ -23,7 +25,14 @@ const WishlistScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Toolbar Section */}
+      <Toolbar title="Wishlist" />
+
+      {/* Modified ItemList with buttons to remove from wishlist or add to cart */}
       <ItemList items={wishlistItems} renderButtons={renderWishlistButtons} />
+
+      {/* Add the Footer */}
+      <Footer />
     </View>
   );
 };

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import Toolbar from '../components/Toolbar';
 import ItemList from '../components/ItemList';
+import Toolbar from '../components/Toolbar';
+import Footer from '../components/Footer';
 
 const HomeScreen = () => {
     const [sortOption, setSortOption] = useState('');
@@ -62,6 +63,9 @@ const HomeScreen = () => {
 
         {/* Scrollable List of Items */}
         <ItemList items={items} />
+
+        {/* Add the Footer */}
+        <Footer />
       </SafeAreaView>
     );
   };

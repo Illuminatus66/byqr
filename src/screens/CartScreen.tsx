@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import ProductCard from '../components/ProductCard';
+import Toolbar from '../components/Toolbar';
+import Footer from '../components/Footer';
 
 const CartScreen = () => {
   const [cartItems, setCartItems] = useState([
@@ -14,6 +16,10 @@ const CartScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Toolbar Section */}
+      <Toolbar title="Cart" />
+
+      {/* List of cart items */}
       <FlatList
         data={cartItems}
         keyExtractor={(item) => item.id}
@@ -24,12 +30,15 @@ const CartScreen = () => {
       />
 
       {/* Cart Total and Place Order section */}
-      <View style={styles.footer}>
+      <View style={styles.cartSummary}>
         <Text style={styles.totalText}>Total: ${totalValue}</Text>
         <TouchableOpacity style={styles.placeOrderButton}>
           <Text style={styles.placeOrderButtonText}>Place Order</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Add the Footer */}
+      <Footer />
     </View>
   );
 };
@@ -40,12 +49,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     padding: 10,
   },
-  footer: {
+  cartSummary: {
     padding: 15,
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderColor: '#ddd',
     alignItems: 'center',
+    marginBottom: 10,
   },
   totalText: {
     fontSize: 18,

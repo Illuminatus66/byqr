@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import Toolbar from '../components/Toolbar';
+import Footer from '../components/Footer';
 
 const LoginScreen = () => {
-  const [isSignUp, setIsSignUp] = useState(true);  // State to toggle between SignUp and SignIn
+  const [isSignUp, setIsSignUp] = useState(true);
 
   return (
     <View style={styles.container}>
+    {/* Toolbar Section */}
+    <Toolbar title="BYQR" />
       {isSignUp ? <SignUpForm /> : <SignInForm />}
 
       {/* Toggle SignUp/SignIn view */}
@@ -15,6 +19,9 @@ const LoginScreen = () => {
           <Text style={styles.linkText}>{isSignUp ? 'Sign In here!' : 'Sign Up here!'}</Text>
         </Text>
       </TouchableOpacity>
+
+      {/* Add the Footer */}
+      <Footer />
     </View>
   );
 };
