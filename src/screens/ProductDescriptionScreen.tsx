@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
@@ -30,66 +30,78 @@ const ProductDescriptionScreen = ({ route }) => {
   const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Product Image Carousel */}
-      <View style={styles.carouselContainer}>
-        <Carousel
-          data={product.images}
-          renderItem={({ item }) => (
-            <Image source={{ uri: item }} style={styles.carouselImage} />
-          )}
-          sliderWidth={300}
-          itemWidth={300}
-          loop={true}
-        />
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      {/* Toolbar is docked at the top, outside the ScrollView */}
+      <Toolbar />
 
-      {/* Product Name and Price */}
-      <Text style={styles.productName}>{product.name}</Text>
-      <View style={styles.priceQuantityContainer}>
-        <Text style={styles.productPrice}>${product.price.toFixed(2)}</Text>
-        <View style={styles.quantityContainer}>
-          <TouchableOpacity onPress={decreaseQuantity} style={styles.quantityButton}>
-            <Text style={styles.quantityText}>-</Text>
+      <ScrollView style={styles.container}>
+        {/* Product Image Carousel */}
+        <View style={styles.carouselContainer}>
+          <Carousel
+            data={product.images}
+            renderItem={({ item }) => (
+              <Image source={{ uri: item }} style={styles.carouselImage} />
+            )}
+            sliderWidth={300}
+            itemWidth={300}
+            loop={true}
+          />
+        </View>
+
+        {/* Product Name and Price */}
+        <Text style={styles.productName}>{product.name}</Text>
+        <View style={styles.priceQuantityContainer}>
+          <Text style={styles.productPrice}>${product.price.toFixed(2)}</Text>
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity onPress={decreaseQuantity} style={styles.quantityButton}>
+              <Text style={styles.quantityText}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantityNumber}>{quantity}</Text>
+            <TouchableOpacity onPress={increaseQuantity} style={styles.quantityButton}>
+              <Text style={styles.quantityText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Add to Cart and Add to Wishlist buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.addToCartButton}>
+            <Text style={styles.addToCartText}>Add to Cart</Text>
           </TouchableOpacity>
-          <Text style={styles.quantityNumber}>{quantity}</Text>
-          <TouchableOpacity onPress={increaseQuantity} style={styles.quantityButton}>
-            <Text style={styles.quantityText}>+</Text>
+          <TouchableOpacity style={styles.addToWishlistButton}>
+            <Text style={styles.addToWishlistText}>Add to Wishlist</Text>
           </TouchableOpacity>
         </View>
-      </View>
 
-      {/* Add to Cart and Add to Wishlist buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.addToCartButton}>
-          <Text style={styles.addToCartText}>Add to Cart</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.addToWishlistButton}>
-          <Text style={styles.addToWishlistText}>Add to Wishlist</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Popular Products Section */}
+        <Text style={styles.popularTitle}>Popular Products</Text>
+        <FlatList
+          data={popularProducts}
+          renderItem={({ item }) => (
+            <View style={styles.popularProduct}>
+              <Image source={{ uri: item.image }} style={styles.popularProductImage} />
+              <Text style={styles.popularProductName}>{item.name}</Text>
+              <Text style={styles.popularProductPrice}>{item.price}</Text>
+            </View>
+          )}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.popularProductList}
+        />
 
-      {/* Popular Products Section */}
-      <Text style={styles.popularTitle}>Popular Products</Text>
-      <FlatList
-        data={popularProducts}
-        renderItem={({ item }) => (
-          <View style={styles.popularProduct}>
-            <Image source={{ uri: item.image }} style={styles.popularProductImage} />
-            <Text style={styles.popularProductName}>{item.name}</Text>
-            <Text style={styles.popularProductPrice}>{item.price}</Text>
-          </View>
-        )}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.popularProductList}
-      />
-    </ScrollView>
+        {/* Footer inside the ScrollView */}
+        <Footer />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff'
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
