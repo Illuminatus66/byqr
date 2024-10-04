@@ -32,7 +32,7 @@ const ProductDescriptionScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Toolbar is docked at the top, outside the ScrollView */}
-      <Toolbar />
+      <Toolbar title="BYQR"  />
 
       <ScrollView style={styles.container}>
         {/* Product Image Carousel */}
