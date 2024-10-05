@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
-const ProductCard = ({ name, price, thumbnail }) => {
-  const [quantity, setQuantity] = useState(1); // State to manage product quantity
+const ProductCard = ({ name, price, thumbnail, qty, productId }) => {
+  const [selectedQty, setSelectedQty] = useState(qty); 
 
-  // Handle increment and decrement of quantity
-  const handleIncrement = () => setQuantity(quantity + 1);
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
+  const handleQtyChange = (user_id, product_id, newQty) => {
+    setSelectedQty(newQty);
+
+    // Placeholder: server request to update quantity
   };
 
   return (
@@ -21,15 +19,17 @@ const ProductCard = ({ name, price, thumbnail }) => {
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.price}>{price}</Text>
 
-          {/* Quantity controls */}
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity onPress={handleDecrement} style={styles.quantityButton}>
-              <Text style={styles.quantityButtonText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantity}>{quantity}</Text>
-            <TouchableOpacity onPress={handleIncrement} style={styles.quantityButton}>
-              <Text style={styles.quantityButtonText}>+</Text>
-            </TouchableOpacity>
+          {/* Quantity Dropdown Menu */}
+          <View style={styles.dropdownContainer}>
+            <Picker
+              selectedValue={selectedQty}
+              onValueChange={(upd_qty) => handleQtyChange(user_id, productId, upd_qty)}
+            >
+              <Picker.Item label="1" value={1} />
+              <Picker.Item label="2" value={2} />
+              <Picker.Item label="3" value={3} />
+              <Picker.Item label="4" value={4} />
+            </Picker>
           </View>
         </View>
       </View>
@@ -60,60 +60,72 @@ const styles = StyleSheet.create({
   },
   upperSection: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   thumbnail: {
-    width: 50,
-    height: 50,
-    marginRight: 10,
+    width: '15%',
+    aspectRatio: 1,
     borderRadius: 8,
+    marginRight: 10,
   },
   details: {
     flex: 1,
+    justifyContent: 'space-between',
   },
   name: {
     fontSize: 16,
     fontWeight: 'bold',
+    flexWrap: 'wrap',
+  },
+  priceQtyContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
   },
   price: {
     fontSize: 16,
     color: '#333',
-    marginTop: 5,
   },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
+  dropdownContainer: {
+    width: '40%', 
   },
-  quantityButton: {
-    padding: 5,
-    backgroundColor: '#eee',
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  quantityButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  quantity: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  dropdown: {
+    height: 30,
+    width: '100%',
   },
   lowerSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    paddingTop: 10,
     marginTop: 15,
   },
-  actionButton: {
+  removeButton: {
     flex: 1,
+    backgroundColor: 'red',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#6200EE',
     borderRadius: 5,
     marginHorizontal: 5,
   },
-  actionButtonText: {
+  removeButtonText: {
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  wishlistButton: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: 'red',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  wishlistButtonText: {
+    color: 'red',
     fontWeight: 'bold',
   },
 });

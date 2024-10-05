@@ -5,6 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
 import LoginScreen from '../screens/LoginScreen';
 import WishlistScreen from '../screens/WishlistScreen';
+import ProductDescriptionScreen from '../screens/ProductDescriptionScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Wishlist" component={WishlistScreen} />
+        <Stack.Screen name="ProductDescription" component={ProductDescriptionScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

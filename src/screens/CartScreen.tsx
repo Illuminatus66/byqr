@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import ProductCard from '../components/ProductCard';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 
 const CartScreen = () => {
+  const User = useSelector((state) => state.currentUserReducer);
+  const Cart= useSelector ((state)=> state.cartReducer)
   const [cartItems, setCartItems] = useState([
-    { id: '1', name: 'Product 1', price: 10.99, thumbnail: 'https://via.placeholder.com/100' },
-    { id: '2', name: 'Product 2', price: 14.99, thumbnail: 'https://via.placeholder.com/100' },
-    { id: '3', name: 'Product 3', price: 8.49, thumbnail: 'https://via.placeholder.com/100' },
+    { id: '1', name: 'Product 1', price: 10.99, thumbnail: 'https://via.placeholder.com/100', qty: 2 },
+    { id: '2', name: 'Product 2', price: 14.99, thumbnail: 'https://via.placeholder.com/100', qty: 1 },
+    { id: '3', name: 'Product 3', price: 8.49, thumbnail: 'https://via.placeholder.com/100', qty: 3 },
   ]);
 
   // Calculate total value of the cart
-  const totalValue = cartItems.reduce((acc, item) => acc + item.price, 0).toFixed(2);
+  const totalValue = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0).toFixed(2);
 
   return (
     <View style={styles.container}>
@@ -24,7 +27,13 @@ const CartScreen = () => {
         data={cartItems}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ProductCard name={item.name} price={`$${item.price}`} thumbnail={item.thumbnail} />
+          <ProductCard
+            name={item.name}
+            price={`$${(item.price * item.qty).toFixed(2)}`}
+            thumbnail={item.thumbnail}
+            qty={item.qty}
+            productId={item.id}
+          />
         )}
         showsVerticalScrollIndicator={false}
       />

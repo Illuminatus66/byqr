@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, Picker, Alert } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
+import { updateCartQuantity } from '../actions/cartActions'; // Action for updating cart quantity will be added later with all the reducers
 
 const ProductDescriptionScreen = ({ route }) => {
   const { productId } = route.params;
   const [quantity, setQuantity] = useState(1);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const User = useSelector((state) => state.currentUserReducer);
+  const dispatch = useDispatch();
 
   const product = {
     id: productId,
@@ -26,18 +32,40 @@ const ProductDescriptionScreen = ({ route }) => {
     { id: '4', name: 'Popular Product 4', price: '$18.99', image: 'https://via.placeholder.com/150' }
   ];
 
-  const increaseQuantity = () => setQuantity(prev => prev + 1);
-  const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+  // Fetch the cart quantity for this product from the Redux store
+  const cartItem = useSelector((state) =>
+    state.cart.products.find((product) => product.productId === productId)
+  );
+  const cartQty = cartItem ? cartItem.quantity : 0;
+
+  // Handle Add to Cart button click
+  const handleAddToCart = () => {
+    const totalQuantity = cartQty + quantity;
+
+    if (totalQuantity > 4) {
+      setErrorMessage(`You already have ${cartQty} of these in the cart. You cannot buy more than 4.`);
+      setTimeout(() => setErrorMessage(''), 3000); // Remove the error message after 3 seconds
+    } else {
+      dispatch(updateCartQuantity(User.result._id, productId, totalQuantity));
+      // Placeholder for server request
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Toolbar is docked at the top, outside the ScrollView */}
-      <Toolbar title="BYQR"  />
+      <Toolbar title="BYQR" />
 
       <ScrollView style={styles.container}>
-        {/* Product Image Carousel */}
+        {errorMessage ? (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          </View>
+        ) : null}
+
         <View style={styles.carouselContainer}>
           <Carousel
+            layout={'stack'}
+            layoutCardOffset={15}
             data={product.images}
             renderItem={({ item }) => (
               <Image source={{ uri: item }} style={styles.carouselImage} />
@@ -48,24 +76,26 @@ const ProductDescriptionScreen = ({ route }) => {
           />
         </View>
 
-        {/* Product Name and Price */}
         <Text style={styles.productName}>{product.name}</Text>
         <View style={styles.priceQuantityContainer}>
           <Text style={styles.productPrice}>${product.price.toFixed(2)}</Text>
           <View style={styles.quantityContainer}>
-            <TouchableOpacity onPress={decreaseQuantity} style={styles.quantityButton}>
-              <Text style={styles.quantityText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantityNumber}>{quantity}</Text>
-            <TouchableOpacity onPress={increaseQuantity} style={styles.quantityButton}>
-              <Text style={styles.quantityText}>+</Text>
-            </TouchableOpacity>
+            <Picker
+              selectedValue={quantity}
+              onValueChange={(value) => setQuantity(value)}
+              style={styles.picker}
+            >
+              <Picker.Item label="1" value={1} />
+              <Picker.Item label="2" value={2} />
+              <Picker.Item label="3" value={3} />
+              <Picker.Item label="4" value={4} />
+            </Picker>
           </View>
         </View>
 
         {/* Add to Cart and Add to Wishlist buttons */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.addToCartButton}>
+          <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartButton}>
             <Text style={styles.addToCartText}>Add to Cart</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.addToWishlistButton}>
@@ -86,11 +116,10 @@ const ProductDescriptionScreen = ({ route }) => {
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           contentContainerStyle={styles.popularProductList}
         />
 
-        {/* Footer inside the ScrollView */}
         <Footer />
       </ScrollView>
     </SafeAreaView>
@@ -106,6 +135,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 10
+  },
+  errorBox: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    zIndex: 1000
+  },
+  errorText: {
+    color: 'white',
+    fontWeight: 'bold'
   },
   carouselContainer: {
     width: '100%',
@@ -137,17 +179,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  quantityButton: {
-    padding: 5,
-    backgroundColor: '#ddd',
-    borderRadius: 5
-  },
-  quantityText: {
-    fontSize: 18
-  },
-  quantityNumber: {
-    fontSize: 18,
-    marginHorizontal: 10
+  picker: {
+    height: 50,
+    width: 100
   },
   buttonContainer: {
     flexDirection: 'row',
