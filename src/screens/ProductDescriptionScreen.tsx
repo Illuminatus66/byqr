@@ -1,10 +1,12 @@
+/* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, Picker, Alert } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, Alert } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Carousel from 'react-native-snap-carousel';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
-import { updateCartQuantity } from '../actions/cartActions'; // Action for updating cart quantity will be added later with all the reducers
+import { Picker } from '@react-native-picker/picker';
+import { updatecartqty } from '../actions/cartActions'; // Action for updating cart quantity will be added later with all the reducers
 
 const ProductDescriptionScreen = ({ route }) => {
   const { productId } = route.params;

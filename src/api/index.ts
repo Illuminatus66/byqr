@@ -22,6 +22,14 @@ interface User {
   phno: string;
   wishlist: [string] | null;
 }
+
+// This was added because we forgot that the userUpdate server-side controller doesn't return the wishlist array
+interface UserWithoutWishlist {
+  _id: string;
+  name: string;
+  email: string;
+  phno: string;
+}
 // CartProducts interface is inherited by Cart interface
 interface CartProducts {
   pr_id: string;
@@ -58,7 +66,7 @@ interface LoginResponse {
 }
 
 interface UpdateUserResponse {
-  result: User;
+  result: UserWithoutWishlist;
   token: string | null; // token is returned only when the email changes so it may be null sometimes
 }
 
@@ -73,6 +81,17 @@ interface RemoveFromCartData {
   pr_id: string;
 }
 
+interface ProductsResponse {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+}
 
 export const logIn = (authData: LoginRequest) =>
   API.post<LoginResponse>('/user/login', authData);
@@ -83,11 +102,11 @@ export const signUp = (authData: SignupRequest) =>
 export const updateUser = (userData: { name?: string; email?: string; phno?: string }, _id: string) =>
   API.patch<UpdateUserResponse>(`/user/${_id}`, userData);
 
-export const addToWishlist = (_id: string, product_id: string) =>
-  API.post<{ message: string }>(`/wishlist/${product_id}`, { _id });
+export const addToWishlist = (_id: string, pr_id: string) =>
+  API.post<{ message: string }>(`/wishlist/add/${pr_id}`, { _id });
 
-export const removeFromWishlist = (_id: string, product_id: string) =>
-  API.post<{ message: string }>(`/wishlist/${product_id}`, { _id });
+export const removeFromWishlist = (_id: string, pr_id: string) =>
+  API.post<{ message: string }>(`/wishlist/remove/${pr_id}`, { _id });
 
 export const addToCart = (cartData: CartData) =>
   API.post<{ message: string }>('/cart/add', cartData);
@@ -97,3 +116,6 @@ export const removeFromCart = (cartData: RemoveFromCartData) =>
 
 export const updateCartQty = (cartData: CartData) =>
   API.post<{ message: string }>('/cart/updateqty', cartData);
+
+export const fetchAllProducts = () =>
+  API.get<ProductsResponse[]>('/products/fetchall');

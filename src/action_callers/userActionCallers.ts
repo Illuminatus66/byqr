@@ -81,10 +81,10 @@ export const sign_up =
   };
 
 export const update_user =
-  (userData: UpdateUserRequest, userId: string) =>
+  (userData: UpdateUserRequest, _id: string) =>
   async (dispatch: Dispatch) => {
     try {
-      const {data} = await updateUser(userData, userId);
+      const {data} = await updateUser(userData, _id);
 
       const {result: updatedUser, token} = data;
 

@@ -23,10 +23,7 @@ const initialState: ProductState = {
   error: null,
 };
 
-const productReducer = (
-  state = initialState,
-  action: any,
-): ProductState => {
+const productReducer = ( state = initialState, action: any): ProductState => {
   switch (action.type) {
     case 'FETCH_ALL_PRODUCTS':
       return {
@@ -34,34 +31,6 @@ const productReducer = (
         products: action.payload,
         loading: false,
       };
-
-    case 'ADD_PRODUCT':
-      return {
-        ...state,
-        products: [...state.products, action.payload],
-        loading: false,
-      };
-
-    case 'DELETE_PRODUCT':
-      return {
-        ...state,
-        products: state.products.filter(
-          product => product._id !== action.payload,
-        ),
-        loading: false,
-      };
-
-    case 'EDIT_PRODUCT':
-      return {
-        ...state,
-        products: state.products.map(product =>
-          product._id === action.payload._id
-            ? {...product, ...action.payload}
-            : product,
-        ),
-        loading: false,
-      };
-
     case 'PRODUCTS_LOADING':
       return {
         ...state,

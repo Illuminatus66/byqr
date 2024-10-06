@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
 const ProductCard = ({ name, price, thumbnail, qty, productId }) => {
   const [selectedQty, setSelectedQty] = useState(qty); 
