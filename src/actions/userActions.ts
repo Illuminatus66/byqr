@@ -6,7 +6,7 @@ interface User {
   phno: string;
 }
 
-export const authenticate = (authData: { token: string; user: User }) => ({
+export const auth = (authData: { token: string; user: User }) => ({
   type: 'AUTH',
   data: authData,
 });
@@ -15,7 +15,7 @@ export const logout = () => ({
   type: 'LOGOUT',
 });
 
-export const updateUser = (userData: User) => ({
+export const updateuser = (userData: User) => ({
   type: 'UPDATE_USER',
   data: userData,
 });

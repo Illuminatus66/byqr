@@ -1,17 +1,17 @@
 /* eslint-disable prettier/prettier */
 interface CartItem {
   pr_id: string;
-  cart_qty: number;
+  qty: number;
 }
 
 interface CartState {
-  cart_no: string | null;
-  products: CartItem[] | null;
+  cart_no: string;
+  products: CartItem[];
 }
 
 const initialState: CartState = {
-  cart_no: null,
-  products: null,
+  cart_no: '',
+  products: [],
 };
 
 export const cartReducer = (state = initialState, action: any) => {
@@ -36,17 +36,17 @@ export const cartReducer = (state = initialState, action: any) => {
         ...state,
         products: state.products?.filter(
           (product) => product.pr_id !== action.payload.pr_id
-        ) || null,
+        ) || [],
       };
 
-    case 'UPDATE_CART_ITEM':
+    case 'UPDATE_CART_QTY':
       return {
         ...state,
         products: state.products?.map((product) =>
           product.pr_id === action.payload.pr_id
-            ? { ...product, cart_qty: action.payload.cart_qty }
+            ? { ...product, qty: action.payload.qty }
             : product
-        ) || null,
+        ) || [],
       };
 
     case 'CLEAR_CART':

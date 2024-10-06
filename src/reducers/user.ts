@@ -36,7 +36,7 @@ const initialState: AuthState = {
   data: null,
 };
 
-const authReducer = (state = initialState, action: AuthActionTypes): AuthState => {
+const userReducer = (state = initialState, action: AuthActionTypes): AuthState => {
   switch (action.type) {
     case 'AUTH':
       localStorage.setItem('Profile', JSON.stringify({ ...action.data }));
@@ -64,4 +64,4 @@ const authReducer = (state = initialState, action: AuthActionTypes): AuthState =
       return state;
   }
 };
-export default authReducer;
+export default userReducer;

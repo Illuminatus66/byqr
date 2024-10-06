@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
 
 interface WishlistState {
-  productIds: string[] | null;
+  wishlist: string[],
 }
 
 const initialWishlistState: WishlistState = {
-  productIds: null,
+  wishlist: [],
 };
 
 const wishlistReducer = (state = initialWishlistState, action: any) => {
@@ -13,22 +13,22 @@ const wishlistReducer = (state = initialWishlistState, action: any) => {
     case 'FETCH_WISHLIST':
       return {
         ...state,
-        productIds: action.payload.productIds,
+        wishlist: action.payload.wishlist,
       };
 
     case 'ADD_TO_WISHLIST':
       return {
         ...state,
-        productIds: state.productIds
-          ? [...state.productIds, action.payload.pr_id]
-          : [action.payload.pr_id],
+        pr_ids: state.wishlist
+          ? [...state.wishlist, action.payload.wishlist]
+          : [action.payload.wishlist],
       };
 
     case 'REMOVE_FROM_WISHLIST':
       return {
         ...state,
-        productIds:
-          state.productIds?.filter(id => id !== action.payload.pr_id) || null,
+        wishlist:
+          state.wishlist?.filter(id => id !== action.payload.wishlist) || null,
       };
 
     case 'CLEAR_WISHLIST':
