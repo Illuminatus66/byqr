@@ -1,4 +1,8 @@
 /* eslint-disable prettier/prettier */
+import {createAsyncThunk} from '@reduxjs/toolkit';
+import {RootState} from '../reducers/store';
+import {fetchAllProducts} from '../api';
+
 interface Product {
   _id: string;
   name: string;
@@ -11,16 +15,15 @@ interface Product {
   date_added: string;
 }
 
-export const fetchallproducts = (products: Product[]) => ({
-  type: 'FETCH_ALL_PRODUCTS',
-  payload: products,
-});
-
-export const setloading = () => ({
-  type: 'PRODUCTS_LOADING',
-});
-
-export const seterror = (error: string) => ({
-  type: 'PRODUCTS_ERROR',
-  payload: error,
+export const fetchallproducts = createAsyncThunk<
+  Product[],
+  void,
+  {state: RootState}
+>('products/fetchAll', async (_, {rejectWithValue}) => {
+  try {
+    const response = await fetchAllProducts();
+    return response.data;
+  } catch (error) {
+    return rejectWithValue('Failed to fetch products');
+  }
 });

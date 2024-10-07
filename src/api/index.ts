@@ -14,16 +14,6 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-//User interface is inherited by SignupResponse and LoginResponse interfaces
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  phno: string;
-  wishlist: [string] | null;
-}
-
-// This was added because we forgot that the userUpdate server-side controller doesn't return the wishlist array
 interface UserWithoutWishlist {
   _id: string;
   name: string;
@@ -49,8 +39,7 @@ interface SignupRequest {
 }
 
 interface SignupResponse {
-  result: User;
-  cart: Cart;
+  result: UserWithoutWishlist;
   token: string;
 }
 
@@ -60,8 +49,7 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  result: User;
-  cart: Cart;
+  result: UserWithoutWishlist;
   token: string;
 }
 
@@ -107,6 +95,9 @@ export const addToWishlist = (_id: string, pr_id: string) =>
 
 export const removeFromWishlist = (_id: string, pr_id: string) =>
   API.post<{ message: string }>(`/wishlist/remove/${pr_id}`, { _id });
+
+export const fetchCartItems = (cart_no: string) =>
+  API.get<Cart>(`/cart/fetch/${cart_no}`);
 
 export const addToCart = (cartData: CartData) =>
   API.post<{ message: string }>('/cart/add', cartData);

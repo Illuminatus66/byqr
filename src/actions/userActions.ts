@@ -1,21 +1,61 @@
 /* eslint-disable prettier/prettier */
-interface User {
-  _id: string;
-  name: string;
+import {createAsyncThunk} from '@reduxjs/toolkit';
+import {logIn, signUp, updateUser} from '../api';
+import { auth, updateuser, logout } from '../reducers/userSlice';
+
+interface LoginRequest {
   email: string;
-  phno: string;
+  password: string;
+}
+interface SignupRequest {
+  name: string
+  email: string;
+  password: string;
+  phno: string
 }
 
-export const auth = (authData: { token: string; user: User }) => ({
-  type: 'AUTH',
-  data: authData,
+export const signup = createAsyncThunk<
+  void,
+  SignupRequest,
+  {rejectValue: string}
+>('user/signup', async (signupData, {dispatch, rejectWithValue}) => {
+  try {
+    const response = await signUp(signupData); 
+    const {token, result: user} = response.data;
+    dispatch(auth({token, user}));
+  } catch (error) {
+    return rejectWithValue('Failed to login');
+  }
 });
 
-export const logout = () => ({
-  type: 'LOGOUT',
+export const login = createAsyncThunk<
+  void,
+  LoginRequest,
+  {rejectValue: string}
+>('user/login', async (loginData, {dispatch, rejectWithValue}) => {
+  try {
+    const response = await logIn(loginData); 
+    const {token, result: user} = response.data;
+    dispatch(auth({token, user})); 
+  } catch (error) {
+    return rejectWithValue('Failed to login');
+  }
 });
 
-export const updateuser = (userData: User) => ({
-  type: 'UPDATE_USER',
-  data: userData,
+export const updateuserprofile = createAsyncThunk<
+  void,
+  {name?: string; email?: string; phno?: string; _id: string},
+  {rejectValue: string}
+>('user/updateUserProfile', async (userData, {dispatch, rejectWithValue}) => {
+  try {
+    const {_id, ...updateData} = userData;
+    await updateUser(updateData, _id);
+    dispatch(updateuser(updateData)); 
+  } catch (error) {
+    return rejectWithValue('Failed to update user profile');
+  }
 });
+
+export const logoutUser = () => (dispatch: any) => {
+  dispatch(logout());
+};

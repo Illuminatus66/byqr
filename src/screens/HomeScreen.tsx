@@ -2,23 +2,73 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import {useDispatch, useSelector} from 'react-redux';
 import ItemList from '../components/ItemList';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {fetch_all_products} from '../action_callers/productActionCallers';
-import {RootState} from '../reducers';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { selectProducts, selectProductsLoading, selectProductsError } from '../reducers/productSlice';
+
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+}
 
 const HomeScreen = () => {
-  const dispatch = useDispatch();
-  const {products, loading, error} = useSelector((state: RootState) => state.products);
+  const dispatch = useAppDispatch();
+  const products = useAppSelector(selectProducts);
+  const loading = useAppSelector(selectProductsLoading);
+  const error = useAppSelector(selectProductsError);
 
   const [sortOption, setSortOption] = useState('');
-  const [filterOption, setFilterOption] = useState([]);
+  const [filterOption, setFilterOption] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
+  // Fetching all products on initial render
   useEffect(() => {
     dispatch(fetch_all_products());
   }, [dispatch]);
+
+  // Applying filtering and sorting whenever the filter or sort option changes
+  useEffect(() => {
+    let updatedProducts = [...products];
+
+    if (filterOption) {
+      updatedProducts = updatedProducts.filter(
+        product => product.category === filterOption
+      );
+    }
+
+    // Apply sorting based on selected option
+    switch (sortOption) {
+      case 'price_ascending':
+        updatedProducts.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_descending':
+        updatedProducts.sort((a, b) => b.price - a.price);
+        break;
+      case 'alphabetical':
+        updatedProducts.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'new':
+        updatedProducts.sort((a, b) => new Date(b.date_added).getTime() - new Date(a.date_added).getTime());
+        break;
+      case 'old':
+        updatedProducts.sort((a, b) => new Date(a.date_added).getTime() - new Date(b.date_added).getTime());
+        break;
+      default:
+        break;
+    }
+
+    setFilteredProducts(updatedProducts);
+  }, [filterOption, sortOption, products]);
 
   const sortOptions = [
     {label: 'Price: Low to High', value: 'price_ascending'},
@@ -29,11 +79,8 @@ const HomeScreen = () => {
   ];
 
   const filterOptions = [
-    {label: 'Category 1', value: 'category1'},
-    {label: 'Category 2', value: 'category2'},
-    {label: 'Category 3', value: 'category3'},
-    {label: 'Brand A', value: 'brandA'},
-    {label: 'Brand B', value: 'brandB'},
+    {label: 'Bicycles', value: 'bicycles'},
+    {label: 'Accessories', value: 'accessories'},
   ];
 
   return (
@@ -72,7 +119,7 @@ const HomeScreen = () => {
       ) : error ? (
         <Text style={styles.errordisplay}>{error}</Text>
       ) : (
-        <ItemList items={products} renderButtons={false} />
+        <ItemList items={filteredProducts} renderButtons={false} />
       )}
 
       {/* Footer */}
@@ -110,6 +157,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 });
+
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 16,
@@ -132,4 +180,5 @@ const pickerSelectStyles = StyleSheet.create({
     paddingRight: 30, // to ensure the text is not behind the icon
   },
 });
+
 export default HomeScreen;
