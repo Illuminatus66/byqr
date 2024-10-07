@@ -9,6 +9,6 @@ export const fetch_all_products = () => async (dispatch: Dispatch) => {
       const {data: products} = await fetchAllProducts();
       dispatch(fetchallproducts(products));
     } catch (error) {
-        dispatch(seterror('Failed to fetch products')); 
+        dispatch(seterror('Failed to fetch products'));
     }
   };

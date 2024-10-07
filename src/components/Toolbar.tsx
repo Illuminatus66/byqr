@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+/* eslint-disable prettier/prettier */
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Menu from './Menu';
 
-const Toolbar = ({ title }) => {
+const Toolbar = ({title}) => {
   const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -54,10 +55,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
-  menuButton: { fontSize: 24, color: '#fff' },
-  appName: { fontSize: 20, color: '#fff', fontWeight: 'bold' },
-  toolbarIcons: { flexDirection: 'row', alignItems: 'center' },
-  icon: { fontSize: 24, color: '#fff', marginLeft: 20 },
+  menuButton: {fontSize: 24, color: '#fff'},
+  appName: {fontSize: 20, color: '#fff', fontWeight: 'bold'},
+  toolbarIcons: {flexDirection: 'row', alignItems: 'center'},
+  icon: {fontSize: 24, color: '#fff', marginLeft: 20},
 
   // The overlay is limited to the 40% of the screen that the menu doesn't occupy
   overlay: {

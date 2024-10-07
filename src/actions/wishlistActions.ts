@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-
 export const fetchwishlist = (pr_ids: string[]) => ({
     type: 'FETCH_WISHLIST',
     payload: { pr_ids },

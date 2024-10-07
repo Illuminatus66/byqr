@@ -1,18 +1,17 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import {View, Text, Image, StyleSheet, FlatList} from 'react-native';
 
-const ItemList = ({ items, renderButtons }) => {
-  const renderItem = ({ item }) => (
+const ItemList = ({items, renderButtons}) => {
+  const renderItem = ({item}) => (
     <View style={styles.itemContainer}>
-      <Image source={{ uri: item.thumbnail }} style={styles.itemImage} />
+      <Image source={{uri: item.thumbnail}} style={styles.itemthumbnail} />
       <Text style={styles.itemName}>{item.name}</Text>
       <Text style={styles.itemPrice}>{item.price}</Text>
 
-      {/* Render buttons if provided */}
-      {renderButtons && (
-        <View style={styles.actionButtons}>
-          {renderButtons(item)}
-        </View>
+      {/* Render buttons if the function is provided */}
+      {renderButtons && typeof renderButtons === 'function' && (
+        <View style={styles.actionButtons}>{renderButtons(item)}</View>
       )}
     </View>
   );
@@ -21,7 +20,7 @@ const ItemList = ({ items, renderButtons }) => {
     <FlatList
       data={items}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={item => item.id}
       numColumns={2}
       contentContainerStyle={styles.list}
     />
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
   },
-  itemImage: {
+  itemthumbnail: {
     width: 150,
     height: 150,
     borderRadius: 10,
@@ -56,17 +55,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
-  },
-  actionButton: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    backgroundColor: '#6200EE',
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-  actionButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
   },
   list: {
     paddingHorizontal: 10,

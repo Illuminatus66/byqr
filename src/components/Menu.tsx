@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 const Menu = () => {
   const navigation = useNavigation();

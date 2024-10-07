@@ -4,10 +4,7 @@ interface CartItem {
   qty: number;
 }
 
-export const fetchcart = (cartData: {
-  cart_no: string;
-  products: CartItem[];
-}) => ({
+export const fetchcart = (cartData: {cart_no: string; products: CartItem[];}) => ({
   type: 'FETCH_CART',
   payload: cartData,
 });

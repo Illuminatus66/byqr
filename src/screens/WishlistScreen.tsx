@@ -1,18 +1,33 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+/* eslint-disable prettier/prettier */
+import React, {useState} from 'react';
+import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import ItemList from '../components/ItemList';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 
 const WishlistScreen = () => {
   const [wishlistItems, setWishlistItems] = useState([
-    { id: '1', name: 'Wishlisted Product 1', price: '$10.99', thumbnail: 'https://via.placeholder.com/100' },
-    { id: '2', name: 'Wishlisted Product 2', price: '$14.99', thumbnail: 'https://via.placeholder.com/100' },
-    { id: '3', name: 'Wishlisted Product 3', price: '$8.49', thumbnail: 'https://via.placeholder.com/100' },
+    {
+      id: '1',
+      name: 'Wishlisted Product 1',
+      price: '$10.99',
+      thumbnail: 'https://via.placeholder.com/100',
+    },
+    {
+      id: '2',
+      name: 'Wishlisted Product 2',
+      price: '$14.99',
+      thumbnail: 'https://via.placeholder.com/100',
+    },
+    {
+      id: '3',
+      name: 'Wishlisted Product 3',
+      price: '$8.49',
+      thumbnail: 'https://via.placeholder.com/100',
+    },
   ]);
 
-  // Placeholder buttons for "Add to Cart" and "Remove"
-  const renderWishlistButtons = (item) => (
+  const renderWishlistButtons = item => (
     <>
       <TouchableOpacity style={styles.actionButton}>
         <Text style={styles.actionButtonText}>Add to Cart</Text>
@@ -28,10 +43,10 @@ const WishlistScreen = () => {
       {/* Toolbar Section */}
       <Toolbar title="Wishlist" />
 
-      {/* Modified ItemList with buttons to remove from wishlist or add to cart */}
+      {/* ItemList with buttons */}
       <ItemList items={wishlistItems} renderButtons={renderWishlistButtons} />
 
-      {/* Add the Footer */}
+      {/* Footer */}
       <Footer />
     </View>
   );

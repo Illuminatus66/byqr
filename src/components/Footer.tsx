@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Linking} from 'react-native';
 
 const Footer = () => {
   return (
@@ -11,13 +12,16 @@ const Footer = () => {
 
       {/* Right side with placeholders for social media links and subscription */}
       <View style={styles.linksContainer}>
-        <TouchableOpacity onPress={() => Linking.openURL('https://facebook.com')}>
+        <TouchableOpacity
+          onPress={() => Linking.openURL('https://facebook.com')}>
           <Text style={styles.linkText}>Facebook</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => Linking.openURL('https://twitter.com')}>
+        <TouchableOpacity
+          onPress={() => Linking.openURL('https://twitter.com')}>
           <Text style={styles.linkText}>Twitter</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => Linking.openURL('https://instagram.com')}>
+        <TouchableOpacity
+          onPress={() => Linking.openURL('https://instagram.com')}>
           <Text style={styles.linkText}>Instagram</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => Linking.openURL('https://github.com')}>
