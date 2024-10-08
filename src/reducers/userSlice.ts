@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 
 interface User {
   _id: string;
@@ -10,40 +11,41 @@ interface User {
 
 interface AuthState {
   data: {
-    token: string;
-    user: User;
-  } | null;
+    token: string | null;
+    user: User | null;
+  };
 }
 
 const initialState: AuthState = {
-  data: null,
+  data: {
+    token: null,
+    user: null,
+  },
 };
 
+// Keeping the reducers pure, the storing of tokens in `localStorage`(now using AsyncStorage)
+//  was moved into the action functions to create a clear separation of concerns
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-
-    auth(state, action: PayloadAction<{token: string; user: User}>) {
-      const {token, user} = action.payload;
-      localStorage.setItem('Profile', JSON.stringify({token, user}));
-      state.data = {token, user};
+    setAuthData(state, action: PayloadAction<{ token: string; user: User }>) {
+      const { token, user } = action.payload;
+      state.data = { token, user };
     },
 
-    updateuser(state, action: PayloadAction<User>) {
-      if (state.data) {
-        state.data.user = {...state.data.user, ...action.payload}; 
-      }
+    setUpdatedUser(state, action: PayloadAction<User>) {
+      state.data.user = { ...state.data.user, ...action.payload };
     },
 
     logout(state) {
-      localStorage.clear();
-      state.data = null;
+      state.data.token = null;
+      state.data.user = null;
     },
   },
 });
 
-export const {auth, updateuser, logout} = userSlice.actions;
+export const {setAuthData, setUpdatedUser, logout} = userSlice.actions;
 
 export const selectUserData = (state: {user: AuthState}) => state.user.data;
 export const selectUserToken = (state: {user: AuthState}) =>

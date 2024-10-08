@@ -5,7 +5,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import ItemList from '../components/ItemList';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
-import {fetch_all_products} from '../action_callers/productActionCallers';
+import {fetchallproducts} from '../actions/productActions';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { selectProducts, selectProductsLoading, selectProductsError } from '../reducers/productSlice';
 
@@ -33,7 +33,7 @@ const HomeScreen = () => {
 
   // Fetching all products on initial render
   useEffect(() => {
-    dispatch(fetch_all_products());
+    dispatch(fetchallproducts());
   }, [dispatch]);
 
   // Applying filtering and sorting whenever the filter or sort option changes
@@ -167,7 +167,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 4,
     color: 'black',
-    paddingRight: 30, // to ensure the text is not behind the icon
+    paddingRight: 30,
   },
   inputAndroid: {
     fontSize: 16,
@@ -177,7 +177,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 8,
     color: 'black',
-    paddingRight: 30, // to ensure the text is not behind the icon
+    paddingRight: 30,
   },
 });
 

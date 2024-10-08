@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API = axios.create({
   baseURL: 'http://localhost:5000',
@@ -8,7 +9,7 @@ const API = axios.create({
 API.interceptors.request.use((req) => {
   if (localStorage.getItem('Profile')) {
     req.headers.authorization = `Bearer ${
-      JSON.parse(localStorage.getItem('Profile')).token
+      JSON.parse(AsyncStorage.getItem('Profile')).token
     }`;
   }
   return req;
@@ -53,6 +54,11 @@ interface LoginResponse {
   token: string;
 }
 
+interface UpdateUserRequest {
+  name: string;
+  email: string;
+  phno: string;
+}
 interface UpdateUserResponse {
   result: UserWithoutWishlist;
   token: string | null; // token is returned only when the email changes so it may be null sometimes
@@ -87,8 +93,11 @@ export const logIn = (authData: LoginRequest) =>
 export const signUp = (authData: SignupRequest) =>
   API.post<SignupResponse>('/user/signup', authData);
 
-export const updateUser = (userData: { name?: string; email?: string; phno?: string }, _id: string) =>
+export const updateUser = (userData: UpdateUserRequest, _id: string) =>
   API.patch<UpdateUserResponse>(`/user/${_id}`, userData);
+
+export const fetchWishlist = (_id: string) =>
+  API.get<{ wishlist: string[] }>(`/wishlist/fetch/${_id}`);
 
 export const addToWishlist = (_id: string, pr_id: string) =>
   API.post<{ message: string }>(`/wishlist/add/${pr_id}`, { _id });

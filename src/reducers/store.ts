@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import {configureStore} from '@reduxjs/toolkit';
 import cartReducer from './cartSlice';
-import wishlistReducer from './wishlist';
+import wishlistReducer from './wishlistSlice';
 import userReducer from './userSlice';
 import productReducer from './productSlice';
 
