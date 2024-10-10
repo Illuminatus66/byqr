@@ -1,13 +1,14 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {useRoute, RouteProp} from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
 import ItemList from '../components/ItemList';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {fetchallproducts} from '../actions/productActions';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { selectProducts, selectProductsLoading, selectProductsError } from '../reducers/productSlice';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {selectProducts, selectProductsLoading, selectProductsError} from '../reducers/productSlice';
 
 interface Product {
   _id: string;
@@ -20,7 +21,7 @@ interface Product {
   stock: number;
   date_added: string;
 }
-
+type HomeScreenRouteProp = RouteProp<{ Home: { filter: string } }, 'Home'>;
 const HomeScreen = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
@@ -31,12 +32,19 @@ const HomeScreen = () => {
   const [filterOption, setFilterOption] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
-  // Fetching all products on initial render
+  const route = useRoute<HomeScreenRouteProp>();
+  const { filter } = route.params || {};
+
   useEffect(() => {
     dispatch(fetchallproducts());
   }, [dispatch]);
 
-  // Applying filtering and sorting whenever the filter or sort option changes
+  useEffect(() => {
+    if (filter) {
+      setFilterOption(filter);
+    }
+  }, [filter]);
+
   useEffect(() => {
     let updatedProducts = [...products];
 
@@ -71,49 +79,46 @@ const HomeScreen = () => {
   }, [filterOption, sortOption, products]);
 
   const sortOptions = [
-    {label: 'Price: Low to High', value: 'price_ascending'},
-    {label: 'Price: High to Low', value: 'price_descending'},
-    {label: 'A-Z', value: 'alphabetical'},
-    {label: 'Newest', value: 'new'},
-    {label: 'Oldest', value: 'old'},
+    { label: 'Price: Low to High', value: 'price_ascending' },
+    { label: 'Price: High to Low', value: 'price_descending' },
+    { label: 'A-Z', value: 'alphabetical' },
+    { label: 'Newest', value: 'new' },
+    { label: 'Oldest', value: 'old' },
   ];
 
   const filterOptions = [
-    {label: 'Bicycles', value: 'bicycles'},
-    {label: 'Accessories', value: 'accessories'},
+    { label: 'Bicycles', value: 'bicycles' },
+    { label: 'Accessories', value: 'accessories' },
   ];
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Toolbar */}
+
       <Toolbar title="BYQR" />
 
-      {/* Dropdown Section */}
       <View style={styles.dropdownSection}>
         <View style={styles.filterDropdown}>
           <Text style={styles.dropdownLabel}>Filter By:</Text>
           <RNPickerSelect
             onValueChange={value => setFilterOption(value)}
             items={filterOptions}
-            placeholder={{label: 'Select Filters', value: null}}
+            placeholder={{ label: 'Select Filters', value: null }}
             useNativeAndroidPickerStyle={false}
             style={pickerSelectStyles}
           />
         </View>
-
         <View style={styles.sortDropdown}>
           <Text style={styles.dropdownLabel}>Sort By:</Text>
           <RNPickerSelect
             onValueChange={value => setSortOption(value)}
             items={sortOptions}
-            placeholder={{label: 'Select Sort', value: null}}
+            placeholder={{ label: 'Select Sort', value: null }}
             useNativeAndroidPickerStyle={false}
             style={pickerSelectStyles}
           />
         </View>
       </View>
 
-      {/* Loading and Error */}
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : error ? (
@@ -122,8 +127,8 @@ const HomeScreen = () => {
         <ItemList items={filteredProducts} renderButtons={false} />
       )}
 
-      {/* Footer */}
       <Footer />
+
     </SafeAreaView>
   );
 };

@@ -1,25 +1,38 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-const Menu = () => {
-  const navigation = useNavigation();
+type RootStackParamList = {
+  Home: { filter: string };
+  Cart: undefined;
+  Login: undefined;
+  Wishlist: undefined;
+  ProductDescription: undefined;
+};
+interface MenuProps {
+  closeMenu: () => void;
+}
+
+const Menu: React.FC<MenuProps> = ({ closeMenu }) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handleNavigation = (filter: string) => {
+    closeMenu();
+    navigation.navigate('Home', { filter });
+  };
 
   return (
     <View style={styles.menuContent}>
       {/* Menu Options */}
-      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity onPress={() => handleNavigation('')}>
         <Text style={styles.menuItem}>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity onPress={() => handleNavigation('bicycles')}>
         <Text style={styles.menuItem}>Bicycles</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+      <TouchableOpacity onPress={() => handleNavigation('accessories')}>
         <Text style={styles.menuItem}>Accessories</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Compare')}>
-        <Text style={styles.menuItem}>Compare</Text>
       </TouchableOpacity>
     </View>
   );

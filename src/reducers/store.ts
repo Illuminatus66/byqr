@@ -10,7 +10,7 @@ export const store = configureStore({
     cart: cartReducer,
     wishlist: wishlistReducer,
     products: productReducer,
-    auth: userReducer,
+    user: userReducer,
   },
 });
 
