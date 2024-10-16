@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from './store';
 import {fetchallproducts} from '../actions/productActions';
 
 interface Product {
@@ -17,14 +16,14 @@ interface Product {
 
 interface ProductsState {
   products: Product[];
-  productsLoading: boolean;
-  productsError: string | null;
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: ProductsState = {
   products: [],
-  productsLoading: false,
-  productsError: null,
+  loading: false,
+  error: null,
 };
 
 const productSlice = createSlice({
@@ -34,27 +33,26 @@ const productSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(fetchallproducts.pending, state => {
-        state.productsLoading = true;
-        state.productsError = null;
+        state.loading = true;
+        state.error = null;
       })
       .addCase(
         fetchallproducts.fulfilled,
         (state, action: PayloadAction<Product[]>) => {
           state.products = action.payload;
-          state.productsLoading = false;
+          state.loading = false;
+          state.error = null;
         },
       )
       .addCase(fetchallproducts.rejected, (state, action) => {
-        state.productsLoading = false;
-        state.productsError = action.payload as string;
+        state.loading = false;
+        state.error = action.payload || 'Failed to fetch products';
       });
   },
 });
 
-export const selectProducts = (state: RootState) => state.products.products;
-export const selectProductsLoading = (state: RootState) =>
-  state.products.productsLoading;
-export const selectProductsError = (state: RootState) =>
-  state.products.productsError;
+export const selectProducts = (state: {products: ProductsState}) => state.products.products;
+export const selectProductsLoading = (state: {products: ProductsState}) => state.products.loading;
+export const selectProductsError = (state: {products: ProductsState}) => state.products.error;
 
 export default productSlice.reducer;

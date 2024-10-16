@@ -1,90 +1,110 @@
 /* eslint-disable prettier/prettier */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createAsyncThunk} from '@reduxjs/toolkit';
-import {logIn, signUp, updateUser} from '../api';
-import {setAuthData, setUpdatedUser, logout} from '../reducers/userSlice';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { logIn, signUp, updateUser } from '../api';
 
 interface LoginRequest {
   email: string;
   password: string;
 }
 interface SignupRequest {
-  name: string
+  name: string;
   email: string;
   password: string;
-  phno: string
+  phno: string;
 }
 interface UpdateUserRequest {
   _id: string;
-  name: string
+  name: string;
   email: string;
-  phno: string
+  phno: string;
+}
+interface UserWithoutWishlist {
+  _id: string;
+  name: string;
+  email: string;
+  phno: string;
+}
+
+interface SignupResponse {
+  token: string;
+  result: UserWithoutWishlist;
+}
+
+interface LoginResponse {
+  result: UserWithoutWishlist;
+  token: string;
+}
+
+interface UpdateUserResponse {
+  result: UserWithoutWishlist;
+  token: string | null; // token is returned only when the email changes so it may be null sometimes
+}
+
+interface AuthState {
+  data: {
+    token: string | null;
+    user: UserWithoutWishlist | null;
+  };
+  loading: boolean;
+  error: string | null;
 }
 
 export const signup = createAsyncThunk<
-  void,
+  SignupResponse,
   SignupRequest,
-  {rejectValue: string}
->('user/signup', async (signupData, {dispatch, rejectWithValue}) => {
+  {state: AuthState; rejectValue: string}
+>('user/signup', async (signupData, {rejectWithValue}) => {
   try {
     const response = await signUp(signupData);
     const {token, result: user} = response.data;
     await AsyncStorage.setItem('Profile', JSON.stringify({ token, user }));
-    dispatch(setAuthData({token, user}));
-  } catch (error) {
-    console.error('Error in signup:', error);
-    return rejectWithValue('Failed to login');
+    return {token, result: user};
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Failed to sign up';
+    return rejectWithValue(errorMessage);
   }
 });
 
 export const login = createAsyncThunk<
-  void,
+  LoginResponse,
   LoginRequest,
-  {rejectValue: string}
->('user/login', async (loginData, {dispatch, rejectWithValue}) => {
+  {state: AuthState; rejectValue: string}
+>('user/login', async (loginData, { rejectWithValue }) => {
   try {
     const response = await logIn(loginData);
     const {token, result: user} = response.data;
-    dispatch(setAuthData({token, user}));
     await AsyncStorage.setItem('Profile', JSON.stringify({ token, user }));
-  } catch (error) {
-    console.error('Error in login:', error);
-    return rejectWithValue('Failed to login');
+    return {token, result: user};
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Failed to login';
+    return rejectWithValue(errorMessage);
   }
 });
 
 export const updateuserprofile = createAsyncThunk<
-  void,
+  UpdateUserResponse,
   UpdateUserRequest,
-  {rejectValue: string}
->('user/updateUserProfile', async (userData, {dispatch, rejectWithValue}) => {
+  {state: AuthState; rejectValue: string }
+>('user/updateuserprofile', async (userData, { rejectWithValue }) => {
   try {
-    const {_id, ...updateData} = userData;
+    const { _id, ...updateData } = userData;
     const response = await updateUser(updateData, _id);
-    const {token, result: user} = response.data;
-    if (token){
+    const { token, result: user } = response.data;
+
+    if (token) {
       await AsyncStorage.setItem('Profile', JSON.stringify({ token, user }));
-      dispatch(setAuthData({ token, user: user }));
     } else {
       const profile = await AsyncStorage.getItem('Profile');
       if (profile){
         const storedProfile = JSON.parse(profile);
         storedProfile.user = { ...storedProfile.user, ...user };
         await AsyncStorage.setItem('Profile', JSON.stringify(storedProfile));
-        dispatch(setUpdatedUser(user));
       }
     }
-  } catch (error) {
-    console.error('Failed to update user details:', error);
-    return rejectWithValue('Failed to update user profile');
+    return {token, result: user};
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Failed to update user profile';
+    return rejectWithValue(errorMessage);
   }
 });
-
-export const logoutuser = () => async (dispatch: any) => {
-  try{
-    await AsyncStorage.clear();
-    dispatch(logout());
-  } catch (error) {
-    console.error('Failed to clear storage', error);
-  }
-};

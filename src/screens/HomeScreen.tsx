@@ -54,7 +54,6 @@ const HomeScreen = () => {
       );
     }
 
-    // Apply sorting based on selected option
     switch (sortOption) {
       case 'price_ascending':
         updatedProducts.sort((a, b) => a.price - b.price);

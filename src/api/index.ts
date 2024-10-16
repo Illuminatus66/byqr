@@ -21,12 +21,12 @@ interface UserWithoutWishlist {
   email: string;
   phno: string;
 }
-// CartProducts interface is inherited by Cart interface
+
 interface CartProducts {
   pr_id: string;
   qty: number;
 }
-// Cart interface is inherited by SignupResponse and LoginResponse interfaces
+
 interface Cart {
   cart_no: string;
   products: CartProducts[];

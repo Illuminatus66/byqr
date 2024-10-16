@@ -6,10 +6,14 @@ interface CartItem {
   pr_id: string;
   qty: number;
 }
-
-interface CartState {
+interface Cart {
   cart_no: string;
   products: CartItem[];
+}
+interface CartState {
+  cart: Cart[],
+  loading: boolean;
+  error: string | null;
 }
 
 interface CartData {
@@ -24,53 +28,65 @@ interface RemoveFromCartData {
 }
 
 export const fetchcartitems = createAsyncThunk<
-  CartState,
+  Cart,
   string,
-  {state: CartState}
->('cart/fetchCartItems', async (cart_no, {rejectWithValue}) => {
+  {state: CartState; rejectValue: string}
+>('cart/fetchcartitems', async (cart_no, {rejectWithValue}) => {
   try {
     const response = await fetchCartItems(cart_no);
     return response.data;
-  } catch (error) {
-    return rejectWithValue('Failed to fetch cart items');
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Failed to fetch cart items';
+    return rejectWithValue(errorMessage);
   }
 });
 
 export const addtocart = createAsyncThunk<
   CartItem,
   CartData,
-  {state: CartState}
->('cart/addToCart', async (cartData, {rejectWithValue}) => {
+  {state: CartState; rejectValue: string}
+>('cart/addtocart', async (cartData, {rejectWithValue}) => {
   try {
     await addToCart(cartData);
     return {pr_id: cartData.pr_id, qty: cartData.qty};
-  } catch (error) {
-    return rejectWithValue('Failed to add item to cart');
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Failed to add item to cart';
+    return rejectWithValue(errorMessage);
   }
 });
 
 export const removefromcart = createAsyncThunk<
   {pr_id: string},
   RemoveFromCartData,
-  {state: CartState}
->('cart/removeFromCart', async (cartData, {rejectWithValue}) => {
+  {state: CartState; rejectValue: string}
+>('cart/removefromcart', async (cartData, {rejectWithValue}) => {
   try {
     await removeFromCart(cartData);
     return {pr_id: cartData.pr_id};
-  } catch (error) {
-    return rejectWithValue('Failed to remove item from cart');
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Failed to remove item from cart';
+    return rejectWithValue(errorMessage);
   }
 });
 
 export const updatecartqty = createAsyncThunk<
   {pr_id: string; qty: number},
   CartData,
-  {state: CartState}
->('cart/updateCartQty', async (cartData, {rejectWithValue}) => {
+  {state: CartState; rejectValue: string}
+>('cart/updatecartqty', async (cartData, {rejectWithValue}) => {
   try {
     await updateCartQty(cartData);
     return {pr_id: cartData.pr_id, qty: cartData.qty};
-  } catch (error) {
-    return rejectWithValue('Failed to update cart quantity');
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Failed to update cart quantity';
+    return rejectWithValue(errorMessage);
   }
 });
+
+export const clearcart = () => async (dispatch: any) => {
+  try{
+    dispatch(clearcart());
+  } catch (error) {
+    console.error('Failed to clear cart', error);
+  }
+};

@@ -1,59 +1,55 @@
 /* eslint-disable prettier/prettier */
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {fetchWishlist, addToWishlist, removeFromWishlist} from '../api';
-import {
-  fetch_wishlist,
-  add_to_wishlist,
-  remove_from_wishlist,
-} from '../reducers/wishlistSlice';
+
+interface WishlistState {
+  wishlist: string[];
+  loading: boolean;
+  error: string | null;
+}
+
+interface FetchWishlistResponse {
+  wishlist: string[];
+}
 
 export const fetchwishlist = createAsyncThunk<
-  void,
+  FetchWishlistResponse,
   {_id: string},
-  {rejectValue: string}
->('wishlist/fetch', async ({_id}, {dispatch, rejectWithValue}) => {
+  {state: WishlistState; rejectValue: string}
+>('wishlist/fetchwishlist', async ({ _id }, { rejectWithValue }) => {
   try {
     const response = await fetchWishlist(_id);
-
-    dispatch(fetch_wishlist({wishlist: response.data.wishlist}));
-  } catch (error) {
-    console.error('Failed to fetch wishlist:', error);
-    return rejectWithValue('Failed to fetch user wishlist');
+    return { wishlist: response.data.wishlist };
+  } catch (error : any) {
+    const errorMessage = error.response?.data?.message || 'Failed to fetch user wishlist';
+    return rejectWithValue(errorMessage);
   }
 });
 
 export const addtowishlist = createAsyncThunk<
-  void,
+  string,
   {_id: string; pr_id: string},
-  {rejectValue: string}
->(
-  'wishlist/add',
-  async ({_id, pr_id}, {dispatch, rejectWithValue}) => {
-    try {
-      await addToWishlist(_id, pr_id);
-
-      dispatch(add_to_wishlist(pr_id));
-    } catch (error) {
-      console.error('Failed to add product to wishlist:', error);
-      return rejectWithValue('Failed to add product to wishlist');
-    }
-  },
-);
+  {state: WishlistState; rejectValue: string}
+>('wishlist/addtowishlist', async ({ _id, pr_id }, { rejectWithValue }) => {
+  try {
+    await addToWishlist(_id, pr_id);
+    return pr_id;
+  } catch (error : any) {
+    const errorMessage = error.response?.data?.message || 'Failed to add product to wishlist';
+    return rejectWithValue(errorMessage);
+  }
+});
 
 export const removefromwishlist = createAsyncThunk<
-  void,
+  string,
   {_id: string; pr_id: string},
-  {rejectValue: string}
->(
-  'wishlist/remove',
-  async ({_id, pr_id}, {dispatch, rejectWithValue}) => {
-    try {
-      await removeFromWishlist(_id, pr_id);
-
-      dispatch(remove_from_wishlist(pr_id));
-    } catch (error) {
-      console.error('Failed to remove product from wishlist:', error);
-      return rejectWithValue('Failed to remove product from wishlist');
-    }
-  },
-);
+  {state: WishlistState; rejectValue: string}
+>('wishlist/removefromwishlist', async ({ _id, pr_id }, { rejectWithValue }) => {
+  try {
+    await removeFromWishlist(_id, pr_id);
+    return pr_id;
+  } catch (error : any) {
+    const errorMessage = error.response?.data?.message || 'Failed to remove product from wishlist';
+    return rejectWithValue(errorMessage);
+  }
+});
