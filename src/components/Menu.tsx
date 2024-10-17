@@ -26,8 +26,8 @@ const Menu: React.FC<MenuProps> = ({ closeMenu }) => {
   return (
     <View style={styles.menuContent}>
       {/* Menu Options */}
-      <TouchableOpacity onPress={() => handleNavigation('')}>
-        <Text style={styles.menuItem}>Home</Text>
+      <TouchableOpacity onPress={() => handleNavigation('none')}>
+        <Text style={styles.menuItem}>Home Page</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleNavigation('bicycles')}>
         <Text style={styles.menuItem}>Bicycles</Text>

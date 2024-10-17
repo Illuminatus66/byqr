@@ -29,7 +29,7 @@ const HomeScreen = () => {
   const error = useAppSelector(selectProductsError);
 
   const [sortOption, setSortOption] = useState('');
-  const [filterOption, setFilterOption] = useState('');
+  const [filterOption, setFilterOption] = useState('none');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   const route = useRoute<HomeScreenRouteProp>();
@@ -48,11 +48,15 @@ const HomeScreen = () => {
   useEffect(() => {
     let updatedProducts = [...products];
 
-    if (filterOption) {
+    // Here we are applying filtering to the updatedProducts object only if
+    // filterOption is not 'none', otherwise it moves on with the
+    // updatedProducts object as-it-is.
+    if (filterOption !== 'none') {
       updatedProducts = updatedProducts.filter(
-        product => product.category === filterOption
+        (product) => product.category === filterOption
       );
     }
+
 
     switch (sortOption) {
       case 'price_ascending':
@@ -86,6 +90,7 @@ const HomeScreen = () => {
   ];
 
   const filterOptions = [
+    { label: 'All Products', value: 'none' },
     { label: 'Bicycles', value: 'bicycles' },
     { label: 'Accessories', value: 'accessories' },
   ];

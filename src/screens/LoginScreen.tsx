@@ -1,17 +1,81 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {login, signup} from '../actions/userActions';
+import {fetchcartitems} from '../actions/cartActions';
+import {selectUserId} from '../reducers/userSlice';
+import {fetchwishlist} from '../actions/wishlistActions';
+
+interface Login {
+  email: string;
+  password: string;
+}
+interface Signup {
+  name: string;
+  email: string;
+  password: string;
+  phno: string;
+}
+
+type RootStackParamList = {
+  Home: {filter: string};
+  Cart: undefined;
+  Login: undefined;
+  Wishlist: undefined;
+  ProductDescription: {pr_id: string};
+};
+
+interface SignUpProps {
+  handleSignUp: (
+    name: string,
+    email: string,
+    phno: string,
+    password: string,
+  ) => void;
+}
+
+interface SignInProps {
+  handleSignIn: (email: string, password: string) => void;
+}
 
 const LoginScreen = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const dispatch = useAppDispatch();
   const [isSignUp, setIsSignUp] = useState(true);
+  const User = useAppSelector(selectUserId);
+
+  const handleSignUp = async (name: string, email: string, phno: string, password: string) => {
+    const signupData: Signup = {name, email, phno, password};
+    await dispatch(signup(signupData));
+    if (User) {
+      dispatch(fetchcartitems(User));
+      dispatch(fetchwishlist(User));
+      navigation.navigate('Home', {filter: 'none'});
+    }
+  };
+  const handleSignIn = async (email: string, password: string) => {
+    const loginData: Login = {email, password};
+    await dispatch(login(loginData));
+    if (User) {
+      dispatch(fetchcartitems(User));
+      dispatch(fetchwishlist(User));
+      navigation.navigate('Home', {filter: 'none'});
+    }
+  };
 
   return (
     <View style={styles.container}>
       {/* Toolbar Section */}
       <Toolbar title="BYQR" />
-      {isSignUp ? <SignUpForm /> : <SignInForm />}
+      {isSignUp ? (
+        <SignUpForm handleSignUp={handleSignUp} />
+      ) : (
+        <SignInForm handleSignIn={handleSignIn} />
+      )}
 
       {/* Toggle SignUp/SignIn view */}
       <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
@@ -29,49 +93,80 @@ const LoginScreen = () => {
   );
 };
 
-const SignUpForm = () => (
-  <View>
-    <TextInput style={styles.input} placeholder="Name" />
-    <TextInput
-      style={styles.input}
-      placeholder="Email"
-      keyboardType="email-address"
-    />
-    <TextInput
-      style={styles.input}
-      placeholder="Phone Number"
-      keyboardType="phone-pad"
-    />
-    <TextInput
-      style={styles.input}
-      placeholder="Password"
-      secureTextEntry={true}
-    />
+const SignUpForm: React.FC<SignUpProps> = ({handleSignUp}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phno, setPhno] = useState('');
+  const [password, setPassword] = useState('');
 
-    <TouchableOpacity style={styles.button}>
-      <Text style={styles.buttonText}>Sign Up</Text>
-    </TouchableOpacity>
-  </View>
-);
+  return (
+    <View>
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        value={name}
+        onChangeText={setName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Phone Number"
+        keyboardType="phone-pad"
+        value={phno}
+        onChangeText={setPhno}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry={true}
+        value={password}
+        onChangeText={setPassword}
+      />
 
-const SignInForm = () => (
-  <View>
-    <TextInput
-      style={styles.input}
-      placeholder="Email"
-      keyboardType="email-address"
-    />
-    <TextInput
-      style={styles.input}
-      placeholder="Password"
-      secureTextEntry={true}
-    />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => handleSignUp(name, email, phno, password)}>
+        <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
-    <TouchableOpacity style={styles.button}>
-      <Text style={styles.buttonText}>Sign In</Text>
-    </TouchableOpacity>
-  </View>
-);
+const SignInForm: React.FC<SignInProps> = ({handleSignIn}) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  return (
+    <View>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry={true}
+        value={password}
+        onChangeText={setPassword}
+      />
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => handleSignIn(email, password)}>
+        <Text style={styles.buttonText}>Sign In</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
