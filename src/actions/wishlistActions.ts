@@ -15,8 +15,8 @@ interface FetchWishlistResponse {
 export const fetchwishlist = createAsyncThunk<
   FetchWishlistResponse,
   {_id: string},
-  {state: WishlistState; rejectValue: string}
->('wishlist/fetchwishlist', async ({ _id }, { rejectWithValue }) => {
+  {state: WishlistState; rejectValue: string;}
+>('wishlist/fetchwishlist', async ({_id}, {rejectWithValue}) => {
   try {
     const response = await fetchWishlist(_id);
     return { wishlist: response.data.wishlist };
@@ -30,7 +30,7 @@ export const addtowishlist = createAsyncThunk<
   string,
   {_id: string; pr_id: string},
   {state: WishlistState; rejectValue: string}
->('wishlist/addtowishlist', async ({ _id, pr_id }, { rejectWithValue }) => {
+>('wishlist/addtowishlist', async ({_id, pr_id}, {rejectWithValue}) => {
   try {
     await addToWishlist(_id, pr_id);
     return pr_id;
@@ -44,7 +44,7 @@ export const removefromwishlist = createAsyncThunk<
   string,
   {_id: string; pr_id: string},
   {state: WishlistState; rejectValue: string}
->('wishlist/removefromwishlist', async ({ _id, pr_id }, { rejectWithValue }) => {
+>('wishlist/removefromwishlist', async ({_id, pr_id}, {rejectWithValue}) => {
   try {
     await removeFromWishlist(_id, pr_id);
     return pr_id;

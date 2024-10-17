@@ -8,8 +8,9 @@ type RootStackParamList = {
   Cart: undefined;
   Login: undefined;
   Wishlist: undefined;
-  ProductDescription: undefined;
-};
+  ProductDescription:{pr_id : string};
+}
+
 interface MenuProps {
   closeMenu: () => void;
 }

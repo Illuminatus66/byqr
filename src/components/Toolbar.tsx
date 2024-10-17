@@ -3,8 +3,7 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useAppSelector, useAppDispatch} from '../hooks';
-import {selectUserToken} from '../reducers/userSlice';
-import {logoutuser} from '../actions/userActions';
+import {selectUserToken, logout} from '../reducers/userSlice';
 import Menu from './Menu';
 
 interface ToolbarProps {
@@ -32,7 +31,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ title }) => {
   };
 
   const handleLogout = () => {
-    dispatch(logoutuser);
+    dispatch(logout());
     setProfileMenuVisible(false);
   };
 

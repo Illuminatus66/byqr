@@ -1,57 +1,81 @@
 /* eslint-disable prettier/prettier */
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, Alert } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import { Picker } from '@react-native-picker/picker';
-import { updatecartqty } from '../actions/cartActions'; // Action for updating cart quantity will be added later with all the reducers
+import { updatecartqty } from '../actions/cartActions';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { selectCartNo } from '../reducers/cartSlice';
+import { addtowishlist } from '../actions/wishlistActions';
+import { selectProducts } from '../reducers/productSlice';
 
-const ProductDescriptionScreen = ({ route }) => {
-  const { productId } = route.params;
+interface CartData {
+  cart_no: string;
+  pr_id: string;
+  qty: number;
+}
+interface WishlistData {
+  _id: string;
+  pr_id: string;
+}
+
+type ProductDescriptionRouteProp = RouteProp<{ ProductDescription: {pr_id: string} }, 'ProductDescription'>;
+const ProductDescriptionScreen = () => {
+  const dispatch = useAppDispatch();
+  const route = useRoute<ProductDescriptionRouteProp>();
+  const {pr_id} = route.params;
+  const products = useAppSelector(selectProducts);
+  const cart_no = useAppSelector(selectCartNo);
   const [quantity, setQuantity] = useState(1);
   const [errorMessage, setErrorMessage] = useState('');
+  const cartItem = useAppSelector((state) => state.cart.products.find((pr) => pr.pr_id === pr_id));
 
-  const User = useSelector((state) => state.currentUserReducer);
-  const dispatch = useDispatch();
+  // We filter the product to be rendered by its _id (pr_id)
+  const product = products.find(pr => pr._id === pr_id);
 
-  const product = {
-    id: productId,
-    name: 'Sample Product Name',
-    price: 29.99,
-    images: [
-      'https://via.placeholder.com/300',
-      'https://via.placeholder.com/300',
-      'https://via.placeholder.com/300'
-    ]
-  };
-
-  const popularProducts = [
-    { id: '1', name: 'Popular Product 1', price: '$19.99', image: 'https://via.placeholder.com/150' },
-    { id: '2', name: 'Popular Product 2', price: '$24.99', image: 'https://via.placeholder.com/150' },
-    { id: '3', name: 'Popular Product 3', price: '$12.99', image: 'https://via.placeholder.com/150' },
-    { id: '4', name: 'Popular Product 4', price: '$18.99', image: 'https://via.placeholder.com/150' }
-  ];
+  if (!product) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Toolbar title="BYQR" />
+        <Text style={styles.errorMessage}>Product not found</Text>
+        <Footer />
+      </SafeAreaView>
+    );
+  }
 
   // Fetch the cart quantity for this product from the Redux store
-  const cartItem = useSelector((state) =>
-    state.cart.products.find((product) => product.productId === productId)
-  );
-  const cartQty = cartItem ? cartItem.quantity : 0;
+  const cartQty = cartItem ? cartItem.qty : 0;
 
   // Handle Add to Cart button click
   const handleAddToCart = () => {
-    const totalQuantity = cartQty + quantity;
+    const totalQty = cartQty + quantity;
 
-    if (totalQuantity > 4) {
+    if (totalQty > 4) {
       setErrorMessage(`You already have ${cartQty} of these in the cart. You cannot buy more than 4.`);
-      setTimeout(() => setErrorMessage(''), 3000); // Remove the error message after 3 seconds
+      setTimeout(() => setErrorMessage(''), 3000);
     } else {
-      dispatch(updateCartQuantity(User.result._id, productId, totalQuantity));
-      // Placeholder for server request
+      const cartData: CartData = { cart_no: cart_no, pr_id: pr_id, qty: totalQty };
+      if (cart_no) {
+        dispatch(updatecartqty(cartData));
+      }
     }
   };
+
+  const handleAddToWishlist = () => {
+    if (cart_no) {
+      const wishlistData: WishlistData = { _id: cart_no, pr_id: pr_id };
+      dispatch(addtowishlist(wishlistData));
+    }
+  };
+
+  // Here we are randomly selecting up to 6 products for the "Popular Products" section.
+  // Once we add metrics to track how many people have bought each product we can use it
+  // to filter out the six best products to showcase in that section.
+  const popularProducts = products.length > 6 ?
+    products.sort(() => 0.5 - Math.random()).slice(0, 6) : products;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -68,7 +92,7 @@ const ProductDescriptionScreen = ({ route }) => {
           <Carousel
             layout={'stack'}
             layoutCardOffset={15}
-            data={product.images}
+            data={product.imgs}
             renderItem={({ item }) => (
               <Image source={{ uri: item }} style={styles.carouselImage} />
             )}
@@ -100,7 +124,7 @@ const ProductDescriptionScreen = ({ route }) => {
           <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartButton}>
             <Text style={styles.addToCartText}>Add to Cart</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addToWishlistButton}>
+          <TouchableOpacity onPress={handleAddToWishlist} style={styles.addToWishlistButton}>
             <Text style={styles.addToWishlistText}>Add to Wishlist</Text>
           </TouchableOpacity>
         </View>
@@ -111,14 +135,14 @@ const ProductDescriptionScreen = ({ route }) => {
           data={popularProducts}
           renderItem={({ item }) => (
             <View style={styles.popularProduct}>
-              <Image source={{ uri: item.image }} style={styles.popularProductImage} />
+              <Image source={{ uri: item.thumbnail }} style={styles.popularProductImage} />
               <Text style={styles.popularProductName}>{item.name}</Text>
               <Text style={styles.popularProductPrice}>{item.price}</Text>
             </View>
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           contentContainerStyle={styles.popularProductList}
         />
 
@@ -131,12 +155,12 @@ const ProductDescriptionScreen = ({ route }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 10
+    padding: 10,
   },
   errorBox: {
     position: 'absolute',
@@ -145,82 +169,88 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
-    zIndex: 1000
+    zIndex: 1000,
   },
   errorText: {
     color: 'white',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+  },
+  errorMessage: {
+    textAlign: 'center',
+    fontSize: 20,
+    marginTop: 50,
+    color: 'red',
   },
   carouselContainer: {
     width: '100%',
     alignItems: 'center',
-    marginBottom: 20
+    marginBottom: 20,
   },
   carouselImage: {
     width: 300,
     height: 300,
-    borderRadius: 10
+    borderRadius: 10,
   },
   productName: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10
+    marginBottom: 10,
   },
   priceQuantityContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20
+    marginBottom: 20,
   },
   productPrice: {
     fontSize: 22,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   quantityContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   picker: {
     height: 50,
-    width: 100
+    width: 100,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 30
+    marginBottom: 30,
   },
   addToCartButton: {
     flex: 0.6,
     backgroundColor: '#6200EE',
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   addToCartText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   addToWishlistButton: {
     flex: 0.4,
     backgroundColor: '#ddd',
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   addToWishlistText: {
     color: '#000',
     fontSize: 14,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   popularTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: 10,
   },
   popularProductList: {
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   popularProduct: {
     width: 150,
@@ -229,22 +259,22 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 10,
-    padding: 10
+    padding: 10,
   },
   popularProductImage: {
     width: 120,
     height: 120,
-    borderRadius: 10
+    borderRadius: 10,
   },
   popularProductName: {
     marginTop: 5,
     fontWeight: 'bold',
-    fontSize: 14
+    fontSize: 14,
   },
   popularProductPrice: {
     color: '#888',
-    fontSize: 12
-  }
+    fontSize: 12,
+  },
 });
 
 export default ProductDescriptionScreen;

@@ -1,40 +1,50 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
-import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import React from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { useAppSelector } from '../hooks';
 import ProductCard from '../components/ProductCard';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
+import { selectCartProducts } from '../reducers/cartSlice';
+import { selectProducts } from '../reducers/productSlice';
+
+interface CartProduct {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  qty: number;
+}
 
 const CartScreen = () => {
-  const User = useSelector(state => state.currentUserReducer);
-  const Cart = useSelector(state => state.cartReducer);
-  const [cartItems, setCartItems] = useState([
-    {
-      id: '1',
-      name: 'Product 1',
-      price: 10.99,
-      thumbnail: 'https://via.placeholder.com/100',
-      qty: 2,
-    },
-    {
-      id: '2',
-      name: 'Product 2',
-      price: 14.99,
-      thumbnail: 'https://via.placeholder.com/100',
-      qty: 1,
-    },
-    {
-      id: '3',
-      name: 'Product 3',
-      price: 8.49,
-      thumbnail: 'https://via.placeholder.com/100',
-      qty: 3,
-    },
-  ]);
+
+  const cartItems = useAppSelector(selectCartProducts);
+  const products = useAppSelector(selectProducts);
+
+  // Here we are combining cart items with their respective product details
+  // because both of them are stored in different reducers. So, we map over
+  // the cartItems object to match _ids from the products object, to the cartItem's
+  // pr_ids while selecting some of the necessary data from the products array.
+  // This will help ensure type safety and will only send useful data to the
+  // ProductCard component.
+  const CartProducts: CartProduct[] = cartItems
+    .map(cartItem => {
+      const product = products.find(p => p._id === cartItem.pr_id);
+      if (product) {
+        return {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          thumbnail: product.thumbnail,
+          qty: cartItem.qty,
+        };
+      }
+      return null;
+    })
+    .filter((item): item is CartProduct => item !== null);
 
   // Calculate total value of the cart
-  const totalValue = cartItems
+  const totalValue = CartProducts
     .reduce((acc, item) => acc + item.price * item.qty, 0)
     .toFixed(2);
 
@@ -45,15 +55,15 @@ const CartScreen = () => {
 
       {/* List of cart items */}
       <FlatList
-        data={cartItems}
-        keyExtractor={item => item.id}
+        data={CartProducts}
+        keyExtractor={item => item._id}
         renderItem={({item}) => (
           <ProductCard
+            pr_id={item._id}
             name={item.name}
             price={`$${(item.price * item.qty).toFixed(2)}`}
             thumbnail={item.thumbnail}
             qty={item.qty}
-            productId={item.id}
           />
         )}
         showsVerticalScrollIndicator={false}

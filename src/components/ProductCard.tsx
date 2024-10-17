@@ -1,15 +1,59 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { useAppSelector, useAppDispatch } from '../hooks';
+import { updatecartqty, removefromcart } from '../actions/cartActions';
+import { addtowishlist } from '../actions/wishlistActions';
+import { selectCartNo } from '../reducers/cartSlice';
 
-const ProductCard = ({ name, price, thumbnail, qty, productId }) => {
-  const [selectedQty, setSelectedQty] = useState(qty); 
+interface ProductCardProps {
+  pr_id: string;
+  name: string;
+  price: string;
+  thumbnail: string;
+  qty: number;
+}
 
-  const handleQtyChange = (user_id, product_id, newQty) => {
-    setSelectedQty(newQty);
+interface CartData {
+  cart_no: string;
+  pr_id :string;
+  qty: number;
+}
+interface RemoveFromCartData {
+  cart_no: string;
+  pr_id :string;
+}
+interface WishlistData {
+  _id: string;
+  pr_id: string;
+}
 
-    // Placeholder: server request to update quantity
+const ProductCard: React.FC<ProductCardProps> = ({ pr_id, name, price, thumbnail, qty }) => {
+  const dispatch = useAppDispatch();
+  const cart_no = useAppSelector(selectCartNo);
+
+  const handleQtyChange = (newQty: number) => {
+    if (cart_no) {
+      const cartData : CartData = { cart_no, pr_id, qty: newQty };
+      dispatch(updatecartqty(cartData));
+    }
+  };
+
+  const handleRemoveFromCart = () => {
+    if (cart_no) {
+      const cartData: RemoveFromCartData = { cart_no, pr_id };
+      dispatch(removefromcart(cartData));
+    }
+  };
+
+  const handleMoveToWishlist = () => {
+    if (cart_no) {
+      const cartData: RemoveFromCartData = { cart_no, pr_id };
+      const wishlistData: WishlistData = { _id: cart_no, pr_id };
+      dispatch(removefromcart(cartData));
+      dispatch(addtowishlist(wishlistData));
+    }
   };
 
   return (
@@ -24,13 +68,13 @@ const ProductCard = ({ name, price, thumbnail, qty, productId }) => {
           {/* Quantity Dropdown Menu */}
           <View style={styles.dropdownContainer}>
             <Picker
-              selectedValue={selectedQty}
-              onValueChange={(upd_qty) => handleQtyChange(user_id, productId, upd_qty)}
+              selectedValue={qty}
+              onValueChange={(newQty) => handleQtyChange(newQty)}
+              style={styles.dropdown}
             >
-              <Picker.Item label="1" value={1} />
-              <Picker.Item label="2" value={2} />
-              <Picker.Item label="3" value={3} />
-              <Picker.Item label="4" value={4} />
+              {[1, 2, 3, 4].map((value) => (
+                <Picker.Item key={value} label={`${value}`} value={value} />
+              ))}
             </Picker>
           </View>
         </View>
@@ -38,11 +82,11 @@ const ProductCard = ({ name, price, thumbnail, qty, productId }) => {
 
       {/* Lower section: "Remove" and "Move to Wishlist" buttons */}
       <View style={styles.lowerSection}>
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Remove</Text>
+        <TouchableOpacity style={styles.removeButton} onPress={handleRemoveFromCart}>
+          <Text style={styles.removeButtonText}>Remove</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Move to Wishlist</Text>
+        <TouchableOpacity style={styles.wishlistButton} onPress={handleMoveToWishlist}>
+          <Text style={styles.wishlistButtonText}>Move to Wishlist</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -79,18 +123,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flexWrap: 'wrap',
   },
-  priceQtyContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
   price: {
     fontSize: 16,
     color: '#333',
   },
   dropdownContainer: {
-    width: '40%', 
+    width: '40%',
   },
   dropdown: {
     height: 30,

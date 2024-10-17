@@ -11,7 +11,8 @@ interface Cart {
   products: CartItem[];
 }
 interface CartState {
-  cart: Cart[],
+  cart_no: string;
+  products: CartItem[];
   loading: boolean;
   error: string | null;
 }
@@ -82,11 +83,3 @@ export const updatecartqty = createAsyncThunk<
     return rejectWithValue(errorMessage);
   }
 });
-
-export const clearcart = () => async (dispatch: any) => {
-  try{
-    dispatch(clearcart());
-  } catch (error) {
-    console.error('Failed to clear cart', error);
-  }
-};

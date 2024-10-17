@@ -94,6 +94,7 @@ export const { logout } = userSlice.actions;
 export const selectUserData = (state: { user: AuthState }) => state.user.data;
 export const selectUserToken = (state: { user: AuthState }) => state.user.data?.token;
 export const selectUserProfile = (state: { user: AuthState }) => state.user.data?.user;
+export const selectUserId = (state: { user: AuthState }) => state.user.data?.user?._id;
 export const selectUserLoading = (state: { user: AuthState }) => state.user.loading;
 export const selectUserError = (state: { user: AuthState }) => state.user.error;
 

@@ -123,7 +123,7 @@ const HomeScreen = () => {
       ) : error ? (
         <Text style={styles.errordisplay}>{error}</Text>
       ) : (
-        <ItemList items={filteredProducts} renderButtons={false} />
+        <ItemList items={filteredProducts} isWishlist={false}/>
       )}
 
       <Footer />
