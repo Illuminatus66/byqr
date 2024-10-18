@@ -3,9 +3,11 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useAppSelector, useAppDispatch } from '../hooks';
+import { selectCartError, selectCartLoading, selectCartNo } from '../reducers/cartSlice';
+import { selectWishlistError, selectWishlistLoading } from '../reducers/wishlistSlice';
 import { updatecartqty, removefromcart } from '../actions/cartActions';
 import { addtowishlist } from '../actions/wishlistActions';
-import { selectCartNo } from '../reducers/cartSlice';
+
 
 interface ProductCardProps {
   pr_id: string;
@@ -32,6 +34,8 @@ interface WishlistData {
 const ProductCard: React.FC<ProductCardProps> = ({ pr_id, name, price, thumbnail, qty }) => {
   const dispatch = useAppDispatch();
   const cart_no = useAppSelector(selectCartNo);
+  const cart_l = useAppSelector(selectCartLoading);
+  const wishlist_l = useAppSelector(selectWishlistLoading);
 
   const handleQtyChange = (newQty: number) => {
     if (cart_no) {
@@ -82,10 +86,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ pr_id, name, price, thumbnail
 
       {/* Lower section: "Remove" and "Move to Wishlist" buttons */}
       <View style={styles.lowerSection}>
-        <TouchableOpacity style={styles.removeButton} onPress={handleRemoveFromCart}>
+        <TouchableOpacity style={styles.removeButton} onPress={handleRemoveFromCart} disabled = {cart_l || wishlist_l}>
           <Text style={styles.removeButtonText}>Remove</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.wishlistButton} onPress={handleMoveToWishlist}>
+        <TouchableOpacity style={styles.wishlistButton} onPress={handleMoveToWishlist} disabled = {cart_l || wishlist_l}>
           <Text style={styles.wishlistButtonText}>Move to Wishlist</Text>
         </TouchableOpacity>
       </View>

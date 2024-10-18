@@ -1,13 +1,13 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Modal} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {useAppDispatch, useAppSelector} from '../hooks';
+import {selectUserId, selectUserLoading, selectUserError} from '../reducers/userSlice';
 import {login, signup} from '../actions/userActions';
 import {fetchcartitems} from '../actions/cartActions';
-import {selectUserId} from '../reducers/userSlice';
 import {fetchwishlist} from '../actions/wishlistActions';
 
 interface Login {
@@ -20,61 +20,52 @@ interface Signup {
   password: string;
   phno: string;
 }
-
+type User = string
 type RootStackParamList = {
   Home: {filter: string};
   Cart: undefined;
   Login: undefined;
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
+  Profile: undefined;
 };
-
-interface SignUpProps {
-  handleSignUp: (
-    name: string,
-    email: string,
-    phno: string,
-    password: string,
-  ) => void;
-}
-
-interface SignInProps {
-  handleSignIn: (email: string, password: string) => void;
-}
 
 const LoginScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   const [isSignUp, setIsSignUp] = useState(true);
   const User = useAppSelector(selectUserId);
+  const loading = useAppSelector(selectUserLoading);
+  const error = useAppSelector(selectUserError);
 
-  const handleSignUp = async (name: string, email: string, phno: string, password: string) => {
+  const handleSignUp = (name: string, email: string, phno: string, password: string) => {
     const signupData: Signup = {name, email, phno, password};
-    await dispatch(signup(signupData));
-    if (User) {
-      dispatch(fetchcartitems(User));
-      dispatch(fetchwishlist(User));
-      navigation.navigate('Home', {filter: 'none'});
-    }
+    dispatch(signup(signupData));
   };
-  const handleSignIn = async (email: string, password: string) => {
+
+  const handleSignIn = (email: string, password: string) => {
     const loginData: Login = {email, password};
-    await dispatch(login(loginData));
+    dispatch(login(loginData));
+  };
+
+  useEffect(() => {
     if (User) {
-      dispatch(fetchcartitems(User));
-      dispatch(fetchwishlist(User));
+      const user : User = User;
+      dispatch(fetchcartitems(user));
+      dispatch(fetchwishlist(user));
       navigation.navigate('Home', {filter: 'none'});
     }
-  };
+  }, [User, dispatch, navigation]);
 
   return (
     <View style={styles.container}>
       {/* Toolbar Section */}
       <Toolbar title="BYQR" />
+
       {isSignUp ? (
-        <SignUpForm handleSignUp={handleSignUp} />
+        <SignUpForm handleSignUp={handleSignUp} loading={loading} />
       ) : (
-        <SignInForm handleSignIn={handleSignIn} />
+        <SignInForm handleSignIn={handleSignIn} loading={loading} />
       )}
 
       {/* Toggle SignUp/SignIn view */}
@@ -87,13 +78,27 @@ const LoginScreen = () => {
         </Text>
       </TouchableOpacity>
 
+      {/* Showing error if it exists */}
+      {error && <Text style={styles.errorText}>{error}</Text>}
+
       {/* Add the Footer */}
       <Footer />
+
+      {/* Loading Modal */}
+      {loading && (
+        <Modal transparent={true} animationType="none">
+          <View style={styles.modalBackground}>
+            <View style={styles.spinnerContainer}>
+              <ActivityIndicator size="large" color="#6200EE" />
+            </View>
+          </View>
+        </Modal>
+      )}
     </View>
   );
 };
 
-const SignUpForm: React.FC<SignUpProps> = ({handleSignUp}) => {
+const SignUpForm: React.FC<{handleSignUp: any; loading: boolean}> = ({handleSignUp, loading}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phno, setPhno] = useState('');
@@ -130,15 +135,21 @@ const SignUpForm: React.FC<SignUpProps> = ({handleSignUp}) => {
       />
 
       <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleSignUp(name, email, phno, password)}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={[styles.button, loading ? {opacity: 0.7} : {}]}
+        onPress={() => handleSignUp(name, email, phno, password)}
+        disabled={loading}>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Sign Up</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
 };
 
-const SignInForm: React.FC<SignInProps> = ({handleSignIn}) => {
+const SignInForm: React.FC<{handleSignIn: any; loading: boolean}> = ({handleSignIn, loading}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -160,9 +171,15 @@ const SignInForm: React.FC<SignInProps> = ({handleSignIn}) => {
       />
 
       <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleSignIn(email, password)}>
-        <Text style={styles.buttonText}>Sign In</Text>
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={[styles.button, loading ? {opacity: 0.7} : {}]}
+        onPress={() => handleSignIn(email, password)}
+        disabled={loading}>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Sign In</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -203,6 +220,23 @@ const styles = StyleSheet.create({
   linkText: {
     color: '#007bff',
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  spinnerContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
   },
 });
 

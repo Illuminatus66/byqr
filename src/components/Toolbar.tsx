@@ -1,22 +1,33 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppSelector, useAppDispatch} from '../hooks';
-import {selectUserToken, logout} from '../reducers/userSlice';
+import {logout, selectUserId} from '../reducers/userSlice';
 import Menu from './Menu';
+import {clearcart} from '../reducers/cartSlice';
+import {clearwishlist} from '../reducers/wishlistSlice';
 
 interface ToolbarProps {
   title: string;
 }
 
+type RootStackParamList = {
+  Home: {filter: string};
+  Cart: undefined;
+  Login: undefined;
+  Wishlist: undefined;
+  ProductDescription: {pr_id : string};
+  Profile: undefined;
+}
+
 const Toolbar: React.FC<ToolbarProps> = ({ title }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   const [menuVisible, setMenuVisible] = useState(false);
   const [profileMenuVisible, setProfileMenuVisible] = useState(false);
 
-  const userToken = useAppSelector(selectUserToken);
+  const User = useAppSelector(selectUserId);
 
   const toggleMenuVisibility = () => {
     setMenuVisible(!menuVisible);
@@ -32,6 +43,12 @@ const Toolbar: React.FC<ToolbarProps> = ({ title }) => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearcart());
+    dispatch(clearwishlist());
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Home', params: { filter: 'none' } }],
+    });
     setProfileMenuVisible(false);
   };
 
@@ -50,7 +67,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ title }) => {
             <Text style={styles.icon}>🛒</Text>
           </TouchableOpacity>
 
-          {userToken ? (
+          {User ? (
             <TouchableOpacity onPress={toggleProfileMenuVisibility}>
               <Text style={styles.icon}>👤</Text>
             </TouchableOpacity>
@@ -76,7 +93,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ title }) => {
           <View style={styles.overlay} />
         </TouchableWithoutFeedback>
         <View style={styles.profileMenu}>
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={() => handleNavigation('Profile')}>
             <Text style={styles.profileMenuItem}>Profile</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout}>
@@ -97,16 +114,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
-  menuButton: {fontSize: 24, color: '#fff'},
-  appName: {fontSize: 20, color: '#fff', fontWeight: 'bold'},
-  toolbarIcons: {flexDirection: 'row', alignItems: 'center'},
-  icon: {fontSize: 24, color: '#fff', marginLeft: 20},
-
+  menuButton: {
+    fontSize: 24,
+    color: '#fff',
+  },
+  appName: {
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  toolbarIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    fontSize: 24,
+    color: '#fff',
+    marginLeft: 20,
+  },
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-
   menuContainer: {
     width: '60%',
     backgroundColor: '#fff',
@@ -115,7 +144,6 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
   },
-
   profileMenu: {
     position: 'absolute',
     top: 60,

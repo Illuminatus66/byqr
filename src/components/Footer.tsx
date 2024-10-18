@@ -1,31 +1,47 @@
 /* eslint-disable prettier/prettier */
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Linking} from 'react-native';
 
+type RootStackParamList = {
+  Home: {filter: string};
+  Cart: undefined;
+  Login: undefined;
+  Wishlist: undefined;
+  ProductDescription: {pr_id: string};
+  Profile: undefined;
+};
+
 const Footer = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <View style={styles.footer}>
       {/* Left side with the app name */}
       <View style={styles.appNameContainer}>
-        <Text style={styles.appName}>BYQR</Text>
+        <TouchableOpacity onPress = {() => navigation.navigate('Home', {filter: 'none'})}>
+          <Text style={styles.appName}>BYQR</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Right side with placeholders for social media links and subscription */}
       <View style={styles.linksContainer}>
         <TouchableOpacity
-          onPress={() => Linking.openURL('https://facebook.com')}>
-          <Text style={styles.linkText}>Facebook</Text>
+          onPress={() => Linking.openURL('https://www.linkedin.com/in/vrushali-sandam-283054253/')}>
+          <Text style={styles.linkText}>Vrushali Sandam</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => Linking.openURL('https://twitter.com')}>
-          <Text style={styles.linkText}>Twitter</Text>
+          onPress={() => Linking.openURL('https://www.linkedin.com/in/kanchan-singh-393a26280/')}>
+          <Text style={styles.linkText}>Kanchan Singh</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => Linking.openURL('https://instagram.com')}>
-          <Text style={styles.linkText}>Instagram</Text>
+          onPress={() => Linking.openURL('https://www.linkedin.com/in/varun-sodhani-is2711hu/')}>
+          <Text style={styles.linkText}>Varun Sodhani</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => Linking.openURL('https://github.com')}>
-          <Text style={styles.linkText}>Github</Text>
+        <TouchableOpacity onPress={() => Linking.openURL('https://github.com/Illuminatus66/byqr')}>
+          <Text style={styles.linkText}>Frontend</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => Linking.openURL('https://github.com/Illuminatus66/byqr_backend')}>
+          <Text style={styles.linkText}>Backend</Text>
         </TouchableOpacity>
       </View>
     </View>

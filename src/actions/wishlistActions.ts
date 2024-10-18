@@ -14,9 +14,9 @@ interface FetchWishlistResponse {
 
 export const fetchwishlist = createAsyncThunk<
   FetchWishlistResponse,
-  {_id: string},
+  string,
   {state: WishlistState; rejectValue: string;}
->('wishlist/fetchwishlist', async ({_id}, {rejectWithValue}) => {
+>('wishlist/fetchwishlist', async (_id, {rejectWithValue}) => {
   try {
     const response = await fetchWishlist(_id);
     return { wishlist: response.data.wishlist };

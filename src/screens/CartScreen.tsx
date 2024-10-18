@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { useAppSelector } from '../hooks';
+import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
+import {useAppSelector} from '../hooks';
 import ProductCard from '../components/ProductCard';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
-import { selectCartProducts } from '../reducers/cartSlice';
-import { selectProducts } from '../reducers/productSlice';
+import {selectCartProducts} from '../reducers/cartSlice';
+import {selectProducts} from '../reducers/productSlice';
 
 interface CartProduct {
   _id: string;
@@ -17,7 +17,6 @@ interface CartProduct {
 }
 
 const CartScreen = () => {
-
   const cartItems = useAppSelector(selectCartProducts);
   const products = useAppSelector(selectProducts);
 
@@ -45,39 +44,46 @@ const CartScreen = () => {
 
   // Calculate total value of the cart
   const totalValue = CartProducts
-    .reduce((acc, item) => acc + item.price * item.qty, 0)
-    .toFixed(2);
+  .reduce((acc, item) => acc + item.price * item.qty, 0)
+  .toFixed(2);
 
   return (
     <View style={styles.container}>
-      {/* Toolbar Section */}
       <Toolbar title="Cart" />
 
-      {/* List of cart items */}
-      <FlatList
-        data={CartProducts}
-        keyExtractor={item => item._id}
-        renderItem={({item}) => (
-          <ProductCard
-            pr_id={item._id}
-            name={item.name}
-            price={`$${(item.price * item.qty).toFixed(2)}`}
-            thumbnail={item.thumbnail}
-            qty={item.qty}
+      {/* Display message if the cart is empty */}
+      {CartProducts.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Add some products to your cart!</Text>
+        </View>
+      ) : (
+        <>
+          {/* List of cart items */}
+          <FlatList
+            data={CartProducts}
+            keyExtractor={item => item._id}
+            renderItem={({item}) => (
+              <ProductCard
+                pr_id={item._id}
+                name={item.name}
+                price={`$${(item.price * item.qty).toFixed(2)}`}
+                thumbnail={item.thumbnail}
+                qty={item.qty}
+              />
+            )}
+            showsVerticalScrollIndicator={false}
           />
-        )}
-        showsVerticalScrollIndicator={false}
-      />
 
-      {/* Cart Total and Place Order section */}
-      <View style={styles.cartSummary}>
-        <Text style={styles.totalText}>Total: ${totalValue}</Text>
-        <TouchableOpacity style={styles.placeOrderButton}>
-          <Text style={styles.placeOrderButtonText}>Place Order</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Cart Total and Place Order section */}
+          <View style={styles.cartSummary}>
+            <Text style={styles.totalText}>Total: ${totalValue}</Text>
+            <TouchableOpacity style={styles.placeOrderButton}>
+              <Text style={styles.placeOrderButtonText}>Place Order</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
 
-      {/* Add the Footer */}
       <Footer />
     </View>
   );
@@ -112,6 +118,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
   },
 });
 

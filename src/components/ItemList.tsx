@@ -1,11 +1,12 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useState } from 'react';
 import {View, Text, Image, StyleSheet, FlatList} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppDispatch, useAppSelector} from '../hooks';
-import {selectCartNo} from '../reducers/cartSlice';
-import {addtocart} from '../actions/cartActions';
+import {selectCartError, selectCartLoading, selectCartNo, selectCartProducts} from '../reducers/cartSlice';
+import { selectWishlistError, selectWishlistLoading } from '../reducers/wishlistSlice';
+import {addtocart, updatecartqty} from '../actions/cartActions';
 import {removefromwishlist} from '../actions/wishlistActions';
 
 interface Product {
@@ -31,7 +32,9 @@ type RootStackParamList = {
   Login: undefined;
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
+  Profile: undefined;
 };
+
 interface CartData {
   cart_no: string;
   pr_id: string;
@@ -46,22 +49,44 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   const cart_no = useAppSelector(selectCartNo);
+  const cart = useAppSelector(selectCartProducts);
+  const cart_l = useAppSelector(selectCartLoading);
+  const cart_e = useAppSelector(selectCartError);
+  const wishlist_l = useAppSelector(selectWishlistLoading);
+  const wishlist_e = useAppSelector(selectWishlistError);
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleItemPress = (pr_id: string) => {
     navigation.navigate('ProductDescription', {pr_id});
   };
 
-  const handleAddToCart = (pr_id: string) => {
+  const handleMoveToCart = (pr_id: string, name: string) => {
+    const cartItem = cart.find(pr => pr.pr_id === pr_id);
+    const cartQty = cartItem ? cartItem.qty : 0;
+    const wishlistData: WishlistData = {_id: cart_no, pr_id};
     if (cart_no) {
-      const cartData: CartData = {cart_no, pr_id, qty: 1};
-      dispatch(addtocart(cartData));
+      if (cartQty === 0) {
+        const cartData: CartData = {cart_no, pr_id, qty: 1};
+        dispatch(addtocart(cartData));
+        dispatch(removefromwishlist(wishlistData));
+        navigation.navigate('Cart');
+      } else if (cartQty === 1 || 2 || 3) {
+        const cartData: CartData = {cart_no, pr_id, qty: cartQty + 1};
+        dispatch(updatecartqty(cartData));
+        dispatch(removefromwishlist(wishlistData));
+        navigation.navigate('Cart');
+      } else {
+        setErrorMessage(`The cart already has 4 ${name}. You cannot add more.`);
+        setTimeout(() => setErrorMessage(null), 3000);
+      }
     }
   };
 
   const handleRemoveFromWishlist = (pr_id: string) => {
     if (cart_no) {
-      const cartData: WishlistData = {_id: cart_no, pr_id};
-      dispatch(removefromwishlist(cartData));
+      const wishlistData: WishlistData = {_id: cart_no, pr_id};
+      dispatch(removefromwishlist(wishlistData));
     }
   };
 
@@ -77,12 +102,14 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
           <View style={styles.actionButtons}>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => handleAddToCart(item._id)}>
-              <Text style={styles.actionButtonText}>Add to Cart</Text>
+              onPress={() => handleMoveToCart(item._id, item.name)}
+              disabled={cart_l || wishlist_l}>
+              <Text style={styles.actionButtonText}>Move to Cart</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => handleRemoveFromWishlist(item._id)}>
+              onPress={() => handleRemoveFromWishlist(item._id)}
+              disabled={cart_l || wishlist_l}>
               <Text style={styles.actionButtonText}>Remove</Text>
             </TouchableOpacity>
           </View>
@@ -91,14 +118,34 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     </TouchableOpacity>
   );
 
+  const displayError = cart_e || wishlist_e || errorMessage;
+
+  if (items.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyMessage}>
+          {isWishlist ? 'Your wishlist is empty.' : 'No products available.'}
+        </Text>
+      </View>
+    );
+  }
+
   return (
-    <FlatList
-      data={items}
-      renderItem={renderItem}
-      keyExtractor={item => item._id}
-      numColumns={2}
-      contentContainerStyle={styles.list}
-    />
+    // eslint-disable-next-line react-native/no-inline-styles
+    <View style={{flex: 1}}>
+      {displayError && (
+        <View style={styles.errorModal}>
+          <Text style={styles.errorText}>{cart_e || wishlist_e || errorMessage}</Text>
+        </View>
+      )}
+      <FlatList
+        data={items}
+        renderItem={renderItem}
+        keyExtractor={item => item._id}
+        numColumns={2}
+        contentContainerStyle={styles.list}
+      />
+    </View>
   );
 };
 
@@ -145,6 +192,31 @@ const styles = StyleSheet.create({
   list: {
     paddingHorizontal: 10,
     marginTop: 10,
+  },
+  errorModal: {
+    backgroundColor: '#fff',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'red',
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    zIndex: 1000,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontWeight: 'bold',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyMessage: {
+    fontSize: 18,
+    color: '#333',
   },
 });
 

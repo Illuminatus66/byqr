@@ -9,6 +9,7 @@ type RootStackParamList = {
   Login: undefined;
   Wishlist: undefined;
   ProductDescription:{pr_id : string};
+  Profile: undefined;
 }
 
 interface MenuProps {

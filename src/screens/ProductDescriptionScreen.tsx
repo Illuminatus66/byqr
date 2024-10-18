@@ -1,16 +1,17 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import React, {useState} from 'react';
+import {NavigationProp, RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, ActivityIndicator} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
-import { Picker } from '@react-native-picker/picker';
-import { updatecartqty } from '../actions/cartActions';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { selectCartNo } from '../reducers/cartSlice';
-import { addtowishlist } from '../actions/wishlistActions';
-import { selectProducts } from '../reducers/productSlice';
+import {Picker} from '@react-native-picker/picker';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {selectProducts} from '../reducers/productSlice';
+import {selectCartError, selectCartLoading, selectCartNo} from '../reducers/cartSlice';
+import {selectWishlist, selectWishlistError, selectWishlistLoading} from '../reducers/wishlistSlice';
+import {addtocart, updatecartqty} from '../actions/cartActions';
+import {addtowishlist, removefromwishlist} from '../actions/wishlistActions';
 
 interface CartData {
   cart_no: string;
@@ -21,17 +22,38 @@ interface WishlistData {
   _id: string;
   pr_id: string;
 }
+type RootStackParamList = {
+  Home: {filter: string};
+  Cart: undefined;
+  Login: undefined;
+  Wishlist: undefined;
+  ProductDescription: {pr_id: string};
+  Profile: undefined;
+};
 
-type ProductDescriptionRouteProp = RouteProp<{ ProductDescription: {pr_id: string} }, 'ProductDescription'>;
+type ProductDescriptionRouteProp = RouteProp<
+  {ProductDescription: {pr_id: string}},
+  'ProductDescription'
+>;
+
 const ProductDescriptionScreen = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   const route = useRoute<ProductDescriptionRouteProp>();
   const {pr_id} = route.params;
   const products = useAppSelector(selectProducts);
   const cart_no = useAppSelector(selectCartNo);
+  const cart_l = useAppSelector(selectCartLoading);
+  const cart_e = useAppSelector(selectCartError);
+  const wishlist = useAppSelector(selectWishlist);
+  const wishlist_l = useAppSelector(selectWishlistLoading);
+  const wishlist_e = useAppSelector(selectWishlistError);
   const [quantity, setQuantity] = useState(1);
   const [errorMessage, setErrorMessage] = useState('');
-  const cartItem = useAppSelector((state) => state.cart.products.find((pr) => pr.pr_id === pr_id));
+  // Used below to find the pre-existing quantity of this particular item in the user's cart
+  const cartItem = useAppSelector(state =>
+    state.cart.products.find(pr => pr.pr_id === pr_id),
+  );
 
   // We filter the product to be rendered by its _id (pr_id)
   const product = products.find(pr => pr._id === pr_id);
@@ -46,45 +68,73 @@ const ProductDescriptionScreen = () => {
     );
   }
 
-  // Fetch the cart quantity for this product from the Redux store
+  // Set cartQty with the pre-existing quantity of this particular item inside the user's cart
+  // or set the cartQty to 0 if this item doesn't exist in the user's cart.
   const cartQty = cartItem ? cartItem.qty : 0;
 
-  // Handle Add to Cart button click
   const handleAddToCart = () => {
     const totalQty = cartQty + quantity;
 
-    if (totalQty > 4) {
-      setErrorMessage(`You already have ${cartQty} of these in the cart. You cannot buy more than 4.`);
+    if (totalQty <= 4 && cartQty === 0) {
+      const cartData: CartData = {cart_no: cart_no, pr_id: pr_id, qty: totalQty};
+      if (cart_no) {
+        dispatch(addtocart(cartData));
+        navigation.navigate('Cart');
+      }
+    }
+
+    if (totalQty > 4 && cartQty !== 0) {
+      setErrorMessage(`You already have ${cartQty} ${product.name} in the cart. You cannot buy more than 4.`);
       setTimeout(() => setErrorMessage(''), 3000);
     } else {
-      const cartData: CartData = { cart_no: cart_no, pr_id: pr_id, qty: totalQty };
+      const cartData: CartData = {cart_no: cart_no, pr_id: pr_id, qty: totalQty};
       if (cart_no) {
         dispatch(updatecartqty(cartData));
+        navigation.navigate('Cart');
       }
     }
   };
 
   const handleAddToWishlist = () => {
     if (cart_no) {
-      const wishlistData: WishlistData = { _id: cart_no, pr_id: pr_id };
+      const wishlistData: WishlistData = {_id: cart_no, pr_id: pr_id};
       dispatch(addtowishlist(wishlistData));
+      navigation.navigate('Wishlist');
+    }
+  };
+
+  const handleRemoveFromWishlist = () => {
+    if (cart_no) {
+      const wishlistData: WishlistData = {_id: cart_no, pr_id: pr_id};
+      dispatch(removefromwishlist(wishlistData));
+    }
+  };
+
+  const isProductInWishlist = wishlist.includes(product._id);
+  const handleWishlistAction = () => {
+    if (isProductInWishlist) {
+      handleRemoveFromWishlist();
+    } else {
+      handleAddToWishlist();
     }
   };
 
   // Here we are randomly selecting up to 6 products for the "Popular Products" section.
   // Once we add metrics to track how many people have bought each product we can use it
   // to filter out the six best products to showcase in that section.
-  const popularProducts = products.length > 6 ?
-    products.sort(() => 0.5 - Math.random()).slice(0, 6) : products;
+  const popularProducts =
+    products.length > 6
+      ? products.sort(() => 0.5 - Math.random()).slice(0, 6)
+      : products;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <Toolbar title="BYQR" />
 
       <ScrollView style={styles.container}>
-        {errorMessage ? (
+        {errorMessage || cart_e || wishlist_e ? (
           <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{errorMessage}</Text>
+            <Text style={styles.errorText}>{errorMessage || cart_e || wishlist_e} </Text>
           </View>
         ) : null}
 
@@ -93,8 +143,8 @@ const ProductDescriptionScreen = () => {
             layout={'stack'}
             layoutCardOffset={15}
             data={product.imgs}
-            renderItem={({ item }) => (
-              <Image source={{ uri: item }} style={styles.carouselImage} />
+            renderItem={({item}) => (
+              <Image source={{uri: item}} style={styles.carouselImage} />
             )}
             sliderWidth={300}
             itemWidth={300}
@@ -108,9 +158,8 @@ const ProductDescriptionScreen = () => {
           <View style={styles.quantityContainer}>
             <Picker
               selectedValue={quantity}
-              onValueChange={(value) => setQuantity(value)}
-              style={styles.picker}
-            >
+              onValueChange={value => setQuantity(value)}
+              style={styles.picker}>
               <Picker.Item label="1" value={1} />
               <Picker.Item label="2" value={2} />
               <Picker.Item label="3" value={3} />
@@ -121,11 +170,30 @@ const ProductDescriptionScreen = () => {
 
         {/* Add to Cart and Add to Wishlist buttons */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartButton}>
-            <Text style={styles.addToCartText}>Add to Cart</Text>
+          <TouchableOpacity
+            onPress={handleAddToCart}
+            style={styles.addToCartButton}
+            disabled={cart_l === true || wishlist_l === true}>
+            {cart_l ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.addToCartText}>Add to Cart</Text>
+            )}
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleAddToWishlist} style={styles.addToWishlistButton}>
-            <Text style={styles.addToWishlistText}>Add to Wishlist</Text>
+
+          <TouchableOpacity
+            onPress={handleWishlistAction}
+            style={styles.addToWishlistButton}
+            disabled={cart_l === true || wishlist_l === true}>
+            {wishlist_l ? (
+              <ActivityIndicator color="#000" />
+            ) : (
+              <Text style={styles.addToWishlistText}>
+                {isProductInWishlist
+                  ? 'Remove from Wishlist'
+                  : 'Add to Wishlist'}
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -133,16 +201,21 @@ const ProductDescriptionScreen = () => {
         <Text style={styles.popularTitle}>Popular Products</Text>
         <FlatList
           data={popularProducts}
-          renderItem={({ item }) => (
-            <View style={styles.popularProduct}>
-              <Image source={{ uri: item.thumbnail }} style={styles.popularProductImage} />
-              <Text style={styles.popularProductName}>{item.name}</Text>
-              <Text style={styles.popularProductPrice}>{item.price}</Text>
-            </View>
+          renderItem={({item}) => (
+            <TouchableOpacity onPress={() => navigation.navigate('ProductDescription', {pr_id: item._id})}>
+              <View style={styles.popularProduct}>
+                <Image
+                  source={{uri: item.thumbnail}}
+                  style={styles.popularProductImage}
+                />
+                <Text style={styles.popularProductName}>{item.name}</Text>
+                <Text style={styles.popularProductPrice}>{item.price}</Text>
+              </View>
+            </TouchableOpacity>
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item._id}
+          keyExtractor={item => item._id}
           contentContainerStyle={styles.popularProductList}
         />
 
