@@ -6,11 +6,13 @@ const API = axios.create({
   baseURL: 'http://localhost:5000',
 });
 
-API.interceptors.request.use((req) => {
-  if (localStorage.getItem('Profile')) {
-    req.headers.authorization = `Bearer ${
-      JSON.parse(AsyncStorage.getItem('Profile')).token
-    }`;
+API.interceptors.request.use(async (req) => {
+  const profile = await AsyncStorage.getItem('Profile'); // Since AsyncStorage is promise based, we await its resolution
+  if (profile) {
+    const parsedProfile = JSON.parse(profile);
+    if (parsedProfile.token) {
+      req.headers.authorization = `Bearer ${parsedProfile.token}`;
+    }
   }
   return req;
 });

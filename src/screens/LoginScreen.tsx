@@ -53,7 +53,10 @@ const LoginScreen = () => {
       const user : User = User;
       dispatch(fetchcartitems(user));
       dispatch(fetchwishlist(user));
-      navigation.navigate('Home', {filter: 'none'});
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home', params: { filter: 'none' } }],
+      });
     }
   }, [User, dispatch, navigation]);
 
