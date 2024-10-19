@@ -11,6 +11,10 @@ interface WishlistState {
 interface FetchWishlistResponse {
   wishlist: string[];
 }
+interface WishlistRequest {
+  pr_id: string;
+  _id: string;
+}
 
 export const fetchwishlist = createAsyncThunk<
   FetchWishlistResponse,
@@ -28,12 +32,12 @@ export const fetchwishlist = createAsyncThunk<
 
 export const addtowishlist = createAsyncThunk<
   string,
-  {_id: string; pr_id: string},
+  WishlistRequest,
   {state: WishlistState; rejectValue: string}
->('wishlist/addtowishlist', async ({_id, pr_id}, {rejectWithValue}) => {
+>('wishlist/addtowishlist', async (addData, {rejectWithValue}) => {
   try {
-    await addToWishlist(_id, pr_id);
-    return pr_id;
+    await addToWishlist(addData);
+    return addData.pr_id;
   } catch (error : any) {
     const errorMessage = error.response?.data?.message || 'Failed to add product to wishlist';
     return rejectWithValue(errorMessage);
@@ -42,12 +46,12 @@ export const addtowishlist = createAsyncThunk<
 
 export const removefromwishlist = createAsyncThunk<
   string,
-  {_id: string; pr_id: string},
+  WishlistRequest,
   {state: WishlistState; rejectValue: string}
->('wishlist/removefromwishlist', async ({_id, pr_id}, {rejectWithValue}) => {
+>('wishlist/removefromwishlist', async (removeData, {rejectWithValue}) => {
   try {
-    await removeFromWishlist(_id, pr_id);
-    return pr_id;
+    await removeFromWishlist(removeData);
+    return removeData.pr_id;
   } catch (error : any) {
     const errorMessage = error.response?.data?.message || 'Failed to remove product from wishlist';
     return rejectWithValue(errorMessage);

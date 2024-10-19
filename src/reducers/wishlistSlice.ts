@@ -59,7 +59,7 @@ const wishlistSlice = createSlice({
         state.error = null;
       })
       .addCase(removefromwishlist.fulfilled, (state, action: PayloadAction<string>) => {
-        state.wishlist = state.wishlist.filter(id => id !== action.payload);
+        state.wishlist = state.wishlist.filter(pr_id => pr_id !== action.payload);
         state.loading = false;
         state.error = null;
       })

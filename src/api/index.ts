@@ -57,6 +57,7 @@ interface LoginResponse {
 }
 
 interface UpdateUserRequest {
+  _id: string;
   name: string;
   email: string;
   phno: string;
@@ -64,6 +65,11 @@ interface UpdateUserRequest {
 interface UpdateUserResponse {
   result: UserWithoutWishlist;
   token: string | null; // token is returned only when the email changes so it may be null sometimes
+}
+
+interface WishlistRequest {
+  pr_id: string;
+  _id: string;
 }
 
 interface CartData {
@@ -95,17 +101,17 @@ export const logIn = (authData: LoginRequest) =>
 export const signUp = (authData: SignupRequest) =>
   API.post<SignupResponse>('/user/signup', authData);
 
-export const updateUser = (userData: UpdateUserRequest, _id: string) =>
-  API.patch<UpdateUserResponse>(`/user/${_id}`, userData);
+export const updateUser = (userData: UpdateUserRequest) =>
+  API.patch<UpdateUserResponse>('/user/update', userData);
 
 export const fetchWishlist = (_id: string) =>
   API.get<{ wishlist: string[] }>(`/wishlist/fetch/${_id}`);
 
-export const addToWishlist = (_id: string, pr_id: string) =>
-  API.post<{ message: string }>(`/wishlist/add/${pr_id}`, { _id });
+export const addToWishlist = (addData: WishlistRequest) =>
+  API.post<{ message: string }>('/wishlist/add', addData);
 
-export const removeFromWishlist = (_id: string, pr_id: string) =>
-  API.post<{ message: string }>(`/wishlist/remove/${pr_id}`, { _id });
+export const removeFromWishlist = (removeData: WishlistRequest) =>
+  API.post<{ message: string }>('/wishlist/remove', removeData);
 
 export const fetchCartItems = (cart_no: string) =>
   API.get<Cart>(`/cart/fetch/${cart_no}`);
