@@ -197,6 +197,11 @@ const ProductDescriptionScreen = () => {
           </TouchableOpacity>
         </View>
 
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.descriptionTitle}>Description</Text>
+          <Text style={styles.descriptionText}>{product.description}</Text>
+        </View>
+
         {/* Popular Products Section */}
         <Text style={styles.popularTitle}>Popular Products</Text>
         <FlatList
@@ -316,6 +321,26 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  descriptionContainer: {
+    backgroundColor: '#f9f9f9',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  descriptionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: '#555',
   },
   popularTitle: {
     fontSize: 20,
