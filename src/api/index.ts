@@ -3,7 +3,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://byqr-backend-13bbf36a4c8b.herokuapp.com/',
 });
 
 API.interceptors.request.use(async req => {
@@ -96,34 +96,34 @@ interface ProductsResponse {
 }
 
 export const logIn = (authData: LoginRequest) =>
-  API.post<LoginResponse>('/user/login', authData);
+  API.post<LoginResponse>('user/login', authData);
 
 export const signUp = (authData: SignupRequest) =>
-  API.post<SignupResponse>('/user/signup', authData);
+  API.post<SignupResponse>('user/signup', authData);
 
 export const updateUser = (userData: UpdateUserRequest) =>
-  API.patch<UpdateUserResponse>('/user/update', userData);
+  API.patch<UpdateUserResponse>('user/update', userData);
 
 export const fetchWishlist = (_id: string) =>
-  API.get<{wishlist: string[]}>(`/wishlist/fetch/${_id}`);
+  API.get<{wishlist: string[]}>(`wishlist/fetch/${_id}`);
 
 export const addToWishlist = (addData: WishlistRequest) =>
-  API.post<{message: string}>('/wishlist/add', addData);
+  API.post<{message: string}>('wishlist/add', addData);
 
 export const removeFromWishlist = (removeData: WishlistRequest) =>
-  API.post<{message: string}>('/wishlist/remove', removeData);
+  API.post<{message: string}>('wishlist/remove', removeData);
 
 export const fetchCartItems = (cart_no: string) =>
-  API.get<Cart>(`/cart/fetch/${cart_no}`);
+  API.get<Cart>(`cart/fetch/${cart_no}`);
 
 export const addToCart = (cartData: CartData) =>
-  API.post<{message: string}>('/cart/add', cartData);
+  API.post<{message: string}>('cart/add', cartData);
 
 export const removeFromCart = (cartData: RemoveFromCartData) =>
-  API.post<{message: string}>('/cart/remove', cartData);
+  API.post<{message: string}>('cart/remove', cartData);
 
 export const updateCartQty = (cartData: CartData) =>
-  API.post<{message: string}>('/cart/updateqty', cartData);
+  API.patch<{message: string}>('cart/updateqty', cartData);
 
 export const fetchAllProducts = () =>
-  API.get<ProductsResponse[]>('/products/fetchall');
+  API.get<ProductsResponse[]>('products/fetchall');
