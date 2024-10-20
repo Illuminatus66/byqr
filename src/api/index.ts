@@ -6,7 +6,7 @@ const API = axios.create({
   baseURL: 'http://localhost:5000',
 });
 
-API.interceptors.request.use(async (req) => {
+API.interceptors.request.use(async req => {
   const profile = await AsyncStorage.getItem('Profile'); // Since AsyncStorage is promise based, we await its resolution
   if (profile) {
     const parsedProfile = JSON.parse(profile);
@@ -105,25 +105,25 @@ export const updateUser = (userData: UpdateUserRequest) =>
   API.patch<UpdateUserResponse>('/user/update', userData);
 
 export const fetchWishlist = (_id: string) =>
-  API.get<{ wishlist: string[] }>(`/wishlist/fetch/${_id}`);
+  API.get<{wishlist: string[]}>(`/wishlist/fetch/${_id}`);
 
 export const addToWishlist = (addData: WishlistRequest) =>
-  API.post<{ message: string }>('/wishlist/add', addData);
+  API.post<{message: string}>('/wishlist/add', addData);
 
 export const removeFromWishlist = (removeData: WishlistRequest) =>
-  API.post<{ message: string }>('/wishlist/remove', removeData);
+  API.post<{message: string}>('/wishlist/remove', removeData);
 
 export const fetchCartItems = (cart_no: string) =>
   API.get<Cart>(`/cart/fetch/${cart_no}`);
 
 export const addToCart = (cartData: CartData) =>
-  API.post<{ message: string }>('/cart/add', cartData);
+  API.post<{message: string}>('/cart/add', cartData);
 
 export const removeFromCart = (cartData: RemoveFromCartData) =>
-  API.post<{ message: string }>('/cart/remove', cartData);
+  API.post<{message: string}>('/cart/remove', cartData);
 
 export const updateCartQty = (cartData: CartData) =>
-  API.post<{ message: string }>('/cart/updateqty', cartData);
+  API.post<{message: string}>('/cart/updateqty', cartData);
 
 export const fetchAllProducts = () =>
   API.get<ProductsResponse[]>('/products/fetchall');

@@ -7,6 +7,8 @@ import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {selectCartProducts} from '../reducers/cartSlice';
 import {selectProducts} from '../reducers/productSlice';
+import {selectUserToken} from '../reducers/userSlice';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 interface CartProduct {
   _id: string;
@@ -15,10 +17,20 @@ interface CartProduct {
   thumbnail: string;
   qty: number;
 }
+type RootStackParamList = {
+  Home: {filter: string};
+  Cart: undefined;
+  Login: undefined;
+  Wishlist: undefined;
+  ProductDescription: {pr_id: string};
+  Profile: undefined;
+};
 
 const CartScreen = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const cartItems = useAppSelector(selectCartProducts);
   const products = useAppSelector(selectProducts);
+  const token = useAppSelector(selectUserToken);
 
   // Here we are combining cart items with their respective product details
   // because both of them are stored in different reducers. So, we map over
@@ -43,19 +55,36 @@ const CartScreen = () => {
     .filter((item): item is CartProduct => item !== null);
 
   // Calculate total value of the cart
-  const totalValue = CartProducts
-  .reduce((acc, item) => acc + item.price * item.qty, 0)
-  .toFixed(2);
+  const totalValue = CartProducts.reduce(
+    (acc, item) => acc + item.price * item.qty,
+    0,
+  ).toFixed(2);
 
   return (
     <View style={styles.container}>
       <Toolbar title="Cart" />
 
-      {/* Display message if the cart is empty */}
       {CartProducts.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Add some products to your cart!</Text>
-        </View>
+        token ? (
+          // Message if the cart is empty and user is logged in
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              Your cart is empty. Add some products to your cart!
+            </Text>
+          </View>
+        ) : (
+          // Message if the the user isn't logged in
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>
+              <Text
+                style={styles.signInLink}
+                onPress={() => navigation.navigate('Login')}>
+                Sign in
+              </Text>{' '}
+              to buy products or access your cart!
+            </Text>
+          </View>
+        )
       ) : (
         <>
           {/* List of cart items */}
@@ -128,6 +157,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+  },
+  signInLink: {
+    color: '#007bff',
+    textDecorationLine: 'underline',
   },
 });
 

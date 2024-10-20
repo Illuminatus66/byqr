@@ -1,11 +1,11 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {View, Text, Image, StyleSheet, FlatList} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {selectCartError, selectCartLoading, selectCartNo, selectCartProducts} from '../reducers/cartSlice';
-import { selectWishlistError, selectWishlistLoading } from '../reducers/wishlistSlice';
+import {selectWishlistError, selectWishlistLoading} from '../reducers/wishlistSlice';
 import {addtocart, updatecartqty} from '../actions/cartActions';
 import {removefromwishlist} from '../actions/wishlistActions';
 
@@ -135,7 +135,9 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     <View style={{flex: 1}}>
       {displayError && (
         <View style={styles.errorModal}>
-          <Text style={styles.errorText}>{cart_e || wishlist_e || errorMessage}</Text>
+          <Text style={styles.errorText}>
+            {cart_e || wishlist_e || errorMessage}
+          </Text>
         </View>
       )}
       <FlatList

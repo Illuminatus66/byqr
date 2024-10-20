@@ -1,27 +1,27 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {useNavigation, NavigationProp} from '@react-navigation/native';
 
 type RootStackParamList = {
-  Home: { filter: string };
+  Home: {filter: string};
   Cart: undefined;
   Login: undefined;
   Wishlist: undefined;
-  ProductDescription:{pr_id : string};
+  ProductDescription: {pr_id: string};
   Profile: undefined;
-}
+};
 
 interface MenuProps {
   closeMenu: () => void;
 }
 
-const Menu: React.FC<MenuProps> = ({ closeMenu }) => {
+const Menu: React.FC<MenuProps> = ({closeMenu}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleNavigation = (filter: string) => {
     closeMenu();
-    navigation.navigate('Home', { filter });
+    navigation.navigate('Home', {filter});
   };
 
   return (

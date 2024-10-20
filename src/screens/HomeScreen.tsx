@@ -21,7 +21,7 @@ interface Product {
   stock: number;
   date_added: string;
 }
-type HomeScreenRouteProp = RouteProp<{ Home: { filter: string } }, 'Home'>;
+type HomeScreenRouteProp = RouteProp<{Home: {filter: string}}, 'Home'>;
 const HomeScreen = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
@@ -33,7 +33,7 @@ const HomeScreen = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   const route = useRoute<HomeScreenRouteProp>();
-  const { filter } = route.params || {};
+  const {filter} = route.params || {};
 
   useEffect(() => {
     dispatch(fetchallproducts());
@@ -53,10 +53,9 @@ const HomeScreen = () => {
     // updatedProducts object as-it-is.
     if (filterOption !== 'none') {
       updatedProducts = updatedProducts.filter(
-        (product) => product.category === filterOption
+        product => product.category === filterOption,
       );
     }
-
 
     switch (sortOption) {
       case 'price_ascending':
@@ -69,10 +68,16 @@ const HomeScreen = () => {
         updatedProducts.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case 'new':
-        updatedProducts.sort((a, b) => new Date(b.date_added).getTime() - new Date(a.date_added).getTime());
+        updatedProducts.sort(
+          (a, b) =>
+            new Date(b.date_added).getTime() - new Date(a.date_added).getTime(),
+        );
         break;
       case 'old':
-        updatedProducts.sort((a, b) => new Date(a.date_added).getTime() - new Date(b.date_added).getTime());
+        updatedProducts.sort(
+          (a, b) =>
+            new Date(a.date_added).getTime() - new Date(b.date_added).getTime(),
+        );
         break;
       default:
         break;
@@ -82,22 +87,21 @@ const HomeScreen = () => {
   }, [filterOption, sortOption, products]);
 
   const sortOptions = [
-    { label: 'Price: Low to High', value: 'price_ascending' },
-    { label: 'Price: High to Low', value: 'price_descending' },
-    { label: 'A-Z', value: 'alphabetical' },
-    { label: 'Newest', value: 'new' },
-    { label: 'Oldest', value: 'old' },
+    {label: 'Price: Low to High', value: 'price_ascending'},
+    {label: 'Price: High to Low', value: 'price_descending'},
+    {label: 'A-Z', value: 'alphabetical'},
+    {label: 'Newest', value: 'new'},
+    {label: 'Oldest', value: 'old'},
   ];
 
   const filterOptions = [
-    { label: 'All Products', value: 'none' },
-    { label: 'Bicycles', value: 'bicycles' },
-    { label: 'Accessories', value: 'accessories' },
+    {label: 'All Products', value: 'none'},
+    {label: 'Bicycles', value: 'bicycles'},
+    {label: 'Accessories', value: 'accessories'},
   ];
 
   return (
     <SafeAreaView style={styles.container}>
-
       <Toolbar title="BYQR" />
 
       <View style={styles.dropdownSection}>
@@ -106,7 +110,7 @@ const HomeScreen = () => {
           <RNPickerSelect
             onValueChange={value => setFilterOption(value)}
             items={filterOptions}
-            placeholder={{ label: 'Select Filters', value: null }}
+            placeholder={{label: 'Select Filters', value: null}}
             useNativeAndroidPickerStyle={false}
             style={pickerSelectStyles}
           />
@@ -116,7 +120,7 @@ const HomeScreen = () => {
           <RNPickerSelect
             onValueChange={value => setSortOption(value)}
             items={sortOptions}
-            placeholder={{ label: 'Select Sort', value: null }}
+            placeholder={{label: 'Select Sort', value: null}}
             useNativeAndroidPickerStyle={false}
             style={pickerSelectStyles}
           />
@@ -128,11 +132,10 @@ const HomeScreen = () => {
       ) : error ? (
         <Text style={styles.errordisplay}>{error}</Text>
       ) : (
-        <ItemList items={filteredProducts} isWishlist={false}/>
+        <ItemList items={filteredProducts} isWishlist={false} />
       )}
 
       <Footer />
-
     </SafeAreaView>
   );
 };

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { logIn, signUp, updateUser } from '../api';
+import {createAsyncThunk} from '@reduxjs/toolkit';
+import {logIn, signUp, updateUser} from '../api';
 
 interface LoginRequest {
   email: string;
@@ -58,7 +58,7 @@ export const signup = createAsyncThunk<
   try {
     const response = await signUp(signupData);
     const {token, result: user} = response.data;
-    await AsyncStorage.setItem('Profile', JSON.stringify({ token, user }));
+    await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
     return {token, result: user};
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'Failed to sign up';
@@ -70,11 +70,11 @@ export const login = createAsyncThunk<
   LoginResponse,
   LoginRequest,
   {state: AuthState; rejectValue: string}
->('user/login', async (loginData, { rejectWithValue }) => {
+>('user/login', async (loginData, {rejectWithValue}) => {
   try {
     const response = await logIn(loginData);
     const {token, result: user} = response.data;
-    await AsyncStorage.setItem('Profile', JSON.stringify({ token, user }));
+    await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
     return {token, result: user};
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'Failed to login';
@@ -85,25 +85,26 @@ export const login = createAsyncThunk<
 export const updateuserprofile = createAsyncThunk<
   UpdateUserResponse,
   UpdateUserRequest,
-  {state: AuthState; rejectValue: string }
->('user/updateuserprofile', async (updateData, { rejectWithValue }) => {
+  {state: AuthState; rejectValue: string}
+>('user/updateuserprofile', async (updateData, {rejectWithValue}) => {
   try {
     const response = await updateUser(updateData);
-    const { token, result: user } = response.data;
+    const {token, result: user} = response.data;
 
     if (token) {
-      await AsyncStorage.setItem('Profile', JSON.stringify({ token, user }));
+      await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
     } else {
       const profile = await AsyncStorage.getItem('Profile');
-      if (profile){
+      if (profile) {
         const storedProfile = JSON.parse(profile);
-        storedProfile.user = { ...storedProfile.user, ...user };
+        storedProfile.user = {...storedProfile.user, ...user};
         await AsyncStorage.setItem('Profile', JSON.stringify(storedProfile));
       }
     }
     return {token, result: user};
   } catch (error: any) {
-    const errorMessage = error.response?.data?.message || 'Failed to update user profile';
+    const errorMessage =
+      error.response?.data?.message || 'Failed to update user profile';
     return rejectWithValue(errorMessage);
   }
 });

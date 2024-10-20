@@ -29,7 +29,8 @@ export const fetchallproducts = createAsyncThunk<
     const response = await fetchAllProducts();
     return response.data;
   } catch (error: any) {
-    const errorMessage = error.response?.data?.message || 'Failed to fetch products';
+    const errorMessage =
+      error.response?.data?.message || 'Failed to fetch products';
     return rejectWithValue(errorMessage);
   }
 });

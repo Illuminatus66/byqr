@@ -134,7 +134,9 @@ const ProductDescriptionScreen = () => {
       <ScrollView style={styles.container}>
         {errorMessage || cart_e || wishlist_e ? (
           <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{errorMessage || cart_e || wishlist_e} </Text>
+            <Text style={styles.errorText}>
+              {errorMessage || cart_e || wishlist_e}{' '}
+            </Text>
           </View>
         ) : null}
 
@@ -207,7 +209,10 @@ const ProductDescriptionScreen = () => {
         <FlatList
           data={popularProducts}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={() => navigation.navigate('ProductDescription', {pr_id: item._id})}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('ProductDescription', {pr_id: item._id})
+              }>
               <View style={styles.popularProduct}>
                 <Image
                   source={{uri: item.thumbnail}}
@@ -328,7 +333,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,

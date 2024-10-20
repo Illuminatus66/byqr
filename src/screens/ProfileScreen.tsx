@@ -82,11 +82,10 @@ const ProfileScreen = () => {
         <TouchableOpacity
           style={[styles.button, loading && styles.disabledButton]}
           onPress={handleUpdateProfile}
-          disabled={loading}
-        >
-            <Text style={styles.buttonText}>
-                {loading ? 'Updating...' : 'Update Profile'}
-            </Text>
+          disabled={loading}>
+          <Text style={styles.buttonText}>
+            {loading ? 'Updating...' : 'Update Profile'}
+          </Text>
         </TouchableOpacity>
       </View>
 

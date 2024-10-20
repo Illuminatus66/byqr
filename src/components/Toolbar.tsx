@@ -17,11 +17,11 @@ type RootStackParamList = {
   Cart: undefined;
   Login: undefined;
   Wishlist: undefined;
-  ProductDescription: {pr_id : string};
+  ProductDescription: {pr_id: string};
   Profile: undefined;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ title }) => {
+const Toolbar: React.FC<ToolbarProps> = ({title}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   const [menuVisible, setMenuVisible] = useState(false);
@@ -47,7 +47,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ title }) => {
     dispatch(clearwishlist());
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Home', params: { filter: 'none' } }],
+      routes: [{name: 'Home', params: {filter: 'none'}}],
     });
     setProfileMenuVisible(false);
   };
@@ -88,7 +88,10 @@ const Toolbar: React.FC<ToolbarProps> = ({ title }) => {
         </View>
       </Modal>
 
-      <Modal transparent={true} visible={profileMenuVisible} animationType="fade">
+      <Modal
+        transparent={true}
+        visible={profileMenuVisible}
+        animationType="fade">
         <TouchableWithoutFeedback onPress={toggleProfileMenuVisibility}>
           <View style={styles.overlay} />
         </TouchableWithoutFeedback>

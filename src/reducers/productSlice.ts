@@ -51,8 +51,11 @@ const productSlice = createSlice({
   },
 });
 
-export const selectProducts = (state: {products: ProductsState}) => state.products.products;
-export const selectProductsLoading = (state: {products: ProductsState}) => state.products.loading;
-export const selectProductsError = (state: {products: ProductsState}) => state.products.error;
+export const selectProducts = (state: {products: ProductsState}) =>
+  state.products.products;
+export const selectProductsLoading = (state: {products: ProductsState}) =>
+  state.products.loading;
+export const selectProductsError = (state: {products: ProductsState}) =>
+  state.products.error;
 
 export default productSlice.reducer;

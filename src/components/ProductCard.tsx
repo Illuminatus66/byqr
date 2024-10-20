@@ -1,13 +1,12 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { useAppSelector, useAppDispatch } from '../hooks';
-import { selectCartError, selectCartLoading, selectCartNo } from '../reducers/cartSlice';
-import { selectWishlistError, selectWishlistLoading } from '../reducers/wishlistSlice';
-import { updatecartqty, removefromcart } from '../actions/cartActions';
-import { addtowishlist } from '../actions/wishlistActions';
-
+import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import {useAppSelector, useAppDispatch} from '../hooks';
+import {selectCartLoading, selectCartNo} from '../reducers/cartSlice';
+import {selectWishlistLoading} from '../reducers/wishlistSlice';
+import {updatecartqty, removefromcart} from '../actions/cartActions';
+import {addtowishlist} from '../actions/wishlistActions';
 
 interface ProductCardProps {
   pr_id: string;
@@ -19,19 +18,19 @@ interface ProductCardProps {
 
 interface CartData {
   cart_no: string;
-  pr_id :string;
+  pr_id: string;
   qty: number;
 }
 interface RemoveFromCartData {
   cart_no: string;
-  pr_id :string;
+  pr_id: string;
 }
 interface WishlistData {
   _id: string;
   pr_id: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ pr_id, name, price, thumbnail, qty }) => {
+const ProductCard: React.FC<ProductCardProps> = ({pr_id, name, price, thumbnail, qty}) => {
   const dispatch = useAppDispatch();
   const cart_no = useAppSelector(selectCartNo);
   const cart_l = useAppSelector(selectCartLoading);
@@ -39,22 +38,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ pr_id, name, price, thumbnail
 
   const handleQtyChange = (newQty: number) => {
     if (cart_no) {
-      const cartData : CartData = { cart_no, pr_id, qty: newQty };
+      const cartData: CartData = {cart_no, pr_id, qty: newQty};
       dispatch(updatecartqty(cartData));
     }
   };
 
   const handleRemoveFromCart = () => {
     if (cart_no) {
-      const cartData: RemoveFromCartData = { cart_no, pr_id };
+      const cartData: RemoveFromCartData = {cart_no, pr_id};
       dispatch(removefromcart(cartData));
     }
   };
 
   const handleMoveToWishlist = () => {
     if (cart_no) {
-      const cartData: RemoveFromCartData = { cart_no, pr_id };
-      const wishlistData: WishlistData = { _id: cart_no, pr_id };
+      const cartData: RemoveFromCartData = {cart_no, pr_id};
+      const wishlistData: WishlistData = {_id: cart_no, pr_id};
       dispatch(removefromcart(cartData));
       dispatch(addtowishlist(wishlistData));
     }
@@ -64,7 +63,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ pr_id, name, price, thumbnail
     <View style={styles.card}>
       {/* Upper section: Thumbnail, name, price, and quantity */}
       <View style={styles.upperSection}>
-        <Image source={{ uri: thumbnail }} style={styles.thumbnail} />
+        <Image source={{uri: thumbnail}} style={styles.thumbnail} />
         <View style={styles.details}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.price}>{price}</Text>
@@ -73,10 +72,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ pr_id, name, price, thumbnail
           <View style={styles.dropdownContainer}>
             <Picker
               selectedValue={qty}
-              onValueChange={(newQty) => handleQtyChange(newQty)}
-              style={styles.dropdown}
-            >
-              {[1, 2, 3, 4].map((value) => (
+              onValueChange={newQty => handleQtyChange(newQty)}
+              style={styles.dropdown}>
+              {[1, 2, 3, 4].map(value => (
                 <Picker.Item key={value} label={`${value}`} value={value} />
               ))}
             </Picker>
@@ -86,10 +84,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ pr_id, name, price, thumbnail
 
       {/* Lower section: "Remove" and "Move to Wishlist" buttons */}
       <View style={styles.lowerSection}>
-        <TouchableOpacity style={styles.removeButton} onPress={handleRemoveFromCart} disabled = {cart_l || wishlist_l}>
+        <TouchableOpacity
+          style={styles.removeButton}
+          onPress={handleRemoveFromCart}
+          disabled={cart_l || wishlist_l}>
           <Text style={styles.removeButtonText}>Remove</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.wishlistButton} onPress={handleMoveToWishlist} disabled = {cart_l || wishlist_l}>
+        <TouchableOpacity
+          style={styles.wishlistButton}
+          onPress={handleMoveToWishlist}
+          disabled={cart_l || wishlist_l}>
           <Text style={styles.wishlistButtonText}>Move to Wishlist</Text>
         </TouchableOpacity>
       </View>
