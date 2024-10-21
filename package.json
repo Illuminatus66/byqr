@@ -10,8 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@react-native-community/masked-view": "^0.1.11",
-    "@react-native-masked-view/masked-view": "^0.3.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
     "@reduxjs/toolkit": "^2.2.7",
