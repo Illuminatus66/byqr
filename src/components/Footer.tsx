@@ -88,9 +88,9 @@ const styles = StyleSheet.create({
   },
   linksContainer: {
     flex: 0.7,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-around',
-    alignItems: 'center',
+    alignItems: 'right',
   },
   linkText: {
     color: '#fff',

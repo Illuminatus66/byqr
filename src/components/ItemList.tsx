@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {View, Text, Image, StyleSheet, FlatList} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {View, Text, Image, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {selectCartError, selectCartLoading, selectCartNo, selectCartProducts} from '../reducers/cartSlice';

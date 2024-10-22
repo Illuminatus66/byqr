@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import {useRoute, RouteProp} from '@react-navigation/native';
-import RNPickerSelect from 'react-native-picker-select';
 import ItemList from '../components/ItemList';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
@@ -22,6 +22,7 @@ interface Product {
   date_added: string;
 }
 type HomeScreenRouteProp = RouteProp<{Home: {filter: string}}, 'Home'>;
+
 const HomeScreen = () => {
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
@@ -48,9 +49,6 @@ const HomeScreen = () => {
   useEffect(() => {
     let updatedProducts = [...products];
 
-    // Here we are applying filtering to the updatedProducts object only if
-    // filterOption is not 'none', otherwise it moves on with the
-    // updatedProducts object as-it-is.
     if (filterOption !== 'none') {
       updatedProducts = updatedProducts.filter(
         product => product.category === filterOption,
@@ -86,20 +84,6 @@ const HomeScreen = () => {
     setFilteredProducts(updatedProducts);
   }, [filterOption, sortOption, products]);
 
-  const sortOptions = [
-    {label: 'Price: Low to High', value: 'price_ascending'},
-    {label: 'Price: High to Low', value: 'price_descending'},
-    {label: 'A-Z', value: 'alphabetical'},
-    {label: 'Newest', value: 'new'},
-    {label: 'Oldest', value: 'old'},
-  ];
-
-  const filterOptions = [
-    {label: 'All Products', value: 'none'},
-    {label: 'Bicycles', value: 'bicycles'},
-    {label: 'Accessories', value: 'accessories'},
-  ];
-
   return (
     <SafeAreaView style={styles.container}>
       <Toolbar title="BYQR" />
@@ -107,23 +91,26 @@ const HomeScreen = () => {
       <View style={styles.dropdownSection}>
         <View style={styles.filterDropdown}>
           <Text style={styles.dropdownLabel}>Filter By:</Text>
-          <RNPickerSelect
-            onValueChange={value => setFilterOption(value)}
-            items={filterOptions}
-            placeholder={{label: 'Select Filters', value: null}}
-            useNativeAndroidPickerStyle={false}
-            style={pickerSelectStyles}
-          />
+          <Picker
+            selectedValue={filterOption}
+            onValueChange={value => setFilterOption(value)}>
+            <Picker.Item label="All Products" value="none" />
+            <Picker.Item label="Bicycles" value="bicycles" />
+            <Picker.Item label="Accessories" value="accessories" />
+          </Picker>
         </View>
+
         <View style={styles.sortDropdown}>
           <Text style={styles.dropdownLabel}>Sort By:</Text>
-          <RNPickerSelect
-            onValueChange={value => setSortOption(value)}
-            items={sortOptions}
-            placeholder={{label: 'Select Sort', value: null}}
-            useNativeAndroidPickerStyle={false}
-            style={pickerSelectStyles}
-          />
+          <Picker
+            selectedValue={sortOption}
+            onValueChange={value => setSortOption(value)}>
+            <Picker.Item label="Price: Low to High" value="price_ascending" />
+            <Picker.Item label="Price: High to Low" value="price_descending" />
+            <Picker.Item label="A-Z" value="alphabetical" />
+            <Picker.Item label="Newest" value="new" />
+            <Picker.Item label="Oldest" value="old" />
+          </Picker>
         </View>
       </View>
 
@@ -167,29 +154,6 @@ const styles = StyleSheet.create({
   },
   errordisplay: {
     color: 'red',
-  },
-});
-
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30,
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
-    borderColor: 'gray',
-    borderRadius: 8,
-    color: 'black',
-    paddingRight: 30,
   },
 });
 

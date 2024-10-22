@@ -142,7 +142,6 @@ const ProductDescriptionScreen = () => {
 
         <View style={styles.carouselContainer}>
           <Carousel
-            layout={'stack'}
             layoutCardOffset={15}
             data={product.imgs}
             renderItem={({item}) => (
