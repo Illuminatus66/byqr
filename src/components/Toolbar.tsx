@@ -122,9 +122,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   appName: {
-    fontSize: 20,
+    fontSize: 25,
     color: '#fff',
     fontWeight: 'bold',
+    fontStyle: 'italic',
   },
   toolbarIcons: {
     flexDirection: 'row',
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   menuContainer: {
-    width: '60%',
+    width: '45%',
     backgroundColor: '#fff',
     height: '100%',
     position: 'absolute',

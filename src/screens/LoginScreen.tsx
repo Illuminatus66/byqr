@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Modal} from 'react-native';
+import {SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Modal} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
@@ -61,10 +61,11 @@ const LoginScreen = () => {
   }, [User, dispatch, navigation]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeareaview}>
       {/* Toolbar Section */}
       <Toolbar title="BYQR" />
-
+    <View style={styles.container}>
+      
       {isSignUp ? (
         <SignUpForm handleSignUp={handleSignUp} loading={loading} />
       ) : (
@@ -84,9 +85,6 @@ const LoginScreen = () => {
       {/* Showing error if it exists */}
       {error && <Text style={styles.errorText}>{error}</Text>}
 
-      {/* Add the Footer */}
-      <Footer />
-
       {/* Loading Modal */}
       {loading && (
         <Modal transparent={true} animationType="none">
@@ -98,6 +96,9 @@ const LoginScreen = () => {
         </Modal>
       )}
     </View>
+    {/* Add the Footer */}
+    <Footer />
+    </SafeAreaView>
   );
 };
 
@@ -189,6 +190,10 @@ const SignInForm: React.FC<{handleSignIn: any; loading: boolean}> = ({handleSign
 };
 
 const styles = StyleSheet.create({
+  safeareaview: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

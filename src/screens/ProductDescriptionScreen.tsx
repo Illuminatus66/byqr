@@ -75,6 +75,12 @@ const ProductDescriptionScreen = () => {
   const handleAddToCart = () => {
     const totalQty = cartQty + quantity;
 
+    if (!cart_no) {
+      setErrorMessage(`Sign-In to add to cart`);
+      setTimeout(() => setErrorMessage(''), 2000);
+      navigation.navigate('Login');
+    }
+
     if (totalQty <= 4 && cartQty === 0) {
       const cartData: CartData = {cart_no: cart_no, pr_id: pr_id, qty: totalQty};
       if (cart_no) {
@@ -100,6 +106,10 @@ const ProductDescriptionScreen = () => {
       const wishlistData: WishlistData = {_id: cart_no, pr_id: pr_id};
       dispatch(addtowishlist(wishlistData));
       navigation.navigate('Wishlist');
+    } else {
+      setErrorMessage(`Sign-In to add to wishlist`);
+      setTimeout(() => setErrorMessage(''), 2000);
+      navigation.navigate('Login');
     }
   };
 

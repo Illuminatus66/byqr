@@ -42,14 +42,14 @@ const Menu: React.FC<MenuProps> = ({closeMenu}) => {
 
 const styles = StyleSheet.create({
   menuContent: {
-    width: '60%',
+    width: '100%',
     backgroundColor: '#fff',
     padding: 20,
     height: '100%',
-    elevation: 10,
+    elevation: 20,
   },
   menuItem: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: 'bold',
     marginVertical: 15,
   },
