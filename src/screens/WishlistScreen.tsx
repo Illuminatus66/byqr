@@ -59,6 +59,18 @@ const WishlistScreen = () => {
     );
   }
 
+  if (wishlistItems.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Toolbar title="Wishlist" />
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Your wishlist is empty!</Text>
+        </View>
+        <Footer />
+      </View>
+    );
+  }
+
   // Render wishlist items if the user is logged in
   return (
     <View style={styles.container}>

@@ -97,8 +97,9 @@ export const updateuserprofile = createAsyncThunk<
   {state: AuthState; rejectValue: string}
 >('user/updateuserprofile', async (updateData, {rejectWithValue}) => {
   try {
-    console.log('Update user profile request data:', updateData);
-    const response = await updateUser(updateData);
+    const {_id, ...update} = updateData
+    console.log('Update user profile request data:', update, _id);
+    const response = await updateUser(update, _id);
     console.log('Update user profile response:', response.data);
     const {token, result: user} = response.data;
 

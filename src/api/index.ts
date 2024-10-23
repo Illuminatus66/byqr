@@ -57,7 +57,6 @@ interface LoginResponse {
 }
 
 interface UpdateUserRequest {
-  _id: string;
   name: string;
   email: string;
   phno: string;

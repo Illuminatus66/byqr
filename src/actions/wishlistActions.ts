@@ -20,12 +20,13 @@ export const fetchwishlist = createAsyncThunk<
   FetchWishlistResponse,
   string,
   {state: WishlistState; rejectValue: string}
+  //fix later
 >('wishlist/fetchwishlist', async (_id, {rejectWithValue}) => {
   try {
     console.log('Fetching wishlist for user:', _id);
     const response = await fetchWishlist(_id);
     console.log('Fetched wishlist:', response.data);
-    return response.data;
+    return {wishlist: response.data};
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to fetch user wishlist';
