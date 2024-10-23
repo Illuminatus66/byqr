@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {NavigationProp, RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, ActivityIndicator} from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import {Dimensions, View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, ActivityIndicator} from 'react-native';
+import Carousel from 'react-native-reanimated-carousel'
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {Picker} from '@react-native-picker/picker';
@@ -54,6 +54,7 @@ const ProductDescriptionScreen = () => {
   const cartItem = useAppSelector(state =>
     state.cart.products.find(pr => pr.pr_id === pr_id),
   );
+  const width = Dimensions.get('window').width;
 
   // We filter the product to be rendered by its _id (pr_id)
   const product = products.find(pr => pr._id === pr_id);
@@ -63,6 +64,19 @@ const ProductDescriptionScreen = () => {
       <SafeAreaView style={styles.safeArea}>
         <Toolbar title="BYQR" />
         <Text style={styles.errorMessage}>Product not found</Text>
+        <Footer />
+      </SafeAreaView>
+    );
+  }
+
+  if (!product || !product.imgs || product.imgs.length === 0) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Toolbar title="BYQR" />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text>Loading Product Images...</Text>
+        </View>
         <Footer />
       </SafeAreaView>
     );
@@ -152,14 +166,20 @@ const ProductDescriptionScreen = () => {
 
         <View style={styles.carouselContainer}>
           <Carousel
-            layoutCardOffset={15}
             data={product.imgs}
             renderItem={({item}) => (
-              <Image source={{uri: item}} style={styles.carouselImage} />
+              <Image 
+              source={{uri: item}}
+              style={styles.carouselImage}
+              onError={(e) => console.log("Image loading error:", e.nativeEvent.error)}
+              onLoad={() => console.log("Image loaded successfully")} 
+              />
             )}
-            sliderWidth={300}
-            itemWidth={300}
-            loop={true}
+            width={width}
+            height={width * 0.75}
+            mode= "parallax"
+            loop= {true}
+            scrollAnimationDuration={600}
           />
         </View>
 
@@ -249,6 +269,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -279,7 +304,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   carouselImage: {
-    width: 300,
+    width: 400,
     height: 300,
     borderRadius: 10,
   },

@@ -78,19 +78,20 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   appNameContainer: {
-    flex: 0.3,
+    flex: 0.4,
     justifyContent: 'center',
   },
   appName: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
+    fontStyle: 'italic',
     color: '#fff',
   },
   linksContainer: {
-    flex: 0.7,
+    flex: 0.6,
     flexDirection: 'column',
     justifyContent: 'space-around',
-    alignItems: 'right',
+    alignItems: 'flex-start',
   },
   linkText: {
     color: '#fff',

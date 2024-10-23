@@ -155,12 +155,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     margin: 5,
-    borderRadius: 10,
     padding: 10,
     alignItems: 'center',
   },
   itemThumbnail: {
-    width: 150,
+    width: 165,
     height: 150,
     borderRadius: 10,
   },

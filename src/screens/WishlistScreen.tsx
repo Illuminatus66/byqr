@@ -67,13 +67,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   signInLink: {
-    fontSize: 18,
     color: '#007bff',
     textDecorationLine: 'underline',
-    marginBottom: 10,
   },
   emptyText: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#333',
   },
 });
