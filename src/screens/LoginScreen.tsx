@@ -20,7 +20,7 @@ interface Signup {
   password: string;
   phno: string;
 }
-type User = string
+
 type RootStackParamList = {
   Home: {filter: string};
   Cart: undefined;
@@ -40,19 +40,21 @@ const LoginScreen = () => {
 
   const handleSignUp = (name: string, email: string, phno: string, password: string) => {
     const signupData: Signup = {name, email, phno, password};
+    console.log('SignUp Request Data:', signupData);
     dispatch(signup(signupData));
   };
 
   const handleSignIn = (email: string, password: string) => {
     const loginData: Login = {email, password};
+    console.log('LogIn Request Data:', loginData);
     dispatch(login(loginData));
   };
 
   useEffect(() => {
     if (User) {
-      const user : User = User;
-      dispatch(fetchcartitems(user));
-      dispatch(fetchwishlist(user));
+      console.log('User ID available after login/signup:', User);
+      dispatch(fetchcartitems(User));
+      dispatch(fetchwishlist(User));
       navigation.reset({
         index: 0,
         routes: [{ name: 'Home', params: { filter: 'none' } }],

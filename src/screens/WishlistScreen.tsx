@@ -5,7 +5,7 @@ import ItemList from '../components/ItemList';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {useAppSelector} from '../hooks';
-import {selectWishlist} from '../reducers/wishlistSlice';
+import {selectWishlist, selectWishlistLoading} from '../reducers/wishlistSlice';
 import {selectProducts} from '../reducers/productSlice';
 import {selectUserToken} from '../reducers/userSlice';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -24,6 +24,7 @@ const WishlistScreen = () => {
   const wishlist = useAppSelector(selectWishlist);
   const products = useAppSelector(selectProducts);
   const token = useAppSelector(selectUserToken);
+  const loading = useAppSelector(selectWishlistLoading);
   const wishlistItems = products.filter(pr => wishlist.includes(pr._id));
 
   // If token is not available, direct the user to sign in
@@ -40,6 +41,18 @@ const WishlistScreen = () => {
             </Text>
             to view your wishlist!
           </Text>
+        </View>
+        <Footer />
+      </View>
+    );
+  }
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Toolbar title="Wishlist" />
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Loading your wishlist...</Text>
         </View>
         <Footer />
       </View>
