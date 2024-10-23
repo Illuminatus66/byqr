@@ -134,7 +134,7 @@ const ProductDescriptionScreen = () => {
     }
   };
 
-  const isProductInWishlist = wishlist.includes(product._id);
+  const isProductInWishlist = wishlist?.includes(product._id);
   const handleWishlistAction = () => {
     if (isProductInWishlist) {
       handleRemoveFromWishlist();

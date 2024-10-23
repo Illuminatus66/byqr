@@ -101,8 +101,8 @@ export const logIn = (authData: LoginRequest) =>
 export const signUp = (authData: SignupRequest) =>
   API.post<SignupResponse>('user/signup', authData);
 
-export const updateUser = (userData: UpdateUserRequest) =>
-  API.patch<UpdateUserResponse>('user/update', userData);
+export const updateUser = (userData: UpdateUserRequest, _id: string) =>
+  API.patch<UpdateUserResponse>(`user/update/${_id}`, userData);
 
 export const fetchWishlist = (_id: string) =>
   API.get<{wishlist: string[]}>(`wishlist/fetch/${_id}`);

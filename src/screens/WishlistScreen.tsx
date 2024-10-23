@@ -25,7 +25,7 @@ const WishlistScreen = () => {
   const products = useAppSelector(selectProducts);
   const token = useAppSelector(selectUserToken);
   const loading = useAppSelector(selectWishlistLoading);
-  const wishlistItems = products.filter(pr => wishlist.includes(pr._id));
+  const wishlistItems = products?.filter(pr => wishlist?.includes(pr._id));
 
   // If token is not available, direct the user to sign in
   if (!token) {
