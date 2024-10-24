@@ -180,10 +180,10 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 7,
     backgroundColor: '#6200EE',
     borderRadius: 5,
-    marginHorizontal: 5,
+    marginHorizontal: 2,
   },
   actionButtonText: {
     color: '#fff',

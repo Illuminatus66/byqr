@@ -75,7 +75,7 @@ const WishlistScreen = () => {
   return (
     <View style={styles.container}>
       <Toolbar title="Wishlist" />
-      <ItemList items={wishlistItems} isWishlist={true} />
+        <ItemList items={wishlistItems} isWishlist={true} />
       <Footer />
     </View>
   );
