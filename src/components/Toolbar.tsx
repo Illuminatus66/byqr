@@ -19,7 +19,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
-}
+};
 
 const Toolbar: React.FC<ToolbarProps> = ({title}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -37,8 +37,8 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
     setProfileMenuVisible(!profileMenuVisible);
   };
 
-  const handleNavigation = (route: string) => {
-    navigation.navigate(route as never);
+  const handleNavigation = (route: keyof RootStackParamList, params?: { filter?: string }) => {
+    navigation.navigate(route, params as never);
   };
 
   const handleLogout = () => {
@@ -58,7 +58,9 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
         <TouchableOpacity onPress={toggleMenuVisibility}>
           <Text style={styles.menuButton}>☰</Text>
         </TouchableOpacity>
-        <Text style={styles.appName}>{title}</Text>
+        <TouchableOpacity onPress={() => handleNavigation('Home', {filter: 'none'})}>
+          <Text style={styles.appName}>{title}</Text>
+        </TouchableOpacity>
         <View style={styles.toolbarIcons}>
           <TouchableOpacity onPress={() => handleNavigation('Wishlist')}>
             <Text style={styles.icon}>❤️</Text>

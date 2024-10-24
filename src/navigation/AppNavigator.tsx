@@ -14,8 +14,8 @@ const Stack = createStackNavigator();
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} options={{headerShown: false}} />
+      <Stack.Navigator initialRouteName="Home" screenOptions={{headerShown: false}} >
+        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Wishlist" component={WishlistScreen} />

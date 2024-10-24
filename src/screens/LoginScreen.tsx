@@ -1,11 +1,25 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Modal} from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Modal,
+  ScrollView,
+} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {useAppDispatch, useAppSelector} from '../hooks';
-import {selectUserId, selectUserLoading, selectUserError} from '../reducers/userSlice';
+import {
+  selectUserId,
+  selectUserLoading,
+  selectUserError,
+} from '../reducers/userSlice';
 import {login, signup} from '../actions/userActions';
 import {fetchcartitems} from '../actions/cartActions';
 import {fetchwishlist} from '../actions/wishlistActions';
@@ -38,7 +52,12 @@ const LoginScreen = () => {
   const loading = useAppSelector(selectUserLoading);
   const error = useAppSelector(selectUserError);
 
-  const handleSignUp = (name: string, email: string, phno: string, password: string) => {
+  const handleSignUp = (
+    name: string,
+    email: string,
+    phno: string,
+    password: string,
+  ) => {
     const signupData: Signup = {name, email, phno, password};
     console.log('SignUp Request Data:', signupData);
     dispatch(signup(signupData));
@@ -57,54 +76,63 @@ const LoginScreen = () => {
       dispatch(fetchwishlist(User));
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home', params: { filter: 'none' } }],
+        routes: [{name: 'Home', params: {filter: 'none'}}],
       });
     }
   }, [User, dispatch, navigation]);
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-      {/* Toolbar Section */}
       <Toolbar title="BYQR" />
-    <View style={styles.container}>
-      
-      {isSignUp ? (
-        <SignUpForm handleSignUp={handleSignUp} loading={loading} />
-      ) : (
-        <SignInForm handleSignIn={handleSignIn} loading={loading} />
-      )}
 
-      {/* Toggle SignUp/SignIn view */}
-      <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-        <Text style={styles.toggleText}>
-          {isSignUp ? 'Already have an account? ' : "Don't have an account? "}
-          <Text style={styles.linkText}>
-            {isSignUp ? 'Sign In here!' : 'Sign Up here!'}
-          </Text>
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.contentContainer}>
+        {/* ScrollView to allow content scrolling so that the keyboard
+        can render without affecting the position of the Sign-up form
+        which was posing problems earlier*/}
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {isSignUp ? (
+            <SignUpForm handleSignUp={handleSignUp} loading={loading} />
+          ) : (
+            <SignInForm handleSignIn={handleSignIn} loading={loading} />
+          )}
 
-      {/* Showing error if it exists */}
-      {error && <Text style={styles.errorText}>{error}</Text>}
+          {/* Toggle SignUp/SignIn view */}
+          <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
+            <Text style={styles.toggleText}>
+              {isSignUp
+                ? 'Already have an account? '
+                : "Don't have an account? "}
+              <Text style={styles.linkText}>
+                {isSignUp ? 'Sign In here!' : 'Sign Up here!'}
+              </Text>
+            </Text>
+          </TouchableOpacity>
 
-      {/* Loading Modal */}
-      {loading && (
-        <Modal transparent={true} animationType="none">
-          <View style={styles.modalBackground}>
-            <View style={styles.spinnerContainer}>
-              <ActivityIndicator size="large" color="#6200EE" />
-            </View>
-          </View>
-        </Modal>
-      )}
-    </View>
-    {/* Add the Footer */}
-    <Footer />
+          {/* Showing error if it exists */}
+          {error && <Text style={styles.errorText}>{error}</Text>}
+
+          {/* Loading Modal */}
+          {loading && (
+            <Modal transparent={true} animationType="none">
+              <View style={styles.modalBackground}>
+                <View style={styles.spinnerContainer}>
+                  <ActivityIndicator size="large" color="#6200EE" />
+                </View>
+              </View>
+            </Modal>
+          )}
+        </ScrollView>
+
+        <Footer />
+      </View>
     </SafeAreaView>
   );
 };
 
-const SignUpForm: React.FC<{handleSignUp: any; loading: boolean}> = ({handleSignUp, loading}) => {
+const SignUpForm: React.FC<{handleSignUp: any; loading: boolean}> = ({
+  handleSignUp,
+  loading,
+}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phno, setPhno] = useState('');
@@ -155,7 +183,10 @@ const SignUpForm: React.FC<{handleSignUp: any; loading: boolean}> = ({handleSign
   );
 };
 
-const SignInForm: React.FC<{handleSignIn: any; loading: boolean}> = ({handleSignIn, loading}) => {
+const SignInForm: React.FC<{handleSignIn: any; loading: boolean}> = ({
+  handleSignIn,
+  loading,
+}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -196,11 +227,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  container: {
+  contentContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+  },
+  scrollContent: {
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
   },
   input: {
     height: 50,

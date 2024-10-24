@@ -48,47 +48,47 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <Toolbar title="Profile" />
+      <View style={styles.container}>
+        <View style={styles.profileContainer}>
+          {showError && (
+            <View style={styles.errorBox}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
 
-      <View style={styles.profileContainer}>
-        {showError && (
-          <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        )}
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            value={name}
+            onChangeText={setName}
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
+          <TextInput
+            style={styles.input}
+            placeholder="Phone Number"
+            value={phno}
+            onChangeText={setPhno}
+            keyboardType="phone-pad"
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          value={phno}
-          onChangeText={setPhno}
-          keyboardType="phone-pad"
-        />
-
-        <TouchableOpacity
-          style={[styles.button, loading && styles.disabledButton]}
-          onPress={handleUpdateProfile}
-          disabled={loading}>
-          <Text style={styles.buttonText}>
-            {loading ? 'Updating...' : 'Update Profile'}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, loading && styles.disabledButton]}
+            onPress={handleUpdateProfile}
+            disabled={loading}>
+            <Text style={styles.buttonText}>
+              {loading ? 'Updating...' : 'Update Profile'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
       <Footer />
     </View>
   );
