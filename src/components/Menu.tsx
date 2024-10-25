@@ -24,6 +24,9 @@ const Menu: React.FC<MenuProps> = ({closeMenu}) => {
     navigation.navigate('Home', {filter});
   };
 
+  // holds TouchableOpacity containers to render options in the left-hand-side
+  // menu that can redirect to the HomeScreen with the three sorting props that
+  // the HomeScreen accepts currently.
   return (
     <View style={styles.menuContent}>
       {/* Menu Options */}

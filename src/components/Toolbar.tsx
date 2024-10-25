@@ -37,10 +37,15 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
     setProfileMenuVisible(!profileMenuVisible);
   };
 
-  const handleNavigation = (route: keyof RootStackParamList, params?: { filter?: string }) => {
+  const handleNavigation = (
+    route: keyof RootStackParamList,
+    params?: {filter?: string},
+  ) => {
     navigation.navigate(route, params as never);
   };
 
+  // logout handler clears all the relevant reducers (User, Cart and Wishlist) along
+  // with resetting the navigation stack to set the HomeScreen as the first route.
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearcart());
@@ -58,7 +63,8 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
         <TouchableOpacity onPress={toggleMenuVisibility}>
           <Text style={styles.menuButton}>☰</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigation('Home', {filter: 'none'})}>
+        <TouchableOpacity
+          onPress={() => handleNavigation('Home', {filter: 'none'})}>
           <Text style={styles.appName}>{title}</Text>
         </TouchableOpacity>
         <View style={styles.toolbarIcons}>

@@ -55,6 +55,7 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
   const wishlist_e = useAppSelector(selectWishlistError);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const displayError = cart_e || wishlist_e || errorMessage;
 
   const handleItemPress = (pr_id: string) => {
     navigation.navigate('ProductDescription', {pr_id});
@@ -89,6 +90,9 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     }
   };
 
+  // renders items passed to the FlatList inside TouchableOpacity containers to
+  // redirect to the ProductDescriptionScreen while also rendering 'Move to Cart'
+  // or 'Remove' button if and when the ItemList is rendered in the WishlistScreen.
   const renderItem = ({item}: {item: Product}) => (
     <TouchableOpacity onPress={() => handleItemPress(item._id)}>
       <View style={styles.itemContainer}>
@@ -117,8 +121,8 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     </TouchableOpacity>
   );
 
-  const displayError = cart_e || wishlist_e || errorMessage;
-
+  // display 'Your wishlist is empty' or 'No products available' when items.length === 0
+  // depending on whether the ItemList is rendered in the Wishlist or on the Home Screen.
   if (items.length === 0) {
     return (
       <View style={styles.emptyContainer}>
@@ -129,6 +133,8 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     );
   }
 
+  // if everything else is true, render the items in a FlatList based on the renderItem
+  // object created above. Also render any error messages coming in from the server or the UI.
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <View style={{flex: 1}}>

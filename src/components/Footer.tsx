@@ -16,6 +16,7 @@ const Footer = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <View style={styles.footer}>
+
       {/* Left side with the app name */}
       <View style={styles.appNameContainer}>
         <TouchableOpacity
@@ -24,7 +25,7 @@ const Footer = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Right side with placeholders for social media links and subscription */}
+      {/* Right side for social media links and code repositories */}
       <View style={styles.linksContainer}>
         <TouchableOpacity
           onPress={() =>
