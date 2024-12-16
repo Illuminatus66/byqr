@@ -106,7 +106,7 @@ $ npm start
 ```
 - Run the app in another terminal:
 ```bash
-$ npm run-android
+$ react-native run-android
 ```
 You should now see the app being installed in an emulated Android device.
 
@@ -161,24 +161,22 @@ $ npm start
 
 ---
 
-## Screen-Recording
+## Screenshots
 
-<video width="600" controls>
-  <source src="./screenshot/ScreenRecording.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
+### Home Screen
+![Home Screen](./screenshot/HomeScreen.png)
 
----
+### Cart Screen
+![Cart Screen](./screenshot/CartScreen.png)
 
-## Technologies Used
-- **React Native** with **TypeScript** (Frontend).
-- **Node.js** and **Express.js** (Backend).
-- **MongoDB Atlas** (Textual Data).
-- **AWS S3** (Product Images).
-- **React** (Admin Web App).
-- **Netlify** (Web App Hosting).
-- **Heroku** (Backend Hosting).
-- **Stripe** (Planned for Payment Integration).
+### Product Description Screen
+![Product Description Screen](./screenshot/ProductDescriptionScreen.png)
+
+### Wishlist Screen
+![Wishlist Screen](./screenshot/WishlistScreen.png)
+
+### Profile Screen
+![Profile Screen](./screenshot/ProfileScreen.png)
 
 ---
 
