@@ -163,13 +163,21 @@ $ npm start
 
 ## Screenshots
 
-<div style="display: flex; overflow-x: auto; gap: 10px;">
-  <img src="./screenshot/HomeScreen.png" alt="Home Screen" width="30%" />
-  <img src="./screenshot/ProductDescriptionScreen.png" alt="Product Description Screen" width="30%" />
-  <img src="./screenshot/CartScreen.png" alt="Cart Screen" width="30%" />
-  <img src="./screenshot/WishlistScreen.png" alt="Wishlist Screen"  width="30%" />
-  <img src="./screenshot/ProfileScreen.png" alt="Profile Screen" width="30%" />
-</div>
+### Home Screen
+<img src="./screenshot/HomeScreen.png" alt="Home Screen" width="20%" />
+
+### Cart Screen
+<img src="./screenshot/CartScreen.png" alt="Cart Screen" width="20%" />
+
+### Product Description Screen
+<img src="./screenshot/ProductDescriptionScreen.png" alt="Product Description Screen" width="20%" />
+
+### Wishlist Screen
+<img src="./screenshot/WishlistScreen.png" alt="Wishlist Screen" width="20%" />
+
+### Profile Screen
+<img src="./screenshot/ProfileScreen.png" alt="Profile Screen" width="20%" />
+
 
 ---
 
