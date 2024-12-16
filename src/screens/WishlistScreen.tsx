@@ -38,7 +38,7 @@ const WishlistScreen = () => {
               style={styles.signInLink}
               onPress={() => navigation.navigate('Login')}>
               Sign in
-            </Text>
+            </Text>{' '}
             to view your wishlist!
           </Text>
         </View>

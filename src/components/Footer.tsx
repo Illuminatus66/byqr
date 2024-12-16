@@ -51,7 +51,7 @@ const Footer = () => {
           }>
           <Text style={styles.linkText}>Varun Sodhani</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() =>
             Linking.openURL('https://github.com/Illuminatus66/byqr')
           }>
@@ -62,7 +62,7 @@ const Footer = () => {
             Linking.openURL('https://github.com/Illuminatus66/byqr_backend')
           }>
           <Text style={styles.linkText}>Backend</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
