@@ -164,19 +164,19 @@ $ npm start
 ## Screenshots
 
 ### Home Screen
-<img src="./screenshot/HomeScreen.png" alt="Home Screen" width="50%" />
+<img src="./screenshot/HomeScreen.png" alt="Home Screen" width="30%" />
 
 ### Cart Screen
-<img src="./screenshot/CartScreen.png" alt="Cart Screen" width="50%" />
+<img src="./screenshot/CartScreen.png" alt="Cart Screen" width="30%" />
 
 ### Product Description Screen
-<img src="./screenshot/ProductDescriptionScreen.png" alt="Product Description Screen" width="50%" />
+<img src="./screenshot/ProductDescriptionScreen.png" alt="Product Description Screen" width="30%" />
 
 ### Wishlist Screen
-<img src="./screenshot/WishlistScreen.png" alt="Wishlist Screen" width="50%" />
+<img src="./screenshot/WishlistScreen.png" alt="Wishlist Screen" width="30%" />
 
 ### Profile Screen
-<img src="./screenshot/ProfileScreen.png" alt="Profile Screen" width="50%" />
+<img src="./screenshot/ProfileScreen.png" alt="Profile Screen" width="30%" />
 
 
 ---
