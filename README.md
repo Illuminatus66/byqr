@@ -164,7 +164,7 @@ $ npm start
 ## Screenshots
 
 ### Screen Recording GIF
-<img src="https://drive.google.com/file/d/1p0PnISgl83IuySQfxYgr8n5cnq_x3fqp/view?usp=sharing" alt="Screen Recording" width="30%" />
+<img src="https://drive.google.com/uc?export=view&id=1p0PnISgl83IuySQfxYgr8n5cnq_x3fqp" alt="Screen Recording" width="30%" />
 
 ### Home Screen
 <img src="./screenshot/HomeScreen.png" alt="Home Screen" width="20%" />
