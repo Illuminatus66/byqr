@@ -10,7 +10,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {removeFromComparison} from '../reducers/comparisonSlice';
-import {selectCartNo} from '../reducers/cartSlice';
+import {selectCartNo, selectCartProducts} from '../reducers/cartSlice';
 import {selectWishlist} from '../reducers/wishlistSlice';
 import {addtocart, updatecartqty} from '../actions/cartActions';
 import {addtowishlist} from '../actions/wishlistActions';
@@ -55,7 +55,6 @@ interface Metric<T> {
 
 interface ComparisonTableProps {
   products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
 type RootStackParamList = {
@@ -68,38 +67,46 @@ type RootStackParamList = {
   Compare: undefined;
 };
 
-const ComparisonTable: React.FC<ComparisonTableProps> = ({
-  products,
-  setProducts,
-}) => {
+const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   const cart_no = useAppSelector(selectCartNo);
   const wishlist = useAppSelector(selectWishlist);
+  const cart_products = useAppSelector(selectCartProducts);
 
   const handleRemove = (pr_id: string) => {
-    // Remove from Redux state
     dispatch(removeFromComparison([pr_id]));
-
-    // Remove from local state to update UI instantly
-    setProducts(prevProducts =>
-      prevProducts.filter(product => product._id !== pr_id),
+    Alert.alert(
+      'Product Removed From Comparison',
+      'You can add more products to compare or you can come back to view existing ones',
+      [{
+        text: 'Go to Homepage',
+        onPress: () => navigation.navigate('Home', {filter: 'none'}),
+      }]
     );
   };
 
   const handleAddToCart = (pr_id: string) => {
-    const cartItem = useAppSelector(state =>
-      state.cart.products.find(pr => pr.pr_id === pr_id),
-    );
+    if (!cart_no) {
+      Alert.alert(
+        'Create An Account Or Sign In!',
+        'You need to be an authenticated user to add products to your cart.',
+        [{
+          text: 'Go to Login',
+          onPress: () => navigation.navigate('Login'),
+        }],
+        {
+          cancelable: true
+        }
+      );
+      return;
+    }
+
+    const cartItem = cart_products.find(pr => pr.pr_id === pr_id);
 
     const cartQty = cartItem ? cartItem.qty : 0;
 
     const qty = cartQty + 1;
-
-    if (!cart_no) {
-      Alert.alert(`You need to sign-in to add products to cart`);
-      navigation.navigate('Login');
-    }
 
     if (qty <= 4 && cartQty === 0) {
       const cartData: CartData = {
@@ -109,32 +116,62 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({
       };
       if (cart_no) {
         dispatch(addtocart(cartData));
-        navigation.navigate('Cart');
+        Alert.alert(
+          'Product Added To Cart',
+          '1 unit of this product was added to your cart. Go check it out!',
+          [{
+            text: 'Go To Cart',
+            onPress: () => navigation.navigate('Cart'),
+          }], {
+            cancelable: true
+          }
+        );
       }
+      return;
     }
 
     if (qty > 4 && cartQty !== 0) {
       Alert.alert(
-        'You already have 4 of these in the cart. You cannot buy more than that.',
+        'Maximum Amount Reached',
+        'You already have 4 of these in the cart. You cannot buy more than 4 at a time.',
       );
     } else {
       const cartData: CartData = {
         cart_no: cart_no,
         pr_id: pr_id,
-        qty: cartQty,
+        qty: qty,
       };
       if (cart_no) {
         dispatch(updatecartqty(cartData));
-        Alert.alert('You already had it in your cart. We added one more.');
-        navigation.navigate('Cart');
+        Alert.alert(
+          'Product Already Present In Cart',
+          'We increased the quantity of this product in your cart by 1',
+          [{
+            text: 'Go to Cart',
+            onPress: () => navigation.navigate('Cart'),
+          }],
+          {
+            cancelable: true
+          }
+        );
+        return;
       }
     }
   };
 
   const handleWishlistAction = (pr_id: string) => {
     if (!cart_no) {
-      Alert.alert('Sign-In to manage your wishlist');
-      navigation.navigate('Login');
+      Alert.alert(
+        'Create An Account Or Sign In!',
+        'You need to be an authenticated user to manage your wishlist',
+        [{
+          text: 'Go to Wishlist',
+          onPress: () => navigation.navigate('Login'),
+        }],
+        {
+          cancelable: true
+        }
+      );
       return;
     }
 
@@ -145,7 +182,18 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({
       dispatch(removefromwishlist(wishlistData));
     } else {
       dispatch(addtowishlist(wishlistData));
-      navigation.navigate('Wishlist');
+      Alert.alert(
+        'Product Added to Wishlist',
+        'We added the product to your wishlist. Go check it out!',
+        [{
+          text: 'Go to Wishlist',
+          onPress: () => navigation.navigate('Wishlist'),
+        }],
+        {
+          cancelable: true
+        }
+      );
+      return;
     }
   };
 
@@ -171,8 +219,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({
     <View style={styles.table}>
       {/* Thumbnail Row */}
       <View style={styles.row}>
-        <Text style={[styles.cell, styles.label]} />{' '}
-        {/* Empty cell for spacing */}
+        <Text style={[styles.cell, styles.label]}>Thumbnail</Text>
         {products.map(product => (
           <View key={product._id} style={styles.thumbnailContainer}>
             <TouchableOpacity
@@ -201,9 +248,11 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({
             const value = product[metric.key as keyof Product];
             return (
               <Text key={product._id} style={styles.cell}>
-                {metric.format
+                {metric.format && value !== undefined
                   ? metric.format(value as any)
-                  : String(value) || 'N/A'}
+                  : value !== undefined && value !== null
+                  ? String(value)
+                  : 'N/A'}
               </Text>
             );
           })}
@@ -212,7 +261,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({
 
       {/* Add to Cart & Wishlist Buttons */}
       <View style={styles.row}>
-        <Text style={[styles.cell, styles.label]}>{'Actions'}</Text>
+        <Text style={[styles.cell, styles.label]}>Actions</Text>
         {products.map(product => {
           const isInWishlist = wishlist.includes(product._id);
           return (

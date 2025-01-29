@@ -106,7 +106,7 @@ $ npm start
 ```
 - Run the app in another terminal:
 ```bash
-$ react-native run-android
+$ npx react-native run-android
 ```
 You should now see the app being installed in an emulated Android device.
 

@@ -19,6 +19,28 @@ import {
   selectComparisonProducts,
 } from '../reducers/comparisonSlice';
 import Menu from './Menu';
+import { selectProducts } from '../reducers/productSlice';
+
+interface ComparisonProduct {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
+}
 
 interface ToolbarProps {
   title: string;
@@ -31,12 +53,13 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
-  Compare: undefined;
+  Compare: {ComparisonProducts: ComparisonProduct[]};
 };
 
 const Toolbar: React.FC<ToolbarProps> = ({title}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
+  const products = useAppSelector(selectProducts);
   const [menuVisible, setMenuVisible] = useState(false);
   const [profileMenuVisible, setProfileMenuVisible] = useState(false);
   const [compareModalVisible, setCompareModalVisible] = useState(false);
@@ -80,7 +103,11 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
 
   const handleCompareSelections = () => {
     setCompareModalVisible(false);
-    handleNavigation('Compare');
+    const productLookup = new Map(products.map(p => [p._id, p]));
+    const ComparisonProducts = comparisonItems
+      .map(pr_id => productLookup.get(pr_id))
+      .filter(product => product !== undefined);
+    handleNavigation('Compare', {ComparisonProducts});
   };
 
   return (

@@ -1,18 +1,45 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {NavigationProp, RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {Dimensions, View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, ActivityIndicator} from 'react-native';
-import Carousel from 'react-native-reanimated-carousel'
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import {
+  Dimensions,
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+  ActivityIndicator,
+} from 'react-native';
+import Carousel from 'react-native-reanimated-carousel';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {Picker} from '@react-native-picker/picker';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {selectProducts} from '../reducers/productSlice';
-import {selectCartError, selectCartLoading, selectCartNo} from '../reducers/cartSlice';
-import {selectWishlist, selectWishlistError, selectWishlistLoading} from '../reducers/wishlistSlice';
+import {
+  selectCartError,
+  selectCartLoading,
+  selectCartNo,
+} from '../reducers/cartSlice';
+import {
+  selectWishlist,
+  selectWishlistError,
+  selectWishlistLoading,
+} from '../reducers/wishlistSlice';
 import {addtocart, updatecartqty} from '../actions/cartActions';
 import {addtowishlist, removefromwishlist} from '../actions/wishlistActions';
-import {addToComparison, selectComparisonProducts} from '../reducers/comparisonSlice';
+import {
+  addToComparison,
+  selectComparisonProducts,
+} from '../reducers/comparisonSlice';
 
 interface CartData {
   cart_no: string;
@@ -98,7 +125,11 @@ const ProductDescriptionScreen = () => {
     }
 
     if (totalQty <= 4 && cartQty === 0) {
-      const cartData: CartData = {cart_no: cart_no, pr_id: pr_id, qty: totalQty};
+      const cartData: CartData = {
+        cart_no: cart_no,
+        pr_id: pr_id,
+        qty: totalQty,
+      };
       if (cart_no) {
         dispatch(addtocart(cartData));
         navigation.navigate('Cart');
@@ -106,10 +137,16 @@ const ProductDescriptionScreen = () => {
     }
 
     if (totalQty > 4 && cartQty !== 0) {
-      setErrorMessage(`You already have ${cartQty} ${product.name} in the cart. You cannot buy more than 4.`);
+      setErrorMessage(
+        `You already have ${cartQty} ${product.name} in the cart. You cannot buy more than 4.`,
+      );
       setTimeout(() => setErrorMessage(''), 3000);
     } else {
-      const cartData: CartData = {cart_no: cart_no, pr_id: pr_id, qty: totalQty};
+      const cartData: CartData = {
+        cart_no: cart_no,
+        pr_id: pr_id,
+        qty: totalQty,
+      };
       if (cart_no) {
         dispatch(updatecartqty(cartData));
         navigation.navigate('Cart');
@@ -146,10 +183,12 @@ const ProductDescriptionScreen = () => {
   };
 
   const handleAddToComparison = () => {
-    if (comparison.length < 3) {
+    if (comparison.length < 3 && !comparison.includes(pr_id)) {
       dispatch(addToComparison(pr_id));
     }
   };
+  const isInComparison = comparison.includes(pr_id);
+  const isComparisonFull = comparison.length >= 3;
 
   // Here we are randomly selecting up to 6 products for the "Popular Products" section.
   // Once we add metrics to track how many people have bought each product we can use it
@@ -176,17 +215,19 @@ const ProductDescriptionScreen = () => {
           <Carousel
             data={product.imgs}
             renderItem={({item}) => (
-              <Image 
-              source={{uri: item}}
-              style={styles.carouselImage}
-              onError={(e) => console.log("Image loading error:", e.nativeEvent.error)}
-              onLoad={() => console.log("Image loaded successfully")} 
+              <Image
+                source={{uri: item}}
+                style={styles.carouselImage}
+                onError={e =>
+                  console.log('Image loading error:', e.nativeEvent.error)
+                }
+                onLoad={() => console.log('Image loaded successfully')}
               />
             )}
             width={width}
             height={width * 0.75}
-            mode= "parallax"
-            loop= {true}
+            mode="parallax"
+            loop={true}
             scrollAnimationDuration={600}
           />
         </View>
@@ -228,9 +269,7 @@ const ProductDescriptionScreen = () => {
               <ActivityIndicator color="#000" />
             ) : (
               <Text style={styles.addToWishlistText}>
-                {isProductInWishlist
-                  ? 'Remove from ❤️'
-                  : 'Add to ❤️'}
+                {isProductInWishlist ? 'Remove from ❤️' : 'Add to ❤️'}
               </Text>
             )}
           </TouchableOpacity>
@@ -240,10 +279,12 @@ const ProductDescriptionScreen = () => {
           onPress={handleAddToComparison}
           style={[
             styles.addToComparisonButton,
-            comparison.length >= 3 && styles.disabledButton
+            (isComparisonFull || isInComparison) && styles.disabledButton,
           ]}
-          disabled={comparison.length >= 3}>
-          <Text style={styles.addToComparisonText}>Add to Comparison</Text>
+          disabled={isComparisonFull || isInComparison}>
+          <Text style={styles.addToComparisonText}>
+            {isInComparison ? 'Added to Comparison' : 'Add to Comparison'}
+          </Text>
         </TouchableOpacity>
 
         <View style={styles.descriptionContainer}>
@@ -464,7 +505,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
