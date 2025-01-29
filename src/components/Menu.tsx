@@ -10,6 +10,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
+  Compare: undefined;
 };
 
 interface MenuProps {
