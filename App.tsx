@@ -1,12 +1,18 @@
 import React from 'react';
+import {ActivityIndicator} from 'react-native';
 import {Provider} from 'react-redux';
-import store from './src/reducers/store';
+import {PersistGate} from 'redux-persist/integration/react';
+import {persistor, store} from './src/reducers/store';
 import AppNavigator from './src/navigation/AppNavigator';
 
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <AppNavigator />
+      <PersistGate
+        loading={<ActivityIndicator size="large" color="#0000ff" />}
+        persistor={persistor}>
+        <AppNavigator />
+      </PersistGate>
     </Provider>
   );
 };

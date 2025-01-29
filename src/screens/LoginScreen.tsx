@@ -86,9 +86,6 @@ const LoginScreen = () => {
       <Toolbar title="BYQR" />
 
       <View style={styles.contentContainer}>
-        {/* ScrollView to allow content scrolling so that the keyboard
-        can render without affecting the position of the Sign-up form
-        which was posing problems earlier*/}
         <ScrollView contentContainerStyle={styles.scrollContent}>
           {isSignUp ? (
             <SignUpForm handleSignUp={handleSignUp} loading={loading} />
@@ -96,7 +93,6 @@ const LoginScreen = () => {
             <SignInForm handleSignIn={handleSignIn} loading={loading} />
           )}
 
-          {/* Toggle SignUp/SignIn view */}
           <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
             <Text style={styles.toggleText}>
               {isSignUp
@@ -108,10 +104,8 @@ const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
 
-          {/* Showing error if it exists */}
           {error && <Text style={styles.errorText}>{error}</Text>}
 
-          {/* Loading Modal */}
           {loading && (
             <Modal transparent={true} animationType="none">
               <View style={styles.modalBackground}>

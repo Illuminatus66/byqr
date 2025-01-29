@@ -1,12 +1,24 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  TouchableWithoutFeedback,
+  Alert,
+} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppSelector, useAppDispatch} from '../hooks';
 import {logout, selectUserId} from '../reducers/userSlice';
-import Menu from './Menu';
 import {clearcart} from '../reducers/cartSlice';
 import {clearwishlist} from '../reducers/wishlistSlice';
+import {
+  clearComparison,
+  selectComparisonProducts,
+} from '../reducers/comparisonSlice';
+import Menu from './Menu';
 
 interface ToolbarProps {
   title: string;
@@ -19,6 +31,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
+  Compare: undefined;
 };
 
 const Toolbar: React.FC<ToolbarProps> = ({title}) => {
@@ -26,8 +39,10 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
   const dispatch = useAppDispatch();
   const [menuVisible, setMenuVisible] = useState(false);
   const [profileMenuVisible, setProfileMenuVisible] = useState(false);
+  const [compareModalVisible, setCompareModalVisible] = useState(false);
 
   const User = useAppSelector(selectUserId);
+  const comparisonItems = useAppSelector(selectComparisonProducts);
 
   const toggleMenuVisibility = () => {
     setMenuVisible(!menuVisible);
@@ -57,6 +72,17 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
     setProfileMenuVisible(false);
   };
 
+  const handleClearSelections = () => {
+    dispatch(clearComparison());
+    setCompareModalVisible(false);
+    Alert.alert('All items have been removed from comparison.');
+  };
+
+  const handleCompareSelections = () => {
+    setCompareModalVisible(false);
+    handleNavigation('Compare');
+  };
+
   return (
     <View>
       <View style={styles.toolbar}>
@@ -68,13 +94,20 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
           <Text style={styles.appName}>{title}</Text>
         </TouchableOpacity>
         <View style={styles.toolbarIcons}>
+          {/* Compare Button with Modal */}
+          {comparisonItems.length >= 2 && comparisonItems.length <= 3 && (
+            <TouchableOpacity
+              onPress={() => setCompareModalVisible(true)}
+              style={styles.compareButton}>
+              <Text style={styles.icon}>🔀</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity onPress={() => handleNavigation('Wishlist')}>
             <Text style={styles.icon}>❤️</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleNavigation('Cart')}>
             <Text style={styles.icon}>🛒</Text>
           </TouchableOpacity>
-
           {User ? (
             <TouchableOpacity onPress={toggleProfileMenuVisibility}>
               <Text style={styles.icon}>👤</Text>
@@ -87,6 +120,30 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
         </View>
       </View>
 
+      {/* Compare Modal */}
+      <Modal
+        transparent={true}
+        visible={compareModalVisible}
+        animationType="fade"
+        onRequestClose={() => setCompareModalVisible(false)}>
+        <TouchableWithoutFeedback onPress={() => setCompareModalVisible(false)}>
+          <View style={styles.overlay} />
+        </TouchableWithoutFeedback>
+        <View style={styles.compareModal}>
+          <TouchableOpacity
+            onPress={handleCompareSelections}
+            style={styles.modalButton}>
+            <Text style={styles.modalButtonText1}>Compare Selections</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleClearSelections}
+            style={styles.modalButton}>
+            <Text style={styles.modalButtonText2}>Clear Selections</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      {/* Menu Modal */}
       <Modal transparent={true} visible={menuVisible} animationType="slide">
         <TouchableWithoutFeedback onPress={toggleMenuVisibility}>
           <View style={styles.overlay} />
@@ -96,6 +153,7 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
         </View>
       </Modal>
 
+      {/* Profile Menu Modal */}
       <Modal
         transparent={true}
         visible={profileMenuVisible}
@@ -144,9 +202,40 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginLeft: 20,
   },
+  compareButton: {
+    marginLeft: 10,
+  },
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  compareModal: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+  },
+  modalButton: {
+    backgroundColor: '#000000',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 10,
+  },
+  modalButtonText1: {
+    color: '#FFD700',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  modalButtonText2: {
+    color: '#EB5406',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   menuContainer: {
     width: '45%',
@@ -167,7 +256,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   profileMenuItem: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     marginVertical: 10,
     textAlign: 'center',

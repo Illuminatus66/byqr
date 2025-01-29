@@ -12,6 +12,7 @@ import {selectCartError, selectCartLoading, selectCartNo} from '../reducers/cart
 import {selectWishlist, selectWishlistError, selectWishlistLoading} from '../reducers/wishlistSlice';
 import {addtocart, updatecartqty} from '../actions/cartActions';
 import {addtowishlist, removefromwishlist} from '../actions/wishlistActions';
+import {addToComparison, selectComparisonProducts} from '../reducers/comparisonSlice';
 
 interface CartData {
   cart_no: string;
@@ -48,6 +49,7 @@ const ProductDescriptionScreen = () => {
   const wishlist = useAppSelector(selectWishlist);
   const wishlist_l = useAppSelector(selectWishlistLoading);
   const wishlist_e = useAppSelector(selectWishlistError);
+  const comparison = useAppSelector(selectComparisonProducts);
   const [quantity, setQuantity] = useState(1);
   const [errorMessage, setErrorMessage] = useState('');
   // Used below to find the pre-existing quantity of this particular item in the user's cart
@@ -143,6 +145,12 @@ const ProductDescriptionScreen = () => {
     }
   };
 
+  const handleAddToComparison = () => {
+    if (comparison.length < 3) {
+      dispatch(addToComparison(pr_id));
+    }
+  };
+
   // Here we are randomly selecting up to 6 products for the "Popular Products" section.
   // Once we add metrics to track how many people have bought each product we can use it
   // to filter out the six best products to showcase in that section.
@@ -221,16 +229,66 @@ const ProductDescriptionScreen = () => {
             ) : (
               <Text style={styles.addToWishlistText}>
                 {isProductInWishlist
-                  ? 'Remove from Wishlist'
-                  : 'Add to Wishlist'}
+                  ? 'Remove from ❤️'
+                  : 'Add to ❤️'}
               </Text>
             )}
           </TouchableOpacity>
         </View>
 
+        <TouchableOpacity
+          onPress={handleAddToComparison}
+          style={[
+            styles.addToComparisonButton,
+            comparison.length >= 3 && styles.disabledButton
+          ]}
+          disabled={comparison.length >= 3}>
+          <Text style={styles.addToComparisonText}>Add to Comparison</Text>
+        </TouchableOpacity>
+
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionTitle}>Description</Text>
           <Text style={styles.descriptionText}>{product.description}</Text>
+        </View>
+
+        <View style={styles.detailsContainer}>
+          <Text style={styles.detailsTitle}>Details</Text>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Brand:</Text>
+            <Text style={styles.detailValue}>{product.brand}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Frame Material:</Text>
+            <Text style={styles.detailValue}>{product.frameMaterial}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Weight:</Text>
+            <Text style={styles.detailValue}>{product.weight} kg</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Wheel Size:</Text>
+            <Text style={styles.detailValue}>{product.wheelSize} inches</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Gear System:</Text>
+            <Text style={styles.detailValue}>{product.gearSystem}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Brake Type:</Text>
+            <Text style={styles.detailValue}>{product.brakeType}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Suspension:</Text>
+            <Text style={styles.detailValue}>{product.suspension}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Tyre Type:</Text>
+            <Text style={styles.detailValue}>{product.tyreType}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Warranty:</Text>
+            <Text style={styles.detailValue}>{product.warranty}</Text>
+          </View>
         </View>
 
         {/* Popular Products Section */}
@@ -335,7 +393,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 30,
+    marginBottom: 5,
   },
   addToCartButton: {
     flex: 0.6,
@@ -361,6 +419,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
+  addToComparisonButton: {
+    width: '100%',
+    backgroundColor: '#000',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: 'gold',
+  },
+  addToComparisonText: {
+    color: 'gold',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  disabledButton: {
+    backgroundColor: '#555',
+    borderColor: '#777',
+  },
   descriptionContainer: {
     backgroundColor: '#f9f9f9',
     padding: 15,
@@ -380,6 +457,33 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontSize: 16,
     color: '#555',
+  },
+  detailsContainer: {
+    backgroundColor: '#f9f9f9',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  detailsTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  detailRow: {
+    marginBottom: 5,
+  },
+  detailLabel: {
+    fontSize: 16,
+    color: '#555',
+  },
+  detailValue: {
+    fontSize: 18,
+    color: 'black',
   },
   popularTitle: {
     fontSize: 20,
