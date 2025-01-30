@@ -10,6 +10,27 @@ import {selectProducts} from '../reducers/productSlice';
 import {selectUserToken} from '../reducers/userSlice';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
+}
+
 type RootStackParamList = {
   Home: {filter: string};
   Cart: undefined;
@@ -17,6 +38,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
+  Compare: {ComparisonProducts: Product[]};
 };
 
 const WishlistScreen = () => {

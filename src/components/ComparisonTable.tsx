@@ -64,7 +64,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
-  Compare: undefined;
+  Compare: {ComparisonProducts: Product[]};
 };
 
 const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
@@ -79,28 +79,35 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
     Alert.alert(
       'Product Removed From Comparison',
       'You can add more products to compare or you can come back to view existing ones',
-      [{
-        text: 'Go to Homepage',
-        onPress: () => navigation.navigate('Home', {filter: 'none'}),
-      }]
+      [
+        {
+          text: 'Go to Homepage',
+          onPress: () => navigation.navigate('Home', {filter: 'none'}),
+        },
+      ],
     );
   };
 
   const handleAddToCart = (pr_id: string) => {
+
     if (!cart_no) {
       Alert.alert(
         'Create An Account Or Sign In!',
         'You need to be an authenticated user to add products to your cart.',
-        [{
-          text: 'Go to Login',
-          onPress: () => navigation.navigate('Login'),
-        }],
+        [
+          {
+            text: 'Go to Login',
+            onPress: () => navigation.navigate('Login'),
+          },
+        ],
         {
-          cancelable: true
-        }
+          cancelable: true,
+        },
       );
       return;
     }
+    const product = products.find(pr=> pr._id === pr_id);
+    const stock = product ? product.stock : 0;
 
     const cartItem = cart_products.find(pr => pr.pr_id === pr_id);
 
@@ -108,7 +115,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
 
     const qty = cartQty + 1;
 
-    if (qty <= 4 && cartQty === 0) {
+    if (qty <= stock && cartQty === 0) {
       const cartData: CartData = {
         cart_no: cart_no,
         pr_id: pr_id,
@@ -119,21 +126,25 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
         Alert.alert(
           'Product Added To Cart',
           '1 unit of this product was added to your cart. Go check it out!',
-          [{
-            text: 'Go To Cart',
-            onPress: () => navigation.navigate('Cart'),
-          }], {
-            cancelable: true
-          }
+          [
+            {
+              text: 'Go To Cart',
+              onPress: () => navigation.navigate('Cart'),
+            },
+          ],
+          {
+            cancelable: true,
+          },
         );
       }
       return;
     }
 
-    if (qty > 4 && cartQty !== 0) {
+    if (qty > stock && cartQty !== 0) {
       Alert.alert(
         'Maximum Amount Reached',
-        'You already have 4 of these in the cart. You cannot buy more than 4 at a time.',
+        `You already have ${cartQty} of these in the cart. 
+        You cannot buy more than ${stock} at this time since that's all we have in stock.`,
       );
     } else {
       const cartData: CartData = {
@@ -146,13 +157,15 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
         Alert.alert(
           'Product Already Present In Cart',
           'We increased the quantity of this product in your cart by 1',
-          [{
-            text: 'Go to Cart',
-            onPress: () => navigation.navigate('Cart'),
-          }],
+          [
+            {
+              text: 'Go to Cart',
+              onPress: () => navigation.navigate('Cart'),
+            },
+          ],
           {
-            cancelable: true
-          }
+            cancelable: true,
+          },
         );
         return;
       }
@@ -164,13 +177,15 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
       Alert.alert(
         'Create An Account Or Sign In!',
         'You need to be an authenticated user to manage your wishlist',
-        [{
-          text: 'Go to Wishlist',
-          onPress: () => navigation.navigate('Login'),
-        }],
+        [
+          {
+            text: 'Go to Wishlist',
+            onPress: () => navigation.navigate('Login'),
+          },
+        ],
         {
-          cancelable: true
-        }
+          cancelable: true,
+        },
       );
       return;
     }
@@ -185,13 +200,15 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
       Alert.alert(
         'Product Added to Wishlist',
         'We added the product to your wishlist. Go check it out!',
-        [{
-          text: 'Go to Wishlist',
-          onPress: () => navigation.navigate('Wishlist'),
-        }],
+        [
+          {
+            text: 'Go to Wishlist',
+            onPress: () => navigation.navigate('Wishlist'),
+          },
+        ],
         {
-          cancelable: true
-        }
+          cancelable: true,
+        },
       );
       return;
     }

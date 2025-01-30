@@ -13,8 +13,8 @@ const comparisonSlice = createSlice({
   initialState,
   reducers: {
     addToComparison(state, action: PayloadAction<string>) {
-      // Add a product ID only if it doesn't already exist and limit to 3 products
-      if (!state.pr_ids.includes(action.payload) && state.pr_ids.length < 3) {
+      // Add a product ID only if it doesn't already exist and limit to 5 products
+      if (!state.pr_ids.includes(action.payload) && state.pr_ids.length < 5) {
         state.pr_ids.push(action.payload);
       }
     },

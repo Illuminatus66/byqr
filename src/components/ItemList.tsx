@@ -18,6 +18,15 @@ interface Product {
   category: string;
   stock: number;
   date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
 }
 
 interface ItemListProps {
@@ -32,7 +41,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
-  Compare: undefined;
+  Compare: {ComparisonProducts: Product[]};
 };
 
 interface CartData {
@@ -65,20 +74,23 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
   const handleMoveToCart = (pr_id: string, name: string) => {
     const cartItem = cart.find(pr => pr.pr_id === pr_id);
     const cartQty = cartItem ? cartItem.qty : 0;
+    const prod = items.find(pr => pr._id === pr_id);
+    const stock = prod ? prod.stock : 0;
     const wishlistData: WishlistData = {_id: cart_no, pr_id};
+    
     if (cart_no) {
       if (cartQty === 0) {
         const cartData: CartData = {cart_no, pr_id, qty: 1};
         dispatch(addtocart(cartData));
         dispatch(removefromwishlist(wishlistData));
         navigation.navigate('Cart');
-      } else if (cartQty === 1 || 2 || 3) {
+      } else if (cartQty < stock && cartQty > 0) {
         const cartData: CartData = {cart_no, pr_id, qty: cartQty + 1};
         dispatch(updatecartqty(cartData));
         dispatch(removefromwishlist(wishlistData));
         navigation.navigate('Cart');
       } else {
-        setErrorMessage(`The cart already has 4 ${name}. You cannot add more.`);
+        setErrorMessage(`The cart already has ${stock} ${name}. We only have so much in stock.`);
         setTimeout(() => setErrorMessage(null), 3000);
       }
     }
@@ -91,7 +103,7 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     }
   };
 
-  // renders items passed to the FlatList inside TouchableOpacity containers to
+  // Renders items passed to the FlatList inside TouchableOpacity containers to
   // redirect to the ProductDescriptionScreen while also rendering 'Move to Cart'
   // or 'Remove' button if and when the ItemList is rendered in the WishlistScreen.
   const renderItem = ({item}: {item: Product}) => (
@@ -122,7 +134,7 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     </TouchableOpacity>
   );
 
-  // display 'Your wishlist is empty' or 'No products available' when items.length === 0
+  // Display 'Your wishlist is empty' or 'No products available' when items.length === 0
   // depending on whether the ItemList is rendered in the Wishlist or on the Home Screen.
   if (items.length === 0) {
     return (
@@ -134,7 +146,7 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     );
   }
 
-  // if everything else is true, render the items in a FlatList based on the renderItem
+  // If everything else is true, render the items in a FlatList based on the renderItem
   // object created above. Also render any error messages coming in from the server or the UI.
   return (
     // eslint-disable-next-line react-native/no-inline-styles

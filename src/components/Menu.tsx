@@ -2,6 +2,30 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
+import {useAppSelector} from '../hooks';
+import {selectComparisonProducts} from '../reducers/comparisonSlice';
+import {selectProducts} from '../reducers/productSlice';
+
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
+}
 
 type RootStackParamList = {
   Home: {filter: string};
@@ -10,7 +34,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
-  Compare: undefined;
+  Compare: {ComparisonProducts: Product[]};
 };
 
 interface MenuProps {
@@ -19,6 +43,13 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({closeMenu}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const comparisonItems = useAppSelector(selectComparisonProducts);
+  const products = useAppSelector(selectProducts);
+
+  const productLookup = new Map(products.map(p => [p._id, p]));
+  const ComparisonProducts = comparisonItems
+    .map(pr_id => productLookup.get(pr_id))
+    .filter(product => product !== undefined);
 
   const handleNavigation = (filter: string) => {
     closeMenu();
@@ -40,6 +71,12 @@ const Menu: React.FC<MenuProps> = ({closeMenu}) => {
       <TouchableOpacity onPress={() => handleNavigation('accessories')}>
         <Text style={styles.menuItem}>Accessories</Text>
       </TouchableOpacity>
+      {comparisonItems.length >= 1 && comparisonItems.length <= 5 && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Compare', {ComparisonProducts})}>
+          <Text style={styles.menuItem}>Compare</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

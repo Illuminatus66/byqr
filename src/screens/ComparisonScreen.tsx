@@ -27,7 +27,7 @@ import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import ComparisonTable from '../components/ComparisonTable';
 
-interface ComparisonProduct {
+interface Product {
   _id: string;
   name: string;
   price: number;
@@ -55,10 +55,10 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
-  Compare: undefined;
+  Compare: {ComparisonProducts: Product[]};
 };
 type ComparisonScreenRouteProp = RouteProp<
-  {Comparison: {ComparisonProducts: ComparisonProduct[]}},
+  {Comparison: {ComparisonProducts: Product[]}},
   'Comparison'
 >;
 
@@ -90,7 +90,7 @@ const ComparisonScreen = () => {
   }, [products, comparisonItems, dispatch]);
 
   useEffect(() => {
-    if (ComparisonProducts.length < 2 || ComparisonProducts.length > 3) {
+    if (ComparisonProducts.length < 1 || ComparisonProducts.length > 5) {
       navigation.reset({
         index: 0,
         routes: [{name: 'Home', params: {filter: 'none'}}],
@@ -105,7 +105,7 @@ const ComparisonScreen = () => {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : productError ? (
         <Text style={styles.errorText}>{productError}</Text>
-      ) : ComparisonProducts.length === 2 || ComparisonProducts.length === 3 ? (
+      ) : ComparisonProducts.length >= 1 || ComparisonProducts.length <= 5 ? (
         <ScrollView horizontal>
           <ComparisonTable
             products={ComparisonProducts}

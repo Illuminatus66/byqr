@@ -20,7 +20,17 @@ interface Product {
   category: string;
   stock: number;
   date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
 }
+
 type HomeScreenRouteProp = RouteProp<{Home: {filter: string}}, 'Home'>;
 
 const HomeScreen = () => {

@@ -19,9 +19,9 @@ import {
   selectComparisonProducts,
 } from '../reducers/comparisonSlice';
 import Menu from './Menu';
-import { selectProducts } from '../reducers/productSlice';
+import {selectProducts} from '../reducers/productSlice';
 
-interface ComparisonProduct {
+interface Product {
   _id: string;
   name: string;
   price: number;
@@ -53,19 +53,18 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
-  Compare: {ComparisonProducts: ComparisonProduct[]};
+  Compare: {ComparisonProducts: Product[]};
 };
 
 const Toolbar: React.FC<ToolbarProps> = ({title}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
+  const User = useAppSelector(selectUserId);
+  const comparisonItems = useAppSelector(selectComparisonProducts);
   const [menuVisible, setMenuVisible] = useState(false);
   const [profileMenuVisible, setProfileMenuVisible] = useState(false);
   const [compareModalVisible, setCompareModalVisible] = useState(false);
-
-  const User = useAppSelector(selectUserId);
-  const comparisonItems = useAppSelector(selectComparisonProducts);
 
   const toggleMenuVisibility = () => {
     setMenuVisible(!menuVisible);
@@ -82,7 +81,7 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
     navigation.navigate(route, params as never);
   };
 
-  // logout handler clears all the relevant reducers (User, Cart and Wishlist) along
+  // Logout handler clears all the relevant reducers (User, Cart and Wishlist) along
   // with resetting the navigation stack to set the HomeScreen as the first route.
   const handleLogout = () => {
     dispatch(logout());
@@ -95,46 +94,54 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
     setProfileMenuVisible(false);
   };
 
+  // Clears all the selections which are to be used for comparison 
   const handleClearSelections = () => {
     dispatch(clearComparison());
     setCompareModalVisible(false);
     Alert.alert('All items have been removed from comparison.');
   };
 
+  // Navigates to the Comparison page with the relevant products to be compared
   const handleCompareSelections = () => {
     setCompareModalVisible(false);
     const productLookup = new Map(products.map(p => [p._id, p]));
     const ComparisonProducts = comparisonItems
       .map(pr_id => productLookup.get(pr_id))
       .filter(product => product !== undefined);
-    handleNavigation('Compare', {ComparisonProducts});
+    navigation.navigate('Compare', {ComparisonProducts});
   };
 
   return (
     <View>
       <View style={styles.toolbar}>
+        {/* Left-Hand Side Menu Button */}
         <TouchableOpacity onPress={toggleMenuVisibility}>
           <Text style={styles.menuButton}>☰</Text>
         </TouchableOpacity>
+        {/* Page Title */}
         <TouchableOpacity
           onPress={() => handleNavigation('Home', {filter: 'none'})}>
           <Text style={styles.appName}>{title}</Text>
         </TouchableOpacity>
+        {/* Icons on the Toolbar */}
         <View style={styles.toolbarIcons}>
-          {/* Compare Button with Modal */}
-          {comparisonItems.length >= 2 && comparisonItems.length <= 3 && (
+          {/* Compare Button */}
+          {comparisonItems.length >= 1 && comparisonItems.length <= 5 && (
             <TouchableOpacity
               onPress={() => setCompareModalVisible(true)}
               style={styles.compareButton}>
               <Text style={styles.icon}>🔀</Text>
             </TouchableOpacity>
           )}
+          {/* Wishlist Button */}
           <TouchableOpacity onPress={() => handleNavigation('Wishlist')}>
             <Text style={styles.icon}>❤️</Text>
           </TouchableOpacity>
+          {/* Cart Button */}
           <TouchableOpacity onPress={() => handleNavigation('Cart')}>
             <Text style={styles.icon}>🛒</Text>
           </TouchableOpacity>
+          {/* Profile/Login Button */}
           {User ? (
             <TouchableOpacity onPress={toggleProfileMenuVisibility}>
               <Text style={styles.icon}>👤</Text>
@@ -146,8 +153,7 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
           )}
         </View>
       </View>
-
-      {/* Compare Modal */}
+      {/* Comparison Modal */}
       <Modal
         transparent={true}
         visible={compareModalVisible}
@@ -169,7 +175,6 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
           </TouchableOpacity>
         </View>
       </Modal>
-
       {/* Menu Modal */}
       <Modal transparent={true} visible={menuVisible} animationType="slide">
         <TouchableWithoutFeedback onPress={toggleMenuVisibility}>
@@ -179,7 +184,6 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
           <Menu closeMenu={toggleMenuVisibility} />
         </View>
       </Modal>
-
       {/* Profile Menu Modal */}
       <Modal
         transparent={true}

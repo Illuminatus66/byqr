@@ -24,6 +24,27 @@ import {login, signup} from '../actions/userActions';
 import {fetchcartitems} from '../actions/cartActions';
 import {fetchwishlist} from '../actions/wishlistActions';
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
+}
+
 interface Login {
   email: string;
   password: string;
@@ -42,6 +63,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
+  Compare: {ComparisonProducts: Product[]};
 };
 
 const LoginScreen = () => {

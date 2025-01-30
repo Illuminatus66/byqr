@@ -2,6 +2,7 @@
 import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppSelector, useAppDispatch} from '../hooks';
 import {selectCartLoading, selectCartNo} from '../reducers/cartSlice';
 import {selectWishlistLoading} from '../reducers/wishlistSlice';
@@ -13,6 +14,7 @@ interface ProductCardProps {
   name: string;
   price: string;
   thumbnail: string;
+  stock: number;
   qty: number;
 }
 
@@ -30,8 +32,26 @@ interface WishlistData {
   pr_id: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({pr_id, name, price, thumbnail, qty}) => {
+type RootStackParamList = {
+  Home: {filter: string};
+  Cart: undefined;
+  Login: undefined;
+  Wishlist: undefined;
+  ProductDescription: {pr_id: string};
+  Profile: undefined;
+  Compare: undefined;
+};
+
+const ProductCard: React.FC<ProductCardProps> = ({
+  pr_id,
+  name,
+  price,
+  thumbnail,
+  stock,
+  qty,
+}) => {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const cart_no = useAppSelector(selectCartNo);
   const cart_l = useAppSelector(selectCartLoading);
   const wishlist_l = useAppSelector(selectWishlistLoading);
@@ -63,25 +83,33 @@ const ProductCard: React.FC<ProductCardProps> = ({pr_id, name, price, thumbnail,
     <View style={styles.card}>
       {/* Upper section: Thumbnail, name, price, and quantity */}
       <View style={styles.upperSection}>
-        <Image source={{uri: thumbnail}} style={styles.thumbnail} />
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('ProductDescription', {pr_id: pr_id})
+          }>
+          <Image source={{uri: thumbnail}} style={styles.thumbnail} />
+        </TouchableOpacity>
         <View style={styles.details}>
-          <Text style={styles.name}>{name}</Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('ProductDescription', {pr_id: pr_id})
+            }>
+            <Text style={styles.name}>{name}</Text>
+          </TouchableOpacity>
           <Text style={styles.price}>{price}</Text>
-
           {/* Quantity Dropdown Menu */}
           <View style={styles.dropdownContainer}>
             <Picker
               selectedValue={qty}
               onValueChange={newQty => handleQtyChange(newQty)}
               style={styles.dropdown}>
-              {[1, 2, 3, 4].map(value => (
-                <Picker.Item key={value} label={`${value}`} value={value} />
+              {[...Array(stock)].map((_, i) => (
+                <Picker.Item key={i + 1} label={`${i + 1}`} value={i + 1} />
               ))}
             </Picker>
           </View>
         </View>
       </View>
-
       {/* Lower section: "Remove" and "Move to Wishlist" buttons */}
       <View style={styles.lowerSection}>
         <TouchableOpacity

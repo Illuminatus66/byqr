@@ -41,6 +41,27 @@ import {
   selectComparisonProducts,
 } from '../reducers/comparisonSlice';
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
+}
+
 interface CartData {
   cart_no: string;
   pr_id: string;
@@ -57,6 +78,7 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
+  Compare: {ComparisonProducts: Product[]};
 };
 
 type ProductDescriptionRouteProp = RouteProp<
@@ -79,6 +101,7 @@ const ProductDescriptionScreen = () => {
   const comparison = useAppSelector(selectComparisonProducts);
   const [quantity, setQuantity] = useState(1);
   const [errorMessage, setErrorMessage] = useState('');
+
   // Used below to find the pre-existing quantity of this particular item in the user's cart
   const cartItem = useAppSelector(state =>
     state.cart.products.find(pr => pr.pr_id === pr_id),
@@ -124,7 +147,7 @@ const ProductDescriptionScreen = () => {
       navigation.navigate('Login');
     }
 
-    if (totalQty <= 4 && cartQty === 0) {
+    if (totalQty <= product.stock && cartQty === 0) {
       const cartData: CartData = {
         cart_no: cart_no,
         pr_id: pr_id,
@@ -136,9 +159,10 @@ const ProductDescriptionScreen = () => {
       }
     }
 
-    if (totalQty > 4 && cartQty !== 0) {
+    if (totalQty > product.stock && cartQty !== 0) {
       setErrorMessage(
-        `You already have ${cartQty} ${product.name} in the cart. You cannot buy more than 4.`,
+        `You already have ${cartQty} ${product.name} in the cart.
+        You cannot buy more than ${product.stock} because that's all we have in stock.`,
       );
       setTimeout(() => setErrorMessage(''), 3000);
     } else {
@@ -183,7 +207,7 @@ const ProductDescriptionScreen = () => {
   };
 
   const handleAddToComparison = () => {
-    if (comparison.length < 3 && !comparison.includes(pr_id)) {
+    if (comparison.length < 6 && !comparison.includes(pr_id)) {
       dispatch(addToComparison(pr_id));
     }
   };
@@ -240,10 +264,9 @@ const ProductDescriptionScreen = () => {
               selectedValue={quantity}
               onValueChange={value => setQuantity(value)}
               style={styles.picker}>
-              <Picker.Item label="1" value={1} />
-              <Picker.Item label="2" value={2} />
-              <Picker.Item label="3" value={3} />
-              <Picker.Item label="4" value={4} />
+              {[...Array(product.stock)].map((_, i) => (
+                <Picker.Item key={i + 1} label={`${i + 1}`} value={i + 1} />
+              ))}
             </Picker>
           </View>
         </View>
