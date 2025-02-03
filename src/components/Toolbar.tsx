@@ -21,6 +21,11 @@ import {
 import Menu from './Menu';
 import {selectProducts} from '../reducers/productSlice';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -40,6 +45,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 interface ToolbarProps {
@@ -54,6 +60,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 const Toolbar: React.FC<ToolbarProps> = ({title}) => {
@@ -94,7 +101,7 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
     setProfileMenuVisible(false);
   };
 
-  // Clears all the selections which are to be used for comparison 
+  // Clears all the selections which are to be used for comparison
   const handleClearSelections = () => {
     dispatch(clearComparison());
     setCompareModalVisible(false);

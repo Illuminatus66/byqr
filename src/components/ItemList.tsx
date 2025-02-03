@@ -1,13 +1,33 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppDispatch, useAppSelector} from '../hooks';
-import {selectCartError, selectCartLoading, selectCartNo, selectCartProducts} from '../reducers/cartSlice';
-import {selectWishlistError, selectWishlistLoading} from '../reducers/wishlistSlice';
+import {
+  selectCartError,
+  selectCartLoading,
+  selectCartNo,
+  selectCartProducts,
+} from '../reducers/cartSlice';
+import {
+  selectWishlistError,
+  selectWishlistLoading,
+} from '../reducers/wishlistSlice';
 import {addtocart, updatecartqty} from '../actions/cartActions';
 import {removefromwishlist} from '../actions/wishlistActions';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -27,6 +47,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 interface ItemListProps {
@@ -42,6 +63,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 interface CartData {
@@ -77,7 +99,7 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
     const prod = items.find(pr => pr._id === pr_id);
     const stock = prod ? prod.stock : 0;
     const wishlistData: WishlistData = {_id: cart_no, pr_id};
-    
+
     if (cart_no) {
       if (cartQty === 0) {
         const cartData: CartData = {cart_no, pr_id, qty: 1};
@@ -90,7 +112,9 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
         dispatch(removefromwishlist(wishlistData));
         navigation.navigate('Cart');
       } else {
-        setErrorMessage(`The cart already has ${stock} ${name}. We only have so much in stock.`);
+        setErrorMessage(
+          `The cart already has ${stock} ${name}. We only have so much in stock.`,
+        );
         setTimeout(() => setErrorMessage(null), 3000);
       }
     }

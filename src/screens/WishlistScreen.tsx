@@ -10,6 +10,11 @@ import {selectProducts} from '../reducers/productSlice';
 import {selectUserToken} from '../reducers/userSlice';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -29,6 +34,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 type RootStackParamList = {
@@ -39,6 +45,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 const WishlistScreen = () => {
@@ -97,7 +104,7 @@ const WishlistScreen = () => {
   return (
     <View style={styles.container}>
       <Toolbar title="Wishlist" />
-        <ItemList items={wishlistItems} isWishlist={true} />
+      <ItemList items={wishlistItems} isWishlist={true} />
       <Footer />
     </View>
   );

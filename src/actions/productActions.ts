@@ -2,6 +2,11 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {fetchAllProducts} from '../api';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -21,6 +26,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 interface ProductsState {

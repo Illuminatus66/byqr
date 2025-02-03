@@ -9,6 +9,33 @@ import {selectWishlistLoading} from '../reducers/wishlistSlice';
 import {updatecartqty, removefromcart} from '../actions/cartActions';
 import {addtowishlist} from '../actions/wishlistActions';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
+  stores: Store[];
+}
+
 interface ProductCardProps {
   pr_id: string;
   name: string;
@@ -39,7 +66,8 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
-  Compare: undefined;
+  Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({

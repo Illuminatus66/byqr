@@ -58,7 +58,7 @@ export const signup = createAsyncThunk<
   try {
     console.log('Signup request data:', signupData);
     const response = await signUp(signupData);
-    console.log('Signup response:', response.data); 
+    console.log('Signup response:', response.data);
     const {token, result: user} = response.data;
     await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
     console.log('Signup success, user and token stored in AsyncStorage');
@@ -79,7 +79,7 @@ export const login = createAsyncThunk<
     console.log('Login request data:', loginData);
     const response = await logIn(loginData);
     console.log('Login response:', response.data);
-    
+
     const {token, result: user} = response.data;
     await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
     console.log('Login success, user and token stored in AsyncStorage');
@@ -97,7 +97,7 @@ export const updateuserprofile = createAsyncThunk<
   {state: AuthState; rejectValue: string}
 >('user/updateuserprofile', async (updateData, {rejectWithValue}) => {
   try {
-    const {_id, ...update} = updateData
+    const {_id, ...update} = updateData;
     console.log('Update user profile request data:', update, _id);
     const response = await updateUser(update, _id);
     console.log('Update user profile response:', response.data);
@@ -119,7 +119,7 @@ export const updateuserprofile = createAsyncThunk<
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to update user profile';
-      console.error('Update user profile error:', errorMessage);
+    console.error('Update user profile error:', errorMessage);
     return rejectWithValue(errorMessage);
   }
 });

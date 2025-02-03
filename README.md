@@ -102,7 +102,7 @@ $ npm install
 - Open **Android Studio** and set up the development environment as detailed in the [guide](https://reactnative.dev/docs/set-up-your-environment) .
 - Start the Metro Bundler in one terminal
 ```bash
-$ npm start
+$ npx react-native start
 ```
 - Run the app in another terminal:
 ```bash

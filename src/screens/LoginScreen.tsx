@@ -24,6 +24,11 @@ import {login, signup} from '../actions/userActions';
 import {fetchcartitems} from '../actions/cartActions';
 import {fetchwishlist} from '../actions/wishlistActions';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -43,6 +48,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 interface Login {
@@ -64,6 +70,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 const LoginScreen = () => {

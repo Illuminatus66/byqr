@@ -27,6 +27,11 @@ import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import ComparisonTable from '../components/ComparisonTable';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -46,6 +51,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 type RootStackParamList = {
@@ -56,6 +62,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 type ComparisonScreenRouteProp = RouteProp<
   {Comparison: {ComparisonProducts: Product[]}},
@@ -107,9 +114,7 @@ const ComparisonScreen = () => {
         <Text style={styles.errorText}>{productError}</Text>
       ) : ComparisonProducts.length >= 1 || ComparisonProducts.length <= 5 ? (
         <ScrollView horizontal>
-          <ComparisonTable
-            products={ComparisonProducts}
-          />
+          <ComparisonTable products={ComparisonProducts} />
         </ScrollView>
       ) : null}
       <Footer />

@@ -26,6 +26,12 @@ interface WishlistData {
   pr_id: string;
 }
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
+
 interface Product {
   _id: string;
   name: string;
@@ -45,6 +51,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 interface Metric<T> {
@@ -65,6 +72,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
@@ -89,7 +97,6 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
   };
 
   const handleAddToCart = (pr_id: string) => {
-
     if (!cart_no) {
       Alert.alert(
         'Create An Account Or Sign In!',
@@ -106,7 +113,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
       );
       return;
     }
-    const product = products.find(pr=> pr._id === pr_id);
+    const product = products.find(pr => pr._id === pr_id);
     const stock = product ? product.stock : 0;
 
     const cartItem = cart_products.find(pr => pr.pr_id === pr_id);
@@ -179,7 +186,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
         'You need to be an authenticated user to manage your wishlist',
         [
           {
-            text: 'Go to Wishlist',
+            text: 'Go to Login',
             onPress: () => navigation.navigate('Login'),
           },
         ],

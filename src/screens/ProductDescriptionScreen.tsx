@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   NavigationProp,
   RouteProp,
@@ -17,11 +17,17 @@ import {
   FlatList,
   SafeAreaView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import Toolbar from '../components/Toolbar';
-import Footer from '../components/Footer';
 import {Picker} from '@react-native-picker/picker';
+import {
+  check,
+  request,
+  openSettings,
+  PERMISSIONS,
+  RESULTS,
+} from 'react-native-permissions';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {selectProducts} from '../reducers/productSlice';
 import {
@@ -40,7 +46,15 @@ import {
   addToComparison,
   selectComparisonProducts,
 } from '../reducers/comparisonSlice';
+import StoreLocator from '../components/StoreLocator';
+import Toolbar from '../components/Toolbar';
+import Footer from '../components/Footer';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -60,6 +74,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 interface CartData {
@@ -79,6 +94,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 type ProductDescriptionRouteProp = RouteProp<
@@ -101,6 +117,12 @@ const ProductDescriptionScreen = () => {
   const comparison = useAppSelector(selectComparisonProducts);
   const [quantity, setQuantity] = useState(1);
   const [errorMessage, setErrorMessage] = useState('');
+  const [arPermissionGranted, setArPermissionGranted] = useState(false);
+  const [selectedStore, setSelectedStore] = useState<{
+    name: string;
+    lat: number;
+    long: number;
+  } | null>(null);
 
   // Used below to find the pre-existing quantity of this particular item in the user's cart
   const cartItem = useAppSelector(state =>
@@ -133,6 +155,79 @@ const ProductDescriptionScreen = () => {
       </SafeAreaView>
     );
   }
+
+  const requestARPermission = async () => {
+    let permissionsGranted = true;
+
+    const handleDeniedPermission = (permissionName: string) => {
+      Alert.alert(
+        `${permissionName} Permission Needed`,
+        `This permission is required for AR features. You can enable it in settings.`,
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {text: 'Open Settings', onPress: () => openSettings('application')},
+        ],
+      );
+    };
+
+    // Checking CAMERA permission
+    const cameraResult = await check(PERMISSIONS.ANDROID.CAMERA);
+    if (cameraResult !== RESULTS.GRANTED) {
+      const newCameraResult = await request(PERMISSIONS.ANDROID.CAMERA);
+      if (newCameraResult !== RESULTS.GRANTED) {
+        permissionsGranted = false;
+        handleDeniedPermission('Camera');
+      }
+    }
+
+    // Checking ACTIVITY_RECOGNITION permission
+    const activityResult = await check(
+      PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION,
+    );
+    if (activityResult !== RESULTS.GRANTED) {
+      const newActivityResult = await request(
+        PERMISSIONS.ANDROID.ACTIVITY_RECOGNITION,
+      );
+      if (newActivityResult !== RESULTS.GRANTED) {
+        permissionsGranted = false;
+        handleDeniedPermission('Activity Recognition');
+      }
+    }
+
+    // Checking ACCESS_FINE_LOCATION permission
+    const fineLocationResult = await check(
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    );
+    if (fineLocationResult !== RESULTS.GRANTED) {
+      const newFineLocationResult = await request(
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      );
+      if (newFineLocationResult !== RESULTS.GRANTED) {
+        permissionsGranted = false;
+        handleDeniedPermission('GPS Location');
+      }
+    }
+
+    // Checking ACCESS_COARSE_LOCATION permission
+    const coarseLocationResult = await check(
+      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+    );
+    if (coarseLocationResult !== RESULTS.GRANTED) {
+      const newCoarseLocationResult = await request(
+        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
+      );
+      if (newCoarseLocationResult !== RESULTS.GRANTED) {
+        permissionsGranted = false;
+        handleDeniedPermission('Approximate Location');
+      }
+    }
+
+    setArPermissionGranted(permissionsGranted);
+  };
+
+  useEffect(() => {
+    requestARPermission();
+  }, []);
 
   // Set cartQty with the pre-existing quantity of this particular item inside the user's cart
   // or set the cartQty to 0 if this item doesn't exist in the user's cart.
@@ -235,6 +330,7 @@ const ProductDescriptionScreen = () => {
           </View>
         ) : null}
 
+        {/* Image Carousel section */}
         <View style={styles.carouselContainer}>
           <Carousel
             data={product.imgs}
@@ -256,6 +352,7 @@ const ProductDescriptionScreen = () => {
           />
         </View>
 
+        {/* Name, Price & Quantity container */}
         <Text style={styles.productName}>{product.name}</Text>
         <View style={styles.priceQuantityContainer}>
           <Text style={styles.productPrice}>${product.price.toFixed(2)}</Text>
@@ -283,7 +380,6 @@ const ProductDescriptionScreen = () => {
               <Text style={styles.addToCartText}>Add to Cart</Text>
             )}
           </TouchableOpacity>
-
           <TouchableOpacity
             onPress={handleWishlistAction}
             style={styles.addToWishlistButton}
@@ -298,6 +394,7 @@ const ProductDescriptionScreen = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Add to Comparison button */}
         <TouchableOpacity
           onPress={handleAddToComparison}
           style={[
@@ -310,11 +407,26 @@ const ProductDescriptionScreen = () => {
           </Text>
         </TouchableOpacity>
 
+        {/* View in AR button */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ARScreen')}
+          style={[
+            styles.arButton,
+            !arPermissionGranted && styles.disabledButton,
+          ]}
+          disabled={!arPermissionGranted}>
+          <Text style={styles.arButtonText}>
+            {arPermissionGranted ? 'View in AR' : 'Enable Camera for AR'}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Description section */}
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionTitle}>Description</Text>
           <Text style={styles.descriptionText}>{product.description}</Text>
         </View>
 
+        {/* Other Details section */}
         <View style={styles.detailsContainer}>
           <Text style={styles.detailsTitle}>Details</Text>
           <View style={styles.detailRow}>
@@ -355,7 +467,32 @@ const ProductDescriptionScreen = () => {
           </View>
         </View>
 
-        {/* Popular Products Section */}
+        {/* List of Stores */}
+        <View style={styles.storePickerContainer}>
+          <Text style={styles.storeTitle}>Select Store:</Text>
+          <Picker
+            selectedValue={selectedStore ? selectedStore.name : ''}
+            onValueChange={(itemValue, itemIndex) => {
+              const store = product.stores[itemIndex];
+              setSelectedStore(store);
+              console.log(store);
+            }}
+            style={styles.picker}>
+            {product.stores.map((store, index) => (
+              <Picker.Item key={index} label={store.name} value={store.name} />
+            ))}
+          </Picker>
+        </View>
+
+        {/* Store Locator Component */}
+        {selectedStore && (
+          <StoreLocator
+            latitude={selectedStore.lat}
+            longitude={selectedStore.long}
+          />
+        )}
+
+        {/* Popular Products section */}
         <Text style={styles.popularTitle}>Popular Products</Text>
         <FlatList
           data={popularProducts}
@@ -480,7 +617,7 @@ const styles = StyleSheet.create({
   },
   addToWishlistText: {
     color: '#000',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   addToComparisonButton: {
@@ -495,12 +632,25 @@ const styles = StyleSheet.create({
   },
   addToComparisonText: {
     color: 'gold',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   disabledButton: {
     backgroundColor: '#555',
     borderColor: '#777',
+  },
+  arButton: {
+    width: '100%',
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  arButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   descriptionContainer: {
     backgroundColor: '#f9f9f9',
@@ -547,6 +697,15 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     fontSize: 18,
+    color: 'black',
+  },
+  storePickerContainer: {
+    backgroundColor: '#f9f9f9',
+  },
+  storeTitle: {
+    fontSize: 20,
+    fontWeight: 'condensedBold',
+    marginBottom: 10,
     color: 'black',
   },
   popularTitle: {

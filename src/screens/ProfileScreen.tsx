@@ -1,12 +1,50 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
-import {selectUserProfile, selectUserLoading, selectUserError, selectUserId} from '../reducers/userSlice';
+import {
+  selectUserProfile,
+  selectUserLoading,
+  selectUserError,
+  selectUserId,
+} from '../reducers/userSlice';
 import {updateuserprofile} from '../actions/userActions';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
+  stores: Store[];
+}
 
 type RootStackParamList = {
   Home: {filter: string};
@@ -15,6 +53,8 @@ type RootStackParamList = {
   Wishlist: undefined;
   ProductDescription: {pr_id: string};
   Profile: undefined;
+  Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 const ProfileScreen = () => {

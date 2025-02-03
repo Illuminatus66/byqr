@@ -77,7 +77,7 @@ export const removefromcart = createAsyncThunk<
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to remove item from cart';
-    console.error('Error removing from cart:', errorMessage); 
+    console.error('Error removing from cart:', errorMessage);
     return rejectWithValue(errorMessage);
   }
 });

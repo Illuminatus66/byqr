@@ -6,6 +6,11 @@ import {useAppSelector} from '../hooks';
 import {selectComparisonProducts} from '../reducers/comparisonSlice';
 import {selectProducts} from '../reducers/productSlice';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -25,6 +30,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 type RootStackParamList = {
@@ -35,6 +41,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 interface MenuProps {

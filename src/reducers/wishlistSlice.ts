@@ -1,6 +1,10 @@
 /* eslint-disable prettier/prettier */
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {fetchwishlist, addtowishlist, removefromwishlist} from '../actions/wishlistActions';
+import {
+  fetchwishlist,
+  addtowishlist,
+  removefromwishlist,
+} from '../actions/wishlistActions';
 
 interface WishlistState {
   wishlist: string[];

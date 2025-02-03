@@ -1,6 +1,11 @@
 /* eslint-disable prettier/prettier */
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {fetchcartitems, addtocart, removefromcart, updatecartqty} from '../actions/cartActions';
+import {
+  fetchcartitems,
+  addtocart,
+  removefromcart,
+  updatecartqty,
+} from '../actions/cartActions';
 
 interface CartItem {
   pr_id: string;

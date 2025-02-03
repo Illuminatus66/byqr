@@ -30,7 +30,7 @@ export const fetchwishlist = createAsyncThunk<
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to fetch user wishlist';
-      console.error('Error fetching wishlist:', errorMessage);
+    console.error('Error fetching wishlist:', errorMessage);
     return rejectWithValue(errorMessage);
   }
 });
@@ -48,7 +48,7 @@ export const addtowishlist = createAsyncThunk<
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to add product to wishlist';
-      console.error('Error adding to wishlist:', errorMessage);
+    console.error('Error adding to wishlist:', errorMessage);
     return rejectWithValue(errorMessage);
   }
 });

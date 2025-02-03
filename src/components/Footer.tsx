@@ -3,6 +3,11 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Linking} from 'react-native';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -22,6 +27,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 type RootStackParamList = {
@@ -32,13 +38,13 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 const Footer = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <View style={styles.footer}>
-
       {/* Left side with the app name */}
       <View style={styles.appNameContainer}>
         <TouchableOpacity

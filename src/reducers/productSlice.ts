@@ -2,6 +2,11 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {fetchallproducts} from '../actions/productActions';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -21,6 +26,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 interface ProductsState {

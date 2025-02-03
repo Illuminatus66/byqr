@@ -1,6 +1,17 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="true"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" tools:replace="required" />
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" tools:replace="required" />
+    <uses-feature android:name="android.hardware.sensor.gyroscope" android:required="false" tools:replace="required" />
 
     <application
       android:name=".MainApplication"
@@ -21,5 +32,7 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+      <meta-data android:name="com.google.ar.core" android:value="optional" />
+      <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCkNeh3oJ5BiJq8og6algvCvRW-cPPehzw" />
     </application>
 </manifest>

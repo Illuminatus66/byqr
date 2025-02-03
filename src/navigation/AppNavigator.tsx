@@ -9,6 +9,7 @@ import WishlistScreen from '../screens/WishlistScreen';
 import ProductDescriptionScreen from '../screens/ProductDescriptionScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ComparisonScreen from '../screens/ComparisonScreen';
+import ARScreen from '../screens/ARScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ProductDescription" component={ProductDescriptionScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Compare" component={ComparisonScreen} />
+        <Stack.Screen name="ARScreen" component={ARScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

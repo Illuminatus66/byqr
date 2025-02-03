@@ -82,6 +82,11 @@ interface RemoveFromCartData {
   pr_id: string;
 }
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface ProductsResponse {
   _id: string;
   name: string;
@@ -101,6 +106,7 @@ interface ProductsResponse {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 export const logIn = (authData: LoginRequest) =>

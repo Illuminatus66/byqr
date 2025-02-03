@@ -1,6 +1,12 @@
 /* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {useRoute, RouteProp} from '@react-navigation/native';
 import ItemList from '../components/ItemList';
@@ -8,8 +14,17 @@ import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {fetchallproducts} from '../actions/productActions';
 import {useAppDispatch, useAppSelector} from '../hooks';
-import {selectProducts, selectProductsLoading, selectProductsError} from '../reducers/productSlice';
+import {
+  selectProducts,
+  selectProductsLoading,
+  selectProductsError,
+} from '../reducers/productSlice';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -29,6 +44,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 type HomeScreenRouteProp = RouteProp<{Home: {filter: string}}, 'Home'>;

@@ -10,6 +10,11 @@ import {selectProducts} from '../reducers/productSlice';
 import {selectUserToken} from '../reducers/userSlice';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
 interface Product {
   _id: string;
   name: string;
@@ -29,6 +34,7 @@ interface Product {
   tyreType: string;
   brand: string;
   warranty: string;
+  stores: Store[];
 }
 
 interface CartProduct {
@@ -39,6 +45,7 @@ interface CartProduct {
   stock: number;
   qty: number;
 }
+
 type RootStackParamList = {
   Home: {filter: string};
   Cart: undefined;
@@ -47,6 +54,7 @@ type RootStackParamList = {
   ProductDescription: {pr_id: string};
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
 };
 
 const CartScreen = () => {
