@@ -301,7 +301,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
               <TouchableOpacity
                 style={[styles.actionButton, styles.wishlistButton]}
                 onPress={() => handleWishlistAction(product._id)}>
-                <Text style={styles.buttonText}>
+                <Text style= { isInWishlist ? styles.removeButtonText : styles.buttonText}>
                   {isInWishlist ? 'Remove from ❤️' : 'Add to ❤️'}
                 </Text>
               </TouchableOpacity>
@@ -316,7 +316,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
 const styles = StyleSheet.create({
   table: {
     flexDirection: 'column',
-    padding: 10,
+    padding: 5,
     backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
@@ -326,8 +326,9 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    marginBottom: 5,
-    alignItems: 'center',
+    marginBottom: 4.5,
+    alignItems: 'stretch',
+    borderBottomWidth: 1,
   },
   cell: {
     flex: 1,
@@ -335,16 +336,24 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     textAlign: 'center',
+    minWidth: 200,
+    flexShrink: 1,
   },
   label: {
     fontWeight: 'bold',
     backgroundColor: '#f0f0f0',
+    textAlign: 'left',
+    minWidth: 120,
   },
   thumbnailContainer: {
     flex: 1,
     padding: 10,
     alignItems: 'center',
+    justifyContent: 'center',
     position: 'relative',
+    minWidth: 200,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   thumbnail: {
     width: 60,
@@ -356,23 +365,26 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     backgroundColor: 'red',
-    borderRadius: 12,
-    width: 24,
-    height: 24,
+    borderRadius: 9,
+    width: 18,
+    height: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
   removeText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 8,
   },
   actionContainer: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 200,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   actionButton: {
-    width: 120,
+    width: 110,
     padding: 10,
     borderRadius: 5,
     marginVertical: 5,
@@ -388,6 +400,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+  removeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 11,
+  }
 });
 
 export default ComparisonTable;

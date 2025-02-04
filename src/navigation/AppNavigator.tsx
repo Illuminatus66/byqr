@@ -6,7 +6,7 @@ import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
 import LoginScreen from '../screens/LoginScreen';
 import WishlistScreen from '../screens/WishlistScreen';
-import ProductDescriptionScreen from '../screens/ProductDescriptionScreen';
+import ProductDescriptionWrapper from '../screens/ProductDescriptionWrapper';
 import ProfileScreen from '../screens/ProfileScreen';
 import ComparisonScreen from '../screens/ComparisonScreen';
 import ARScreen from '../screens/ARScreen';
@@ -21,7 +21,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Wishlist" component={WishlistScreen} />
-        <Stack.Screen name="ProductDescription" component={ProductDescriptionScreen} />
+        <Stack.Screen name="ProductDescription" component={ProductDescriptionWrapper} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Compare" component={ComparisonScreen} />
         <Stack.Screen name="ARScreen" component={ARScreen} />

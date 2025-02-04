@@ -127,7 +127,7 @@ const CartScreen = () => {
               <ProductCard
                 pr_id={item._id}
                 name={item.name}
-                price={`$${(item.price * item.qty).toFixed(2)}`}
+                price={`Rs. ${(item.price * item.qty).toFixed(2)}`}
                 thumbnail={item.thumbnail}
                 stock={item.stock}
                 qty={item.qty}
@@ -138,7 +138,7 @@ const CartScreen = () => {
 
           {/* Cart Total and Place Order section */}
           <View style={styles.cartSummary}>
-            <Text style={styles.totalText}>Total: ${totalValue}</Text>
+            <Text style={styles.totalText}>Total: Rs. {totalValue}</Text>
             <TouchableOpacity style={styles.placeOrderButton}>
               <Text style={styles.placeOrderButtonText}>Place Order</Text>
             </TouchableOpacity>

@@ -111,7 +111,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     <View style={styles.card}>
       {/* Upper section: Thumbnail, name, price, and quantity */}
       <View style={styles.upperSection}>
-        <TouchableOpacity
+        <TouchableOpacity style={styles.thumbnailContainer}
           onPress={() =>
             navigation.navigate('ProductDescription', {pr_id: pr_id})
           }>
@@ -172,10 +172,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
+  thumbnailContainer: {
+    width: '25%',
+  },
   thumbnail: {
-    width: '15%',
     aspectRatio: 1,
-    borderRadius: 8,
+    borderRadius: 9,
     marginRight: 10,
   },
   details: {
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     alignItems: 'center',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 7,
     marginHorizontal: 5,
   },
   removeButtonText: {
@@ -225,7 +227,7 @@ const styles = StyleSheet.create({
     borderColor: 'red',
     alignItems: 'center',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 7,
     marginHorizontal: 5,
   },
   wishlistButtonText: {

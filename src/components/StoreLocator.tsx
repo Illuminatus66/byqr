@@ -29,7 +29,7 @@ const StoreLocator: React.FC<StoreLocatorProps> = ({latitude, longitude}) => {
 const styles = StyleSheet.create({
   container: {
     height: 250,
-    marginTop: 10,
+    marginBottom: 10,
     borderRadius: 10,
     overflow: 'hidden',
   },

@@ -3,8 +3,10 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {
   ViroARScene,
   ViroARSceneNavigator,
-  ViroARPlaneSelector,
   Viro3DObject,
+  ViroAmbientLight,
+  ViroSpotLight,
+  ViroNode,
 } from '@reactvision/react-viro';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 
@@ -47,35 +49,36 @@ type RootStackParamList = {
 };
 
 const ARBicycleScene = () => {
-  const [placed, setPlaced] = useState(false);
+  const [position, setPosition] = useState<[number, number, number]>([
+    0, 0, -2,
+  ]);
 
   return (
     <ViroARScene>
-      {!placed && (
-        <ViroARPlaneSelector
-          onPlaneSelected={() => setPlaced(true)} // Locked placement
-        >
-          <Viro3DObject
-            source={require('../assets/models/mini_bicycle.glb')}
-            position={[0, 0, -2]}
-            scale={[1.0, 1.0, 1.0]}
-            type="GLB"
-            dragType="FixedToWorld"
-            onDrag={() => {}} // Allows dragging but keeps it locked on the real-world plane
-          />
-        </ViroARPlaneSelector>
-      )}
-
-      {placed && (
+      <ViroAmbientLight color={'#ffffff'} intensity={0.5} />
+      <ViroSpotLight
+        position={[0, 2, 1]}
+        color="#ffffff"
+        intensity={0.8}
+        direction={[0, -1, -1]}
+        castsShadow={true}
+        innerAngle={45}
+        outerAngle={60}
+        attenuationStartDistance={2}
+        attenuationEndDistance={10}
+      />
+      <ViroNode
+        position={position}
+        dragType="FixedToWorld"
+        onDrag={(dragToPos: [number, number, number]) => {
+          setPosition(dragToPos);
+        }}>
         <Viro3DObject
           source={require('../assets/models/mini_bicycle.glb')}
-          position={[0, 0, -2]}
           scale={[1.0, 1.0, 1.0]}
           type="GLB"
-          dragType="FixedToWorld"
-          onDrag={() => {}}
         />
-      )}
+      </ViroNode>
     </ViroARScene>
   );
 };
@@ -101,7 +104,7 @@ const ARScreen = () => {
 const styles = StyleSheet.create({
   container: {flex: 1},
   backButton: {position: 'absolute', top: 20, left: 20, color: '#fff'},
-  backButtonText: {color: '#000000', fontSize: 6},
+  backButtonText: {color: '#000000', fontSize: 10},
 });
 
 export default ARScreen;

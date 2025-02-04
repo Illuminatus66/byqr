@@ -2,9 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import {
   NavigationProp,
-  RouteProp,
   useNavigation,
-  useRoute,
 } from '@react-navigation/native';
 import {
   Dimensions,
@@ -97,16 +95,9 @@ type RootStackParamList = {
   ARScreen: undefined;
 };
 
-type ProductDescriptionRouteProp = RouteProp<
-  {ProductDescription: {pr_id: string}},
-  'ProductDescription'
->;
-
-const ProductDescriptionScreen = () => {
+const ProductDescriptionScreen = ({ pr_id }: { pr_id: string }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
-  const route = useRoute<ProductDescriptionRouteProp>();
-  const {pr_id} = route.params;
   const products = useAppSelector(selectProducts);
   const cart_no = useAppSelector(selectCartNo);
   const cart_l = useAppSelector(selectCartLoading);
@@ -355,7 +346,7 @@ const ProductDescriptionScreen = () => {
         {/* Name, Price & Quantity container */}
         <Text style={styles.productName}>{product.name}</Text>
         <View style={styles.priceQuantityContainer}>
-          <Text style={styles.productPrice}>${product.price.toFixed(2)}</Text>
+          <Text style={styles.productPrice}>Rs. {product.price.toFixed(2)}</Text>
           <View style={styles.quantityContainer}>
             <Picker
               selectedValue={quantity}
@@ -477,7 +468,7 @@ const ProductDescriptionScreen = () => {
               setSelectedStore(store);
               console.log(store);
             }}
-            style={styles.picker}>
+            style={styles.storePicker}>
             {product.stores.map((store, index) => (
               <Picker.Item key={index} label={store.name} value={store.name} />
             ))}
@@ -507,7 +498,7 @@ const ProductDescriptionScreen = () => {
                   style={styles.popularProductImage}
                 />
                 <Text style={styles.popularProductName}>{item.name}</Text>
-                <Text style={styles.popularProductPrice}>{item.price}</Text>
+                <Text style={styles.popularProductPrice}>Rs. {item.price}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -516,9 +507,8 @@ const ProductDescriptionScreen = () => {
           keyExtractor={item => item._id}
           contentContainerStyle={styles.popularProductList}
         />
-
-        <Footer />
       </ScrollView>
+      <Footer />
     </SafeAreaView>
   );
 };
@@ -572,6 +562,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
+    color: 'black',
   },
   priceQuantityContainer: {
     flexDirection: 'row',
@@ -582,6 +573,7 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 22,
     fontWeight: 'bold',
+    color: 'black',
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -667,10 +659,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   descriptionText: {
     fontSize: 16,
-    color: '#555',
+    color: '#4b4b4b',
   },
   detailsContainer: {
     backgroundColor: '#f9f9f9',
@@ -687,6 +680,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'black',
   },
   detailRow: {
     marginBottom: 5,
@@ -704,9 +698,13 @@ const styles = StyleSheet.create({
   },
   storeTitle: {
     fontSize: 20,
-    fontWeight: 'condensedBold',
-    marginBottom: 10,
+    fontWeight: 'bold',
+    marginBottom: 5,
     color: 'black',
+  },
+  storePicker: {
+    height: 50,
+    width: '100%',
   },
   popularTitle: {
     fontSize: 20,
@@ -715,9 +713,10 @@ const styles = StyleSheet.create({
   },
   popularProductList: {
     paddingHorizontal: 10,
+    marginBottom: 20,
   },
   popularProduct: {
-    width: 150,
+    width: 170,
     marginRight: 10,
     alignItems: 'center',
     borderColor: '#ccc',

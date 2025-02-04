@@ -135,7 +135,7 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
       <View style={styles.itemContainer}>
         <Image source={{uri: item.thumbnail}} style={styles.itemThumbnail} />
         <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+        <Text style={styles.itemPrice}>Rs. {item.price.toFixed(2)}</Text>
 
         {/* Conditionally render buttons if isWishlist is true */}
         {isWishlist && (
