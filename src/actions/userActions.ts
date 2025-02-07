@@ -18,12 +18,14 @@ interface UpdateUserRequest {
   name: string;
   email: string;
   phno: string;
+  addresses: string[];
 }
 interface UserWithoutWishlist {
   _id: string;
   name: string;
   email: string;
   phno: string;
+  addresses: string[];
 }
 
 interface SignupResponse {

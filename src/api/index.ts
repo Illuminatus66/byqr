@@ -22,6 +22,7 @@ interface UserWithoutWishlist {
   name: string;
   email: string;
   phno: string;
+  addresses:string[]
 }
 
 interface CartProducts {

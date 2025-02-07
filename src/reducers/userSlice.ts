@@ -7,6 +7,7 @@ interface User {
   name: string;
   email: string;
   phno: string;
+  addresses: string[];
 }
 
 interface AuthState {

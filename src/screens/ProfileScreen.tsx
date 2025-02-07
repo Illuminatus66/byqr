@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import Toolbar from '../components/Toolbar';
@@ -69,6 +70,8 @@ const ProfileScreen = () => {
   const [name, setName] = useState(userProfile?.name || '');
   const [email, setEmail] = useState(userProfile?.email || '');
   const [phno, setPhno] = useState(userProfile?.phno || '');
+  const [addresses, setAddresses] = useState(userProfile?.addresses || []);
+  const [newAddress, setNewAddress] = useState('');
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
@@ -80,9 +83,20 @@ const ProfileScreen = () => {
 
   const handleUpdateProfile = () => {
     if (userId) {
-      dispatch(updateuserprofile({_id: userId, name, email, phno}));
+      dispatch(updateuserprofile({_id: userId, name, email, phno, addresses}));
       navigation.navigate('Home', {filter: 'none'});
     }
+  };
+
+  const handleAddAddress = () => {
+    if (newAddress.trim() !== '' && addresses.length < 3) {
+      setAddresses([...addresses, newAddress.trim()]);
+      setNewAddress('');
+    }
+  };
+
+  const handleRemoveAddress = (index: number) => {
+    setAddresses(addresses.filter((_, i) => i !== index));
   };
 
   return (
@@ -119,6 +133,37 @@ const ProfileScreen = () => {
             keyboardType="phone-pad"
           />
 
+          <Text style={styles.sectionTitle}>Addresses (Max 3)</Text>
+          <FlatList
+            data={addresses}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item, index}) => (
+              <View style={styles.addressItem}>
+                <Text style={styles.addressText}>{item}</Text>
+                <TouchableOpacity onPress={() => handleRemoveAddress(index)}>
+                  <Text style={styles.removeText}>X</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+
+          {addresses.length < 3 && (
+            <TextInput
+              style={styles.input}
+              placeholder="Add new address"
+              value={newAddress}
+              onChangeText={setNewAddress}
+            />
+          )}
+
+          {addresses.length < 3 && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={handleAddAddress}>
+              <Text style={styles.addButtonText}>Add Address</Text>
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
             style={[styles.button, loading && styles.disabledButton]}
             onPress={handleUpdateProfile}
@@ -150,6 +195,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
     backgroundColor: '#fff',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  addressItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    backgroundColor: '#fff',
+    marginBottom: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  addressText: {
+    fontSize: 14,
+    marginRight: 5,
+  },
+  removeText: {
+    color: 'red',
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  addButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   button: {
     backgroundColor: '#6200EE',

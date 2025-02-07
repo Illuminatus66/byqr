@@ -34,5 +34,6 @@
       </activity>
       <meta-data android:name="com.google.ar.core" android:value="optional" />
       <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCkNeh3oJ5BiJq8og6algvCvRW-cPPehzw" />
+      <meta-data android:name="com.google.android.gms.wallet.api.enabled" android:value="true"/>
     </application>
 </manifest>

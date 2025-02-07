@@ -1,14 +1,28 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import {
+  PaymentRequest,
+  GooglePayButton,
+  GooglePayButtonConstants,
+} from '@google/react-native-make-payment';
 import {useAppSelector} from '../hooks';
 import ProductCard from '../components/ProductCard';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
 import {selectCartProducts} from '../reducers/cartSlice';
 import {selectProducts} from '../reducers/productSlice';
-import {selectUserToken} from '../reducers/userSlice';
+import {selectUserProfile, selectUserToken} from '../reducers/userSlice';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RadioButton} from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface Store {
   name: string;
@@ -62,6 +76,9 @@ const CartScreen = () => {
   const cartItems = useAppSelector(selectCartProducts);
   const products = useAppSelector(selectProducts);
   const token = useAppSelector(selectUserToken);
+  const userProfile = useAppSelector(selectUserProfile);
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const addresses = userProfile?.addresses || [];
 
   // Here we are combining cart items with their respective product details
   // because both of them are stored in different reducers. So, we map over
@@ -92,6 +109,89 @@ const CartScreen = () => {
     0,
   ).toFixed(2);
 
+  const paymentDetails = {
+    total: {
+      amount: {
+        currency: 'INR',
+        value: totalValue,
+      },
+    },
+  };
+
+  const googlePayRequest = {
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: [
+      {
+        type: 'CARD',
+        parameters: {
+          allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+          allowedCardNetworks: ['VISA', 'MASTERCARD'],
+        },
+        tokenizationSpecification: {
+          type: 'PAYMENT_GATEWAY',
+          parameters: {
+            gateway: 'example',
+            gatewayMerchantId: 'exampleMerchantId',
+          },
+        },
+      },
+    ],
+    merchantInfo: {
+      merchantId: 'BCR2DN4TX7O7TYAG',
+      merchantName: 'BYQR',
+    },
+    transactionInfo: {
+      totalPriceStatus: 'FINAL',
+      totalPrice: paymentDetails.total.amount.value,
+      currencyCode: paymentDetails.total.amount.currency,
+      countryCode: 'IN',
+    },
+  };
+
+  const handleGooglePay = useCallback(async () => {
+    if (!selectedAddress) {
+      Alert.alert('Select Address', 'Please select a delivery address.');
+      return;
+    }
+
+    const paymentDetails = {
+      total: {
+        label: 'Total Payment',
+        amount: {
+          currency: 'INR',
+          value: totalValue,
+        },
+      },
+    };
+
+    const paymentMethods = [
+      {
+        supportedMethods: 'google_pay',
+        data: googlePayRequest,
+      },
+    ];
+
+    const paymentRequest = new PaymentRequest(paymentMethods, paymentDetails);
+
+    try {
+      const canPay = await paymentRequest.canMakePayment();
+      if (canPay) {
+        const response = await paymentRequest.show();
+        console.log('Payment Response:', response);
+        Alert.alert('Payment Successful', 'Your order has been placed!');
+      } else {
+        Alert.alert(
+          'Google Pay Unavailable',
+          'Google Pay is not supported on this device.',
+        );
+      }
+    } catch (error) {
+      console.error('Payment Error:', error);
+      Alert.alert('Payment Failed', 'Something went wrong with the payment.');
+    }
+  }, [totalValue, selectedAddress]);
+
   return (
     <View style={styles.container}>
       <Toolbar title="Cart" />
@@ -120,6 +220,7 @@ const CartScreen = () => {
       ) : (
         <>
           {/* List of cart items */}
+          <ScrollView>
           <FlatList
             data={CartProducts}
             keyExtractor={item => item._id}
@@ -136,12 +237,41 @@ const CartScreen = () => {
             showsVerticalScrollIndicator={false}
           />
 
+          {addresses.length > 0 && (
+            <View style={styles.addressContainer}>
+              <Text style={styles.sectionTitle}>Select Delivery Address</Text>
+              {addresses.map((address, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setSelectedAddress(address)}
+                  style={styles.radioOption}>
+                  <RadioButton
+                    value={address}
+                    status={
+                      selectedAddress === address ? 'checked' : 'unchecked'
+                    }
+                    onPress={() => setSelectedAddress(address)}
+                  />
+                  <Text style={styles.radioText}>{address}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+          </ScrollView>
+          
+
           {/* Cart Total and Place Order section */}
           <View style={styles.cartSummary}>
             <Text style={styles.totalText}>Total: Rs. {totalValue}</Text>
-            <TouchableOpacity style={styles.placeOrderButton}>
-              <Text style={styles.placeOrderButtonText}>Place Order</Text>
-            </TouchableOpacity>
+            <GooglePayButton
+              style={styles.googlepaybutton}
+              onPress={handleGooglePay}
+              allowedPaymentMethods={googlePayRequest.allowedPaymentMethods}
+              theme={GooglePayButtonConstants.Themes.Light}
+              type={GooglePayButtonConstants.Types.Buy}
+              radius={4}
+              disabled={!selectedAddress}
+            />
           </View>
         </>
       )}
@@ -156,6 +286,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
+  addressContainer: {
+    padding: 15,
+    backgroundColor: '#fff',
+    marginBottom: 5,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  radioOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  radioText: {
+    marginLeft: 10,
+    marginRight: 15,
+    fontSize: 16,
+  },
   cartSummary: {
     padding: 15,
     backgroundColor: '#fff',
@@ -163,22 +313,12 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     alignItems: 'center',
     marginBottom: 10,
+    height: 110,
   },
   totalText: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
-  },
-  placeOrderButton: {
-    backgroundColor: '#6200EE',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-  },
-  placeOrderButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   emptyContainer: {
     flex: 1,
@@ -193,6 +333,10 @@ const styles = StyleSheet.create({
   signInLink: {
     color: '#007bff',
     textDecorationLine: 'underline',
+  },
+  googlepaybutton: {
+    height: 100,
+    width: 300,
   },
 });
 

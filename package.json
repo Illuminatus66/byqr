@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@google/react-native-make-payment": "^0.1.4",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-native-picker/picker": "^2.8.1",
     "@react-navigation/native": "^6.1.18",
@@ -22,6 +23,7 @@
     "react-native": "^0.74.6",
     "react-native-gesture-handler": "^2.20.0",
     "react-native-maps": "^1.20.1",
+    "react-native-paper": "^5.13.1",
     "react-native-permissions": "^5.2.4",
     "react-native-reanimated": "^3.15.4",
     "react-native-reanimated-carousel": "^3.5.1",
