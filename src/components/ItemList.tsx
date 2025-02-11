@@ -141,16 +141,16 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
         {isWishlist && (
           <View style={styles.actionButtons}>
             <TouchableOpacity
-              style={styles.actionButton}
+              style={styles.addButton}
               onPress={() => handleMoveToCart(item._id, item.name)}
               disabled={cart_l || wishlist_l}>
-              <Text style={styles.actionButtonText}>Move to Cart</Text>
+              <Text style={styles.addButtonText}>Move to 🛒</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.actionButton}
+              style={styles.removeButton}
               onPress={() => handleRemoveFromWishlist(item._id)}
               disabled={cart_l || wishlist_l}>
-              <Text style={styles.actionButtonText}>Remove</Text>
+              <Text style={styles.removeButtonText}>Remove</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -198,8 +198,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     margin: 5,
-    padding: 10,
+    padding: 5,
     alignItems: 'center',
+    borderRadius: 10,
   },
   itemThumbnail: {
     width: 165,
@@ -221,15 +222,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 10,
   },
-  actionButton: {
+  addButton: {
     paddingVertical: 5,
     paddingHorizontal: 7,
-    backgroundColor: '#6200EE',
+    backgroundColor: '#8AF075',
     borderRadius: 5,
     marginHorizontal: 2,
   },
-  actionButtonText: {
-    color: '#fff',
+  removeButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 7,
+    backgroundColor: 'lightgrey',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginHorizontal: 2,
+    borderColor: 'red',
+  },
+  addButtonText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  removeButtonText: {
+    color: 'black',
     fontWeight: 'bold',
   },
   list: {

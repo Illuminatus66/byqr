@@ -102,78 +102,83 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <Toolbar title="Profile" />
-      <View style={styles.container}>
-        <View style={styles.profileContainer}>
-          {showError && (
-            <View style={styles.errorBox}>
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          )}
 
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={name}
-            onChangeText={setName}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Phone Number"
-            value={phno}
-            onChangeText={setPhno}
-            keyboardType="phone-pad"
-          />
-
-          <Text style={styles.sectionTitle}>Addresses (Max 3)</Text>
-          <FlatList
-            data={addresses}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => (
-              <View style={styles.addressItem}>
-                <Text style={styles.addressText}>{item}</Text>
-                <TouchableOpacity onPress={() => handleRemoveAddress(index)}>
-                  <Text style={styles.removeText}>X</Text>
-                </TouchableOpacity>
+      <FlatList
+        data={addresses}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item, index}) => (
+          <View style={styles.addressItem}>
+            <Text style={styles.addressText}>{item}</Text>
+            <TouchableOpacity onPress={() => handleRemoveAddress(index)}>
+              <Text style={styles.removeText}>X</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        ListHeaderComponent={
+          <View style={styles.profileContainer}>
+            {showError && (
+              <View style={styles.errorBox}>
+                <Text style={styles.errorText}>{error}</Text>
               </View>
             )}
-          />
 
-          {addresses.length < 3 && (
             <TextInput
               style={styles.input}
-              placeholder="Add new address"
-              value={newAddress}
-              onChangeText={setNewAddress}
+              placeholder="Name"
+              value={name}
+              onChangeText={setName}
             />
-          )}
 
-          {addresses.length < 3 && (
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              value={phno}
+              onChangeText={setPhno}
+              keyboardType="phone-pad"
+            />
+
+            <Text style={styles.sectionTitle}>Addresses (Max 3)</Text>
+          </View>
+        }
+        ListFooterComponent={
+          <View>
+            {addresses.length < 3 && (
+              <TextInput
+                style={styles.input}
+                placeholder="Add new address"
+                value={newAddress}
+                onChangeText={setNewAddress}
+              />
+            )}
+
+            {addresses.length < 3 && (
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={handleAddAddress}>
+                <Text style={styles.addButtonText}>Add Address</Text>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity
-              style={styles.addButton}
-              onPress={handleAddAddress}>
-              <Text style={styles.addButtonText}>Add Address</Text>
+              style={[styles.button, loading && styles.disabledButton]}
+              onPress={handleUpdateProfile}
+              disabled={loading}>
+              <Text style={styles.buttonText}>
+                {loading ? 'Updating...' : 'Update Profile'}
+              </Text>
             </TouchableOpacity>
-          )}
+          </View>
+        }
+      />
 
-          <TouchableOpacity
-            style={[styles.button, loading && styles.disabledButton]}
-            onPress={handleUpdateProfile}
-            disabled={loading}>
-            <Text style={styles.buttonText}>
-              {loading ? 'Updating...' : 'Update Profile'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
       <Footer />
     </View>
   );
@@ -221,7 +226,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   addButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#6200EE',
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
@@ -233,7 +238,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#6200EE',
+    backgroundColor: '#4CAF50',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
@@ -247,15 +252,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   errorBox: {
-    backgroundColor: 'white',
+    backgroundColor: 'red',
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'red',
-    marginBottom: 15,
+    borderRadius: 5,
+    marginBottom: 10,
     alignItems: 'center',
   },
   errorText: {
-    color: 'red',
+    color: '#fff',
     fontWeight: 'bold',
   },
 });

@@ -74,7 +74,7 @@ const ARBicycleScene = () => {
           setPosition(dragToPos);
         }}>
         <Viro3DObject
-          source={require('../assets/models/mini_bicycle.glb')}
+          source={require('../assets/models/bicycle.glb')}
           scale={[1.0, 1.0, 1.0]}
           type="GLB"
         />

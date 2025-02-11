@@ -13,7 +13,7 @@ import {removeFromComparison} from '../reducers/comparisonSlice';
 import {selectCartNo, selectCartProducts} from '../reducers/cartSlice';
 import {selectWishlist} from '../reducers/wishlistSlice';
 import {addtocart, updatecartqty} from '../actions/cartActions';
-import {addtowishlist} from '../actions/wishlistActions';
+import {addtowishlist, removefromwishlist} from '../actions/wishlistActions';
 
 interface CartData {
   cart_no: string;
@@ -106,6 +106,9 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
             text: 'Go to Login',
             onPress: () => navigation.navigate('Login'),
           },
+          {
+            text: 'Keep Comparing',
+          },
         ],
         {
           cancelable: true,
@@ -138,6 +141,9 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
               text: 'Go To Cart',
               onPress: () => navigation.navigate('Cart'),
             },
+            {
+              text: 'Keep Comparing',
+            },
           ],
           {
             cancelable: true,
@@ -169,6 +175,9 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
               text: 'Go to Cart',
               onPress: () => navigation.navigate('Cart'),
             },
+            {
+              text: 'Keep Comparing',
+            },
           ],
           {
             cancelable: true,
@@ -189,6 +198,9 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
             text: 'Go to Login',
             onPress: () => navigation.navigate('Login'),
           },
+          {
+            text: 'Keep Comparing',
+          },
         ],
         {
           cancelable: true,
@@ -202,6 +214,18 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
 
     if (isInWishlist) {
       dispatch(removefromwishlist(wishlistData));
+      Alert.alert(
+        'Product Removed From Wishlist',
+        'We removed the product from your wishlist',
+        [
+          {
+            text: 'OK',
+          },
+        ],
+        {
+          cancelable: true,
+        },
+      );
     } else {
       dispatch(addtowishlist(wishlistData));
       Alert.alert(
@@ -211,6 +235,9 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
           {
             text: 'Go to Wishlist',
             onPress: () => navigation.navigate('Wishlist'),
+          },
+          {
+            text: 'Keep Comparing',
           },
         ],
         {
@@ -301,7 +328,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
               <TouchableOpacity
                 style={[styles.actionButton, styles.wishlistButton]}
                 onPress={() => handleWishlistAction(product._id)}>
-                <Text style= { isInWishlist ? styles.removeButtonText : styles.buttonText}>
+                <Text style= { isInWishlist ? styles.removeButtonText : styles.removeButtonText}>
                   {isInWishlist ? 'Remove from ❤️' : 'Add to ❤️'}
                 </Text>
               </TouchableOpacity>
@@ -391,17 +418,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cartButton: {
-    backgroundColor: 'green',
+    backgroundColor: '#8AF075',
   },
   wishlistButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'lightgrey',
+    borderWidth: 1,
+    borderColor: 'red',
   },
   buttonText: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
   },
   removeButtonText: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
     fontSize: 11,
   }

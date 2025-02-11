@@ -16,13 +16,11 @@ import {
 import {useAppSelector} from '../hooks';
 import ProductCard from '../components/ProductCard';
 import Toolbar from '../components/Toolbar';
-import Footer from '../components/Footer';
 import {selectCartProducts} from '../reducers/cartSlice';
 import {selectProducts} from '../reducers/productSlice';
 import {selectUserProfile, selectUserToken} from '../reducers/userSlice';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RadioButton} from 'react-native-paper';
-import { ScrollView } from 'react-native-gesture-handler';
 
 interface Store {
   name: string;
@@ -220,7 +218,6 @@ const CartScreen = () => {
       ) : (
         <>
           {/* List of cart items */}
-          <ScrollView>
           <FlatList
             data={CartProducts}
             keyExtractor={item => item._id}
@@ -235,30 +232,31 @@ const CartScreen = () => {
               />
             )}
             showsVerticalScrollIndicator={false}
+            ListFooterComponent={
+              addresses.length > 0 ? (
+                <View style={styles.addressContainer}>
+                  <Text style={styles.sectionTitle}>
+                    Select Delivery Address
+                  </Text>
+                  {addresses.map((address, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => setSelectedAddress(address)}
+                      style={styles.radioOption}>
+                      <RadioButton
+                        value={address}
+                        status={
+                          selectedAddress === address ? 'checked' : 'unchecked'
+                        }
+                        onPress={() => setSelectedAddress(address)}
+                      />
+                      <Text style={styles.radioText}>{address}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ) : null
+            }
           />
-
-          {addresses.length > 0 && (
-            <View style={styles.addressContainer}>
-              <Text style={styles.sectionTitle}>Select Delivery Address</Text>
-              {addresses.map((address, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => setSelectedAddress(address)}
-                  style={styles.radioOption}>
-                  <RadioButton
-                    value={address}
-                    status={
-                      selectedAddress === address ? 'checked' : 'unchecked'
-                    }
-                    onPress={() => setSelectedAddress(address)}
-                  />
-                  <Text style={styles.radioText}>{address}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-          </ScrollView>
-          
 
           {/* Cart Total and Place Order section */}
           <View style={styles.cartSummary}>
@@ -275,8 +273,6 @@ const CartScreen = () => {
           </View>
         </>
       )}
-
-      <Footer />
     </View>
   );
 };

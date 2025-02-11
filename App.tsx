@@ -1,3 +1,4 @@
+import './reanimatedConfig';
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
 import {Provider} from 'react-redux';

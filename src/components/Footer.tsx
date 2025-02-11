@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Linking} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Linking, useWindowDimensions} from 'react-native';
 
 interface Store {
   name: string;
@@ -43,6 +43,9 @@ type RootStackParamList = {
 
 const Footer = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
   return (
     <View style={styles.footer}>
       {/* Left side with the app name */}
@@ -54,7 +57,7 @@ const Footer = () => {
       </View>
 
       {/* Right side for social media links and code repositories */}
-      <View style={styles.linksContainer}>
+      <View style={[styles.linksContainer, isLandscape && styles.linksContainerLandscape]}>
         <TouchableOpacity
           onPress={() =>
             Linking.openURL(
@@ -121,6 +124,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     alignItems: 'flex-start',
+  },
+  linksContainerLandscape: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 15,
   },
   linkText: {
     color: '#fff',

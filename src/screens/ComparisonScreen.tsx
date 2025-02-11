@@ -117,7 +117,6 @@ const ComparisonScreen = () => {
           <ComparisonTable products={ComparisonProducts} />
         </ScrollView>
       ) : null}
-      <Footer />
     </SafeAreaView>
   );
 };
