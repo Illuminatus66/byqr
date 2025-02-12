@@ -418,10 +418,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cartButton: {
-    backgroundColor: '#8AF075',
+    backgroundColor: 'pink',
   },
   wishlistButton: {
-    backgroundColor: 'lightgrey',
+    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: 'red',
   },

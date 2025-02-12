@@ -286,15 +286,15 @@ const styles = StyleSheet.create({
   profileMenu: {
     position: 'absolute',
     top: 60,
-    right: 10,
+    right: 5,
     backgroundColor: '#fff',
-    width: 150,
+    width: 130,
     padding: 10,
     borderRadius: 8,
     elevation: 5,
   },
   profileMenuItem: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
     marginVertical: 10,
     textAlign: 'center',

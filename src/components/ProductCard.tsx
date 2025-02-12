@@ -140,17 +140,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </View>
       {/* Lower section: "Remove" and "Move to Wishlist" buttons */}
       <View style={styles.lowerSection}>
+      <TouchableOpacity
+          style={styles.wishlistButton}
+          onPress={handleMoveToWishlist}
+          disabled={cart_l || wishlist_l}>
+          <Text style={styles.wishlistButtonText}>Move to ❤️</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.removeButton}
           onPress={handleRemoveFromCart}
           disabled={cart_l || wishlist_l}>
           <Text style={styles.removeButtonText}>Remove</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.wishlistButton}
-          onPress={handleMoveToWishlist}
-          disabled={cart_l || wishlist_l}>
-          <Text style={styles.wishlistButtonText}>Move to Wishlist</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     flexWrap: 'wrap',
+    color: 'black',
   },
   price: {
     fontSize: 16,

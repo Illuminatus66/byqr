@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
   dropdownSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     backgroundColor: '#e0e0e0',
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: '#ccc',
   },
   filterDropdown: {

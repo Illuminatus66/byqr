@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: 'center',
     borderRadius: 10,
+    borderWidth: 0.5,
   },
   itemThumbnail: {
     width: 165,
@@ -211,6 +212,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: 'black'
   },
   itemPrice: {
     marginTop: 5,
@@ -225,25 +227,25 @@ const styles = StyleSheet.create({
   addButton: {
     paddingVertical: 5,
     paddingHorizontal: 7,
-    backgroundColor: '#8AF075',
+    backgroundColor: 'white',
     borderRadius: 5,
     marginHorizontal: 2,
+    borderWidth: 1,
+    borderColor: 'red',
   },
   removeButton: {
     paddingVertical: 5,
     paddingHorizontal: 7,
-    backgroundColor: 'lightgrey',
-    borderWidth: 1,
+    backgroundColor: 'red',
     borderRadius: 5,
     marginHorizontal: 2,
-    borderColor: 'red',
   },
   addButtonText: {
-    color: 'black',
+    color: 'red',
     fontWeight: 'bold',
   },
   removeButtonText: {
-    color: 'black',
+    color: 'white',
     fontWeight: 'bold',
   },
   list: {

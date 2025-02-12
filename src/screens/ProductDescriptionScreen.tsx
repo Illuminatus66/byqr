@@ -1,9 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {
-  NavigationProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
   Dimensions,
   View,
@@ -94,8 +91,12 @@ type RootStackParamList = {
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
 };
+const isLandscape = () => {
+  const dim = Dimensions.get('window');
+  return dim.width > dim.height;
+};
 
-const ProductDescriptionScreen = ({ pr_id }: { pr_id: string }) => {
+const ProductDescriptionScreen = ({pr_id}: {pr_id: string}) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useAppDispatch();
   const products = useAppSelector(selectProducts);
@@ -114,12 +115,14 @@ const ProductDescriptionScreen = ({ pr_id }: { pr_id: string }) => {
     lat: number;
     long: number;
   } | null>(null);
+  const [isLandscapeMode, setIsLandscapeMode] = useState(isLandscape());
 
   // Used below to find the pre-existing quantity of this particular item in the user's cart
   const cartItem = useAppSelector(state =>
     state.cart.products.find(pr => pr.pr_id === pr_id),
   );
-  const width = Dimensions.get('window').width;
+  const window = Dimensions.get('window');
+  const width = isLandscapeMode ? window.height : window.width;
 
   // We filter the product to be rendered by its _id (pr_id)
   const product = products.find(pr => pr._id === pr_id);
@@ -346,7 +349,9 @@ const ProductDescriptionScreen = ({ pr_id }: { pr_id: string }) => {
         {/* Name, Price & Quantity container */}
         <Text style={styles.productName}>{product.name}</Text>
         <View style={styles.priceQuantityContainer}>
-          <Text style={styles.productPrice}>Rs. {product.price.toFixed(2)}</Text>
+          <Text style={styles.productPrice}>
+            Rs. {product.price.toFixed(2)}
+          </Text>
           <View style={styles.quantityContainer}>
             <Picker
               selectedValue={quantity}
@@ -368,7 +373,7 @@ const ProductDescriptionScreen = ({ pr_id }: { pr_id: string }) => {
             {cart_l ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.addToCartText}>Add to Cart</Text>
+              <Text style={styles.addToCartText}>Add to 🛒</Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity
@@ -478,6 +483,7 @@ const ProductDescriptionScreen = ({ pr_id }: { pr_id: string }) => {
         {/* Store Locator Component */}
         {selectedStore && (
           <StoreLocator
+            key={selectedStore.name}
             latitude={selectedStore.lat}
             longitude={selectedStore.long}
           />
@@ -555,7 +561,7 @@ const styles = StyleSheet.create({
   carouselImage: {
     width: 400,
     height: 300,
-    borderRadius: 10,
+    borderRadius: 15,
   },
   productName: {
     fontSize: 24,
@@ -565,12 +571,16 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   priceQuantityContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   productPrice: {
+    flex: 0.5,
     fontSize: 22,
     fontWeight: 'bold',
     color: 'black',
@@ -586,10 +596,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 5,
+    marginBottom: 25,
   },
   addToCartButton: {
-    flex: 0.6,
+    flex: 0.5,
     backgroundColor: '#6200EE',
     padding: 15,
     borderRadius: 8,
@@ -601,11 +611,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   addToWishlistButton: {
-    flex: 0.4,
-    backgroundColor: '#ddd',
+    flex: 0.5,
+    backgroundColor: 'white',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#6200EE',
   },
   addToWishlistText: {
     color: '#000',
@@ -618,7 +630,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 4,
     borderWidth: 3,
     borderColor: 'gold',
   },
@@ -633,14 +645,16 @@ const styles = StyleSheet.create({
   },
   arButton: {
     width: '100%',
-    backgroundColor: '#007AFF',
+    backgroundColor: 'gold',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 20,
+    borderWidth: 3,
+    borderColor: 'black',
   },
   arButtonText: {
-    color: '#fff',
+    color: 'black',
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -690,11 +704,19 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   detailValue: {
-    fontSize: 18,
+    fontSize: 16,
     color: 'black',
   },
   storePickerContainer: {
     backgroundColor: '#f9f9f9',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 4,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   storeTitle: {
     fontSize: 20,
@@ -710,13 +732,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    marginTop: 10,
   },
   popularProductList: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     marginBottom: 20,
   },
   popularProduct: {
-    width: 170,
+    width: 155,
     marginRight: 10,
     alignItems: 'center',
     borderColor: '#ccc',
@@ -736,7 +759,7 @@ const styles = StyleSheet.create({
   },
   popularProductPrice: {
     color: '#888',
-    fontSize: 12,
+    fontSize: 14,
   },
 });
 
