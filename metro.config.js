@@ -11,7 +11,7 @@ const defaultConfig = getDefaultConfig(__dirname);
 
 const config = {
   resolver: {
-    assetExts: [...defaultConfig.resolver.assetExts, 'glb', 'obj', 'mtl'], // Add .glb, obj and mtl support
+    assetExts: [...defaultConfig.resolver.assetExts, 'glb'], // Add .glb support
   },
 };
 

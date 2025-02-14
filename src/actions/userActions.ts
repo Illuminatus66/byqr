@@ -58,16 +58,15 @@ export const signup = createAsyncThunk<
   {state: AuthState; rejectValue: string}
 >('user/signup', async (signupData, {rejectWithValue}) => {
   try {
-    console.log('Signup request data:', signupData);
     const response = await signUp(signupData);
-    console.log('Signup response:', response.data);
+
     const {token, result: user} = response.data;
     await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
-    console.log('Signup success, user and token stored in AsyncStorage');
+    await AsyncStorage.setItem('tokenTimestamp', Date.now().toString());
+
     return {token, result: user};
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'Failed to sign up';
-    console.error('Signup error:', errorMessage);
     return rejectWithValue(errorMessage);
   }
 });
@@ -78,17 +77,15 @@ export const login = createAsyncThunk<
   {state: AuthState; rejectValue: string}
 >('user/login', async (loginData, {rejectWithValue}) => {
   try {
-    console.log('Login request data:', loginData);
     const response = await logIn(loginData);
-    console.log('Login response:', response.data);
 
     const {token, result: user} = response.data;
     await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
-    console.log('Login success, user and token stored in AsyncStorage');
+    await AsyncStorage.setItem('tokenTimestamp', Date.now().toString());
+
     return {token, result: user};
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'Failed to login';
-    console.error('Login error:', errorMessage);
     return rejectWithValue(errorMessage);
   }
 });
@@ -100,28 +97,26 @@ export const updateuserprofile = createAsyncThunk<
 >('user/updateuserprofile', async (updateData, {rejectWithValue}) => {
   try {
     const {_id, ...update} = updateData;
-    console.log('Update user profile request data:', update, _id);
+
     const response = await updateUser(update, _id);
-    console.log('Update user profile response:', response.data);
+
     const {token, result: user} = response.data;
 
     if (token) {
       await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
-      console.log('User profile updated, new token and user stored');
+      await AsyncStorage.setItem('tokenTimestamp', Date.now().toString());
     } else {
       const profile = await AsyncStorage.getItem('Profile');
       if (profile) {
         const storedProfile = JSON.parse(profile);
         storedProfile.user = {...storedProfile.user, ...user};
         await AsyncStorage.setItem('Profile', JSON.stringify(storedProfile));
-        console.log('User profile updated in AsyncStorage');
       }
     }
     return {token, result: user};
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to update user profile';
-    console.error('Update user profile error:', errorMessage);
     return rejectWithValue(errorMessage);
   }
 });

@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppSelector, useAppDispatch} from '../hooks';
 import {logout, selectUserId} from '../reducers/userSlice';
@@ -94,6 +95,7 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
     dispatch(logout());
     dispatch(clearcart());
     dispatch(clearwishlist());
+    AsyncStorage.removeItem('tokenTimestamp');
     navigation.reset({
       index: 0,
       routes: [{name: 'Home', params: {filter: 'none'}}],

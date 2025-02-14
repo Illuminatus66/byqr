@@ -335,7 +335,6 @@ const ProductDescriptionScreen = ({pr_id}: {pr_id: string}) => {
                 onError={e =>
                   console.log('Image loading error:', e.nativeEvent.error)
                 }
-                onLoad={() => console.log('Image loaded successfully')}
               />
             )}
             width={width}
@@ -471,7 +470,6 @@ const ProductDescriptionScreen = ({pr_id}: {pr_id: string}) => {
             onValueChange={(itemValue, itemIndex) => {
               const store = product.stores[itemIndex];
               setSelectedStore(store);
-              console.log(store);
             }}
             style={styles.storePicker}>
             {product.stores.map((store, index) => (

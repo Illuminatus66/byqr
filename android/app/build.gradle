@@ -54,7 +54,7 @@ react {
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -81,8 +81,27 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        // Added this option by explicitly specifying the route of the ninja executable which fixed
+        // the build failing for arm64-v8a devices. Since most modern mobile devices are either v8a
+        // or armeabi-v7a, it was very important to find a fix. I also had to enable long paths in
+        // Windows via the Registry Editor. I also moved the project directory to get the shortest
+        // possible filepath along with changing any folder names that had whitespace in them.
+        externalNativeBuild {
+        cmake {arguments "-DCMAKE_MAKE_PROGRAM=C:\\ninja\\ninja.exe", "-DCMAKE_OBJECT_PATH_MAX=1024"}
+}
     }
     signingConfigs {
+        // Go to the root directory for the user where Android studio and Gradle are installed
+        // and create a file called gradle.properties inside the ~/.gradle folder with all
+        // of these properties stated in plain-text. This prevents committing any secrets to Git. 
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -97,7 +116,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
