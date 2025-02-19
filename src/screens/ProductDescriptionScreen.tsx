@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
@@ -71,7 +70,6 @@ interface Product {
   warranty: string;
   stores: Store[];
 }
-
 interface CartData {
   cart_no: string;
   pr_id: string;
@@ -81,6 +79,7 @@ interface WishlistData {
   _id: string;
   pr_id: string;
 }
+
 type RootStackParamList = {
   Home: {filter: string};
   Cart: undefined;
@@ -90,6 +89,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 const isLandscape = () => {
   const dim = Dimensions.get('window');
@@ -349,7 +349,7 @@ const ProductDescriptionScreen = ({pr_id}: {pr_id: string}) => {
         <Text style={styles.productName}>{product.name}</Text>
         <View style={styles.priceQuantityContainer}>
           <Text style={styles.productPrice}>
-            Rs. {product.price.toFixed(2)}
+            &#8377;{product.price.toFixed(2)}
           </Text>
           <View style={styles.quantityContainer}>
             <Picker
@@ -502,7 +502,9 @@ const ProductDescriptionScreen = ({pr_id}: {pr_id: string}) => {
                   style={styles.popularProductImage}
                 />
                 <Text style={styles.popularProductName}>{item.name}</Text>
-                <Text style={styles.popularProductPrice}>Rs. {item.price}</Text>
+                <Text style={styles.popularProductPrice}>
+                  &#8377;{item.price}
+                </Text>
               </View>
             </TouchableOpacity>
           )}

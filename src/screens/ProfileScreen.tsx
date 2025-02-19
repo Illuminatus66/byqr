@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -56,6 +55,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 const ProfileScreen = () => {

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import ItemList from '../components/ItemList';
@@ -46,6 +45,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 const WishlistScreen = () => {

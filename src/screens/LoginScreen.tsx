@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
@@ -23,6 +22,7 @@ import {
 import {login, signup} from '../actions/userActions';
 import {fetchcartitems} from '../actions/cartActions';
 import {fetchwishlist} from '../actions/wishlistActions';
+import {getordersbyuser} from '../actions/orderActions';
 
 interface Store {
   name: string;
@@ -50,7 +50,6 @@ interface Product {
   warranty: string;
   stores: Store[];
 }
-
 interface Login {
   email: string;
   password: string;
@@ -71,6 +70,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 const LoginScreen = () => {
@@ -100,6 +100,7 @@ const LoginScreen = () => {
     if (User) {
       dispatch(fetchcartitems(User));
       dispatch(fetchwishlist(User));
+      dispatch(getordersbyuser(User));
       navigation.reset({
         index: 0,
         routes: [{name: 'Home', params: {filter: 'none'}}],

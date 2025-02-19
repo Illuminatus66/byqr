@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {fetchCartItems, addToCart, removeFromCart, updateCartQty} from '../api';
 
@@ -36,7 +35,6 @@ export const fetchcartitems = createAsyncThunk<
   try {
     const response = await fetchCartItems(cart_no);
     return response.data;
-
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to fetch cart items';
@@ -52,7 +50,6 @@ export const addtocart = createAsyncThunk<
   try {
     await addToCart(cartData);
     return {pr_id: cartData.pr_id, qty: cartData.qty};
-
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to add item to cart';
@@ -68,7 +65,6 @@ export const removefromcart = createAsyncThunk<
   try {
     await removeFromCart(cartData);
     return {pr_id: cartData.pr_id};
-
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to remove item from cart';
@@ -84,7 +80,6 @@ export const updatecartqty = createAsyncThunk<
   try {
     await updateCartQty(cartData);
     return {pr_id: cartData.pr_id, qty: cartData.qty};
-
   } catch (error: any) {
     const errorMessage =
       error.response?.data?.message || 'Failed to update cart quantity';

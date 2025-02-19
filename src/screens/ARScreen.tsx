@@ -46,6 +46,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 const ARBicycleScene = () => {

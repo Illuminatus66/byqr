@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {
   fetchwishlist,
@@ -36,8 +35,8 @@ const wishlistSlice = createSlice({
       })
       .addCase(
         fetchwishlist.fulfilled,
-        (state, action: PayloadAction<{wishlist: string[]}>) => {
-          state.wishlist = action.payload.wishlist;
+        (state, action: PayloadAction<string[]>) => {
+          state.wishlist = action.payload;
           state.loading = false;
           state.error = null;
         },

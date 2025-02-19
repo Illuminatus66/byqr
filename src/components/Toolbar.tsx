@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {
   View,
@@ -15,12 +14,13 @@ import {useAppSelector, useAppDispatch} from '../hooks';
 import {logout, selectUserId} from '../reducers/userSlice';
 import {clearcart} from '../reducers/cartSlice';
 import {clearwishlist} from '../reducers/wishlistSlice';
+import {selectProducts} from '../reducers/productSlice';
+import {clearorders} from '../reducers/orderSlice';
 import {
   clearComparison,
   selectComparisonProducts,
 } from '../reducers/comparisonSlice';
 import Menu from './Menu';
-import {selectProducts} from '../reducers/productSlice';
 
 interface Store {
   name: string;
@@ -62,6 +62,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 const Toolbar: React.FC<ToolbarProps> = ({title}) => {
@@ -95,6 +96,7 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
     dispatch(logout());
     dispatch(clearcart());
     dispatch(clearwishlist());
+    dispatch(clearorders());
     AsyncStorage.removeItem('tokenTimestamp');
     navigation.reset({
       index: 0,
@@ -204,6 +206,9 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
         <View style={styles.profileMenu}>
           <TouchableOpacity onPress={() => handleNavigation('Profile')}>
             <Text style={styles.profileMenuItem}>Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNavigation('Orders')}>
+            <Text style={styles.profileMenuItem}>Orders</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout}>
             <Text style={styles.profileMenuItem}>Logout</Text>

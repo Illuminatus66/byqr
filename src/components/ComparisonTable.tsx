@@ -73,6 +73,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
@@ -250,7 +251,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
 
   const metrics: Metric<any>[] = [
     {label: 'Name', key: 'name'},
-    {label: 'Price', key: 'price', format: (value: number) => `Rs.${value}`},
+    {label: 'Price', key: 'price', format: (value: number) => `&#8377;${value}`},
     {label: 'Frame Material', key: 'frameMaterial'},
     {label: 'Weight', key: 'weight', format: (value: number) => `${value} kg`},
     {

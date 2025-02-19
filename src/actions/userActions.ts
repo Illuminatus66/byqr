@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {logIn, signUp, updateUser} from '../api';
@@ -59,11 +58,9 @@ export const signup = createAsyncThunk<
 >('user/signup', async (signupData, {rejectWithValue}) => {
   try {
     const response = await signUp(signupData);
-
     const {token, result: user} = response.data;
     await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
     await AsyncStorage.setItem('tokenTimestamp', Date.now().toString());
-
     return {token, result: user};
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'Failed to sign up';
@@ -78,11 +75,9 @@ export const login = createAsyncThunk<
 >('user/login', async (loginData, {rejectWithValue}) => {
   try {
     const response = await logIn(loginData);
-
     const {token, result: user} = response.data;
     await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
     await AsyncStorage.setItem('tokenTimestamp', Date.now().toString());
-
     return {token, result: user};
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'Failed to login';
@@ -97,11 +92,8 @@ export const updateuserprofile = createAsyncThunk<
 >('user/updateuserprofile', async (updateData, {rejectWithValue}) => {
   try {
     const {_id, ...update} = updateData;
-
     const response = await updateUser(update, _id);
-
     const {token, result: user} = response.data;
-
     if (token) {
       await AsyncStorage.setItem('Profile', JSON.stringify({token, user}));
       await AsyncStorage.setItem('tokenTimestamp', Date.now().toString());

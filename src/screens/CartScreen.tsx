@@ -1,5 +1,5 @@
-/* eslint-disable prettier/prettier */
 import React, {useCallback, useState} from 'react';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {
   View,
   Text,
@@ -7,20 +7,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  TouchableHighlight,
 } from 'react-native';
-import {
-  PaymentRequest,
-  GooglePayButton,
-  GooglePayButtonConstants,
-} from '@google/react-native-make-payment';
-import {useAppSelector} from '../hooks';
-import ProductCard from '../components/ProductCard';
-import Toolbar from '../components/Toolbar';
+import {RadioButton} from 'react-native-paper';
+import RazorpayCheckout from 'react-native-razorpay';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {fetchcreatedorder, saveorder} from '../actions/orderActions';
 import {selectCartProducts} from '../reducers/cartSlice';
 import {selectProducts} from '../reducers/productSlice';
 import {selectUserProfile, selectUserToken} from '../reducers/userSlice';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RadioButton} from 'react-native-paper';
+import ProductCard from '../components/ProductCard';
+import Toolbar from '../components/Toolbar';
+import Footer from '../components/Footer';
 
 interface Store {
   name: string;
@@ -48,7 +46,6 @@ interface Product {
   warranty: string;
   stores: Store[];
 }
-
 interface CartProduct {
   _id: string;
   name: string;
@@ -56,6 +53,23 @@ interface CartProduct {
   thumbnail: string;
   stock: number;
   qty: number;
+}
+interface ProductForVerification {
+  pr_id: string;
+  name: string;
+  qty: number;
+  price: number;
+  thumbnail: string;
+}
+interface VerificationData {
+  user_id: any;
+  receipt: string;
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+  products: ProductForVerification[];
+  total_amount: number;
+  backend_order_id: string;
 }
 
 type RootStackParamList = {
@@ -67,10 +81,12 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 const CartScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const dispatch = useAppDispatch();
   const cartItems = useAppSelector(selectCartProducts);
   const products = useAppSelector(selectProducts);
   const token = useAppSelector(selectUserToken);
@@ -101,94 +117,81 @@ const CartScreen = () => {
     })
     .filter((item): item is CartProduct => item !== null);
 
+  const productsForVerification: ProductForVerification[] = cartItems
+    .map(cartItem => {
+      const product = products.find(p => p._id === cartItem.pr_id);
+      if (product) {
+        return {
+          pr_id: product._id,
+          name: product.name,
+          price: product.price,
+          thumbnail: product.thumbnail,
+          qty: cartItem.qty,
+        };
+      }
+      return null;
+    })
+    .filter((item): item is ProductForVerification => item !== null);
+
   // Calculate total value of the cart
   const totalValue = CartProducts.reduce(
     (acc, item) => acc + item.price * item.qty,
     0,
   ).toFixed(2);
 
-  const paymentDetails = {
-    total: {
-      amount: {
-        currency: 'INR',
-        value: totalValue,
-      },
-    },
-  };
+  const handlePayment = async () => {
+    const order = await fetchcreatedorder(Number(totalValue));
+    if (!order) return console.log('No order');
 
-  const googlePayRequest = {
-    apiVersion: 2,
-    apiVersionMinor: 0,
-    allowedPaymentMethods: [
-      {
-        type: 'CARD',
-        parameters: {
-          allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-          allowedCardNetworks: ['VISA', 'MASTERCARD'],
-        },
-        tokenizationSpecification: {
-          type: 'PAYMENT_GATEWAY',
-          parameters: {
-            gateway: 'example',
-            gatewayMerchantId: 'exampleMerchantId',
-          },
-        },
+    var options = {
+      description: 'Buy Your Bicycles/Accessories Now!',
+      image:
+        'https://drive.google.com/file/d/1-uuHBSJN0l96hrUK0Es8jCimAn6w2MrG/view?usp=sharing',
+      currency: 'INR',
+      key: order.key,
+      amount: order.amount,
+      name: 'BYQR',
+      order_id: order.order_id,
+      prefill: {
+        email: userProfile?.email,
+        contact: `+91${userProfile?.phno}`,
+        name: userProfile?.name,
       },
-    ],
-    merchantInfo: {
-      merchantId: 'BCR2DN4TX7O7TYAG',
-      merchantName: 'BYQR',
-    },
-    transactionInfo: {
-      totalPriceStatus: 'FINAL',
-      totalPrice: paymentDetails.total.amount.value,
-      currencyCode: paymentDetails.total.amount.currency,
-      countryCode: 'IN',
-    },
-  };
-
-  const handleGooglePay = useCallback(async () => {
-    if (!selectedAddress) {
-      Alert.alert('Select Address', 'Please select a delivery address.');
-      return;
-    }
-
-    const paymentDetails = {
-      total: {
-        label: 'Total Payment',
-        amount: {
-          currency: 'INR',
-          value: totalValue,
-        },
+      readonly: {
+        email: true,
+        contact: true,
+        name: true,
       },
+      modal: {
+        confirm_close: true,
+      },
+      retry: {
+        enabled: true,
+        max_count: 3,
+      },
+      allow_rotation: true,
+      theme: {color: '#6200ee', backdrop_color: '#ffffff'},
     };
 
-    const paymentMethods = [
-      {
-        supportedMethods: 'google_pay',
-        data: googlePayRequest,
-      },
-    ];
-
-    const paymentRequest = new PaymentRequest(paymentMethods, paymentDetails);
-
-    try {
-      const canPay = await paymentRequest.canMakePayment();
-      if (canPay) {
-        const response = await paymentRequest.show();
-        console.log('Payment Response:', response);
-        Alert.alert('Payment Successful', 'Your order has been placed!');
-      } else {
-        Alert.alert(
-          'Google Pay Unavailable',
-          'Google Pay is not supported on this device.',
-        );
-      }
-    } catch (error) {
-      console.error('Payment Error:', error);
-      Alert.alert('Payment Failed', 'Something went wrong with the payment.');
-    }
-  }, [totalValue, selectedAddress]);
+    RazorpayCheckout.open(options)
+      .then(data => {
+        const verificationData: VerificationData = {
+          user_id: userProfile?._id,
+          receipt: order.receipt,
+          razorpay_payment_id: data.razorpay_payment_id,
+          razorpay_order_id: data.razorpay_order_id,
+          razorpay_signature: data.razorpay_signature,
+          products: productsForVerification,
+          total_amount: order.amount,
+          backend_order_id: order.order_id,
+        };
+        dispatch(saveorder(verificationData));
+        Alert.alert(`Order has been paid for successfully!`);
+      })
+      .catch(error => {
+        Alert.alert(`Error: ${error.code} | ${error.description}`);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -225,7 +228,7 @@ const CartScreen = () => {
               <ProductCard
                 pr_id={item._id}
                 name={item.name}
-                price={`Rs. ${(item.price * item.qty).toFixed(2)}`}
+                price={`${(item.price * item.qty).toFixed(2)}`}
                 thumbnail={item.thumbnail}
                 stock={item.stock}
                 qty={item.qty}
@@ -260,19 +263,19 @@ const CartScreen = () => {
 
           {/* Cart Total and Place Order section */}
           <View style={styles.cartSummary}>
-            <Text style={styles.totalText}>Total: Rs. {totalValue}</Text>
-            <GooglePayButton
-              style={styles.googlepaybutton}
-              onPress={handleGooglePay}
-              allowedPaymentMethods={googlePayRequest.allowedPaymentMethods}
-              theme={GooglePayButtonConstants.Themes.Light}
-              type={GooglePayButtonConstants.Types.Buy}
-              radius={4}
+            <Text style={styles.totalText}>
+              Cart Total: &#8377;{totalValue}
+            </Text>
+            <TouchableHighlight
+              style={styles.payButton}
               disabled={!selectedAddress}
-            />
+              onPress={handlePayment}>
+              <Text style={styles.payButtonText}>PAY WITH RAZORPAY</Text>
+            </TouchableHighlight>
           </View>
         </>
       )}
+      <Footer />
     </View>
   );
 };
@@ -309,8 +312,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#ddd',
     alignItems: 'center',
-    marginBottom: 10,
-    height: 110,
+    marginBottom: 1,
+    height: 100,
   },
   totalText: {
     fontSize: 18,
@@ -331,9 +334,22 @@ const styles = StyleSheet.create({
     color: '#007bff',
     textDecorationLine: 'underline',
   },
-  googlepaybutton: {
-    height: 100,
-    width: 300,
+  payButton: {
+    width: '70%',
+    padding: 5,
+    borderWidth: 3,
+    borderColor: 'black',
+    borderRadius: 7,
+    backgroundColor: 'red',
+    shadowColor: 'red',
+    shadowOffset: {width: 5, height: 5},
+    shadowOpacity: 100,
+    alignItems: 'center',
+  },
+  payButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 23,
   },
 });
 

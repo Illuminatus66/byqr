@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
@@ -63,7 +62,9 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
+
 type ComparisonScreenRouteProp = RouteProp<
   {Comparison: {ComparisonProducts: Product[]}},
   'Comparison'

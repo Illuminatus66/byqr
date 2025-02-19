@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  RouteProp,
-  useRoute,
-} from '@react-navigation/native';
+import {RouteProp, useRoute} from '@react-navigation/native';
 import ProductDescriptionScreen from './ProductDescriptionScreen';
 
 type ProductDescriptionRouteProp = RouteProp<

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
@@ -68,6 +67,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -111,7 +111,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
     <View style={styles.card}>
       {/* Upper section: Thumbnail, name, price, and quantity */}
       <View style={styles.upperSection}>
-        <TouchableOpacity style={styles.thumbnailContainer}
+        <TouchableOpacity
+          style={styles.thumbnailContainer}
           onPress={() =>
             navigation.navigate('ProductDescription', {pr_id: pr_id})
           }>
@@ -124,7 +125,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }>
             <Text style={styles.name}>{name}</Text>
           </TouchableOpacity>
-          <Text style={styles.price}>{price}</Text>
+          <Text style={styles.price}>&#8377;{price}</Text>
           {/* Quantity Dropdown Menu */}
           <View style={styles.dropdownContainer}>
             <Picker
@@ -140,7 +141,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </View>
       {/* Lower section: "Remove" and "Move to Wishlist" buttons */}
       <View style={styles.lowerSection}>
-      <TouchableOpacity
+        <TouchableOpacity
           style={styles.wishlistButton}
           onPress={handleMoveToWishlist}
           disabled={cart_l || wishlist_l}>

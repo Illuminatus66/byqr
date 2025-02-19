@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -22,41 +21,34 @@ interface UserWithoutWishlist {
   name: string;
   email: string;
   phno: string;
-  addresses:string[]
+  addresses: string[];
 }
-
 interface CartProducts {
   pr_id: string;
   qty: number;
 }
-
 interface Cart {
   cart_no: string;
   products: CartProducts[];
 }
-
 interface SignupRequest {
   name: string;
   email: string;
   password: string;
   phno: string;
 }
-
 interface SignupResponse {
   result: UserWithoutWishlist;
   token: string;
 }
-
 interface LoginRequest {
   email: string;
   password: string;
 }
-
 interface LoginResponse {
   result: UserWithoutWishlist;
   token: string;
 }
-
 interface UpdateUserRequest {
   name: string;
   email: string;
@@ -66,23 +58,19 @@ interface UpdateUserResponse {
   result: UserWithoutWishlist;
   token: string | null; // token is returned only when the email changes so it may be null sometimes
 }
-
 interface WishlistRequest {
   pr_id: string;
   _id: string;
 }
-
 interface CartData {
   cart_no: string;
   pr_id: string;
   qty: number;
 }
-
 interface RemoveFromCartData {
   cart_no: string;
   pr_id: string;
 }
-
 interface Store {
   name: string;
   lat: number;
@@ -108,6 +96,42 @@ interface ProductsResponse {
   brand: string;
   warranty: string;
   stores: Store[];
+}
+interface ProductForOrderScreen {
+  pr_id: string;
+  name: string;
+  qty: number;
+  price: number;
+  thumbnail: string;
+}
+interface Orders {
+  receipt: string;
+  products: ProductForOrderScreen[];
+  total_amount: number;
+  created_at: string;
+}
+interface OrderCreationResponse {
+  status: string;
+  order_id: string;
+  amount: number;
+  receipt: string;
+  key: string;
+}
+interface VerificationRequest {
+  user_id: any;
+  receipt: string;
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+  products: ProductForOrderScreen[];
+  total_amount: number;
+  backend_order_id: string;
+}
+interface VerificationResponse {
+  receipt: string;
+  products: ProductForOrderScreen[];
+  total_amount: number;
+  created_at: string;
 }
 
 export const logIn = (authData: LoginRequest) =>
@@ -142,3 +166,17 @@ export const updateCartQty = (cartData: CartData) =>
 
 export const fetchAllProducts = () =>
   API.get<ProductsResponse[]>('products/fetchall');
+
+export const createRazorpayOrder = (amount: number) =>
+  API.post<OrderCreationResponse>('orders/create-razorpay-order', {amount});
+
+export const getOrdersByUser = (user_id: string) =>
+  API.get<Orders[]>(`orders/get-orders/${user_id}`);
+
+export const saveOrderToBackendAfterVerification = (
+  verificationData: VerificationRequest,
+) =>
+  API.post<VerificationResponse>(
+    'orders/verify-payment-and-save-order',
+    verificationData,
+  );

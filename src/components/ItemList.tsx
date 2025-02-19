@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {
   View,
@@ -64,6 +63,7 @@ type RootStackParamList = {
   Profile: undefined;
   Compare: {ComparisonProducts: Product[]};
   ARScreen: undefined;
+  Orders: undefined;
 };
 
 interface CartData {
@@ -135,7 +135,7 @@ const ItemList: React.FC<ItemListProps> = ({items, isWishlist}) => {
       <View style={styles.itemContainer}>
         <Image source={{uri: item.thumbnail}} style={styles.itemThumbnail} />
         <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemPrice}>Rs. {item.price.toFixed(2)}</Text>
+        <Text style={styles.itemPrice}>&#8377;{item.price.toFixed(2)}</Text>
 
         {/* Conditionally render buttons if isWishlist is true */}
         {isWishlist && (
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   itemPrice: {
     marginTop: 5,
