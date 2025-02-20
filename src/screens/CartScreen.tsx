@@ -13,12 +13,13 @@ import {RadioButton} from 'react-native-paper';
 import RazorpayCheckout from 'react-native-razorpay';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {fetchcreatedorder, saveorder} from '../actions/orderActions';
-import {selectCartProducts} from '../reducers/cartSlice';
+import {clearCart, selectCartProducts} from '../reducers/cartSlice';
 import {selectProducts} from '../reducers/productSlice';
 import {selectUserProfile, selectUserToken} from '../reducers/userSlice';
 import ProductCard from '../components/ProductCard';
 import Toolbar from '../components/Toolbar';
 import Footer from '../components/Footer';
+import {clearcart} from '../actions/cartActions';
 
 interface Store {
   name: string;
@@ -141,7 +142,7 @@ const CartScreen = () => {
 
   const handlePayment = async () => {
     const order = await fetchcreatedorder(Number(totalValue));
-    if (!order) return console.log('No order');
+    if (!order || !userProfile) return;
 
     var options = {
       description: 'Buy Your Bicycles/Accessories Now!',
@@ -176,7 +177,7 @@ const CartScreen = () => {
     RazorpayCheckout.open(options)
       .then(data => {
         const verificationData: VerificationData = {
-          user_id: userProfile?._id,
+          user_id: userProfile._id,
           receipt: order.receipt,
           razorpay_payment_id: data.razorpay_payment_id,
           razorpay_order_id: data.razorpay_order_id,
@@ -186,7 +187,9 @@ const CartScreen = () => {
           backend_order_id: order.order_id,
         };
         dispatch(saveorder(verificationData));
+        dispatch(clearCart());
         Alert.alert(`Order has been paid for successfully!`);
+        dispatch(clearcart(userProfile._id));
       })
       .catch(error => {
         Alert.alert(`Error: ${error.code} | ${error.description}`);

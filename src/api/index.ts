@@ -164,6 +164,9 @@ export const removeFromCart = (cartData: RemoveFromCartData) =>
 export const updateCartQty = (cartData: CartData) =>
   API.patch<{message: string}>('cart/updateqty', cartData);
 
+export const emptycart = (cart_no: string) =>
+  API.patch<{message: string}>(`cart/clearcart/${cart_no}`);
+
 export const fetchAllProducts = () =>
   API.get<ProductsResponse[]>('products/fetchall');
 

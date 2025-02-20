@@ -1,6 +1,40 @@
 import React from 'react';
-import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
+interface Store {
+  name: string;
+  lat: number;
+  long: number;
+}
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  thumbnail: string;
+  imgs: string[];
+  description: string;
+  category: string;
+  stock: number;
+  date_added: string;
+  frameMaterial: string;
+  weight: number;
+  wheelSize: number;
+  gearSystem: string;
+  brakeType: string;
+  suspension: string;
+  tyreType: string;
+  brand: string;
+  warranty: string;
+  stores: Store[];
+}
 interface ProductForOrderScreen {
   pr_id: string;
   name: string;
@@ -14,6 +48,17 @@ interface Orders {
   total_amount: number;
   created_at: string;
 }
+type RootStackParamList = {
+  Home: {filter: string};
+  Cart: undefined;
+  Login: undefined;
+  Wishlist: undefined;
+  ProductDescription: {pr_id: string};
+  Profile: undefined;
+  Compare: {ComparisonProducts: Product[]};
+  ARScreen: undefined;
+  Orders: undefined;
+};
 
 interface OrdersByYearRouteProp {
   year: string;
@@ -21,6 +66,7 @@ interface OrdersByYearRouteProp {
 }
 
 const OrdersByYear: React.FC<OrdersByYearRouteProp> = ({year, orders}) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
       <Text style={styles.yearTitle}>{year}</Text>
@@ -30,21 +76,27 @@ const OrdersByYear: React.FC<OrdersByYearRouteProp> = ({year, orders}) => {
         renderItem={({item}) => (
           <View style={styles.orderBox}>
             <View style={styles.orderHeader}>
-              <Text style={styles.receipt}>{item.receipt}</Text>
+              <Text style={styles.receipt}>Receipt- {item.receipt}</Text>
               <Text style={styles.date}>
-                {new Date(item.created_at).toDateString()} at {''}
+                {new Date(item.created_at).toLocaleDateString()} | {''}
                 {new Date(item.created_at).toLocaleTimeString()}
               </Text>
             </View>
             <Text style={styles.totalAmount}>
-              Total: Rs. {item.total_amount}
+              Total: &#8377;{item.total_amount}
             </Text>
             <View style={styles.separator} />
             <FlatList
               data={item.products}
               keyExtractor={product => product.pr_id}
               renderItem={({item: product}) => (
-                <View style={styles.productContainer}>
+                <TouchableOpacity
+                  style={styles.productContainer}
+                  onPress={() =>
+                    navigation.navigate('ProductDescription', {
+                      pr_id: product.pr_id,
+                    })
+                  }>
                   <Image
                     source={{uri: product.thumbnail}}
                     style={styles.thumbnail}
@@ -52,11 +104,11 @@ const OrdersByYear: React.FC<OrdersByYearRouteProp> = ({year, orders}) => {
                   <View style={styles.productDetails}>
                     <Text style={styles.productName}>{product.name}</Text>
                     <Text style={styles.productPrice}>
-                      Rs. {product.price} x {product.qty} units = Rs.{' '}
+                      &#8377;{product.price} x {product.qty} units = &#8377;
                       {product.price * product.qty}
                     </Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               )}
             />
           </View>

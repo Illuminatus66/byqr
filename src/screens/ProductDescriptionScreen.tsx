@@ -131,7 +131,9 @@ const ProductDescriptionScreen = ({pr_id}: {pr_id: string}) => {
     return (
       <SafeAreaView style={styles.safeArea}>
         <Toolbar title="BYQR" />
-        <Text style={styles.errorMessage}>Product not found</Text>
+        <Text style={styles.errorMessage}>
+          You've followed a broken link. This product must've been deleted
+        </Text>
         <Footer />
       </SafeAreaView>
     );

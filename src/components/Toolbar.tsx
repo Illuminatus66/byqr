@@ -11,11 +11,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppSelector, useAppDispatch} from '../hooks';
-import {logout, selectUserId} from '../reducers/userSlice';
-import {clearcart} from '../reducers/cartSlice';
-import {clearwishlist} from '../reducers/wishlistSlice';
+import {logOut, selectUserId} from '../reducers/userSlice';
+import {clearCart} from '../reducers/cartSlice';
+import {clearWishlist} from '../reducers/wishlistSlice';
 import {selectProducts} from '../reducers/productSlice';
-import {clearorders} from '../reducers/orderSlice';
+import {clearOrders} from '../reducers/orderSlice';
 import {
   clearComparison,
   selectComparisonProducts,
@@ -93,10 +93,10 @@ const Toolbar: React.FC<ToolbarProps> = ({title}) => {
   // Logout handler clears all the relevant reducers (User, Cart and Wishlist) along
   // with resetting the navigation stack to set the HomeScreen as the first route.
   const handleLogout = () => {
-    dispatch(logout());
-    dispatch(clearcart());
-    dispatch(clearwishlist());
-    dispatch(clearorders());
+    dispatch(logOut());
+    dispatch(clearCart());
+    dispatch(clearWishlist());
+    dispatch(clearOrders());
     AsyncStorage.removeItem('tokenTimestamp');
     navigation.reset({
       index: 0,

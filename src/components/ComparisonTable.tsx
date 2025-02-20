@@ -251,7 +251,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
 
   const metrics: Metric<any>[] = [
     {label: 'Name', key: 'name'},
-    {label: 'Price', key: 'price', format: (value: number) => `&#8377;${value}`},
+    {label: 'Price', key: 'price', format: (value: number) => `₹${value}`},
     {label: 'Frame Material', key: 'frameMaterial'},
     {label: 'Weight', key: 'weight', format: (value: number) => `${value} kg`},
     {

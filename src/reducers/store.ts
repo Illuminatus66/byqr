@@ -3,10 +3,10 @@ import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import productReducer from './productSlice';
 import comparisonReducer from './comparisonSlice';
-import userReducer, {logout} from './userSlice';
-import cartReducer, {clearcart} from './cartSlice';
-import wishlistReducer, {clearwishlist} from './wishlistSlice';
-import orderReducer, {clearorders} from './orderSlice';
+import userReducer, {logOut} from './userSlice';
+import cartReducer, {clearCart} from './cartSlice';
+import wishlistReducer, {clearWishlist} from './wishlistSlice';
+import orderReducer, {clearOrders} from './orderSlice';
 
 const rootReducer = combineReducers({
   cart: cartReducer,
@@ -31,10 +31,10 @@ const authMiddleware: Middleware = store => next => async action => {
     const storedTime = await AsyncStorage.getItem('tokenTimestamp');
 
     if (storedTime && Date.now() - parseInt(storedTime, 10) > tokenExpTime) {
-      store.dispatch(logout());
-      store.dispatch(clearcart());
-      store.dispatch(clearwishlist());
-      store.dispatch(clearorders());
+      store.dispatch(logOut());
+      store.dispatch(clearCart());
+      store.dispatch(clearWishlist());
+      store.dispatch(clearOrders());
       AsyncStorage.removeItem('tokenTimestamp');
     }
   }

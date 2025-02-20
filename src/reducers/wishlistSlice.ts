@@ -21,7 +21,7 @@ const wishlistSlice = createSlice({
   name: 'wishlist',
   initialState,
   reducers: {
-    clearwishlist(state) {
+    clearWishlist(state) {
       state.wishlist = [];
       state.loading = false;
       state.error = null;
@@ -86,7 +86,7 @@ const wishlistSlice = createSlice({
   },
 });
 
-export const {clearwishlist} = wishlistSlice.actions;
+export const {clearWishlist} = wishlistSlice.actions;
 
 export const selectWishlist = (state: {wishlist: WishlistState}) =>
   state.wishlist.wishlist;

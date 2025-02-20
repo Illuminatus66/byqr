@@ -43,7 +43,6 @@ interface VerificationResponse {
 export const fetchcreatedorder = async (amount: number) => {
   try {
     const response = await createRazorpayOrder(amount);
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     const errorMessage =

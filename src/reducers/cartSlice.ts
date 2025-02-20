@@ -34,7 +34,7 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    clearcart(state) {
+    clearCart(state) {
       state.cart_no = '';
       state.products = [];
       state.loading = false;
@@ -122,7 +122,7 @@ const cartSlice = createSlice({
   },
 });
 
-export const {clearcart} = cartSlice.actions;
+export const {clearCart} = cartSlice.actions;
 
 export const selectCartProducts = (state: {cart: CartState}) =>
   state.cart.products;

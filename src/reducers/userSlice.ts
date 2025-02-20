@@ -33,7 +33,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    logout(state) {
+    logOut(state) {
       state.data.token = null;
       state.data.user = null;
       state.loading = false;
@@ -107,7 +107,7 @@ const userSlice = createSlice({
   },
 });
 
-export const {logout} = userSlice.actions;
+export const {logOut} = userSlice.actions;
 
 export const selectUserData = (state: {user: AuthState}) => state.user.data;
 export const selectUserToken = (state: {user: AuthState}) =>

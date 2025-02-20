@@ -31,7 +31,7 @@ const OrdersScreen = () => {
           new Date(order.created_at).getFullYear().toString() === selectedYear,
       );
     }
-    return filtered.sort((a, b) =>
+    return [...filtered].sort((a, b) =>
       sortOrder === 'newToOld'
         ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         : new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),

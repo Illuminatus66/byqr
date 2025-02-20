@@ -1,5 +1,11 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {fetchCartItems, addToCart, removeFromCart, updateCartQty} from '../api';
+import {
+  fetchCartItems,
+  addToCart,
+  removeFromCart,
+  updateCartQty,
+  emptycart,
+} from '../api';
 
 interface CartItem {
   pr_id: string;
@@ -86,3 +92,14 @@ export const updatecartqty = createAsyncThunk<
     return rejectWithValue(errorMessage);
   }
 });
+
+export const clearcart = async (cart_no: string) => {
+  try {
+    const response = await emptycart(cart_no);
+    return response.data;
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message || 'Failed to clear the cart';
+    console.log(errorMessage);
+  }
+};
