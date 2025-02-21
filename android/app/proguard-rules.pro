@@ -29,7 +29,10 @@
 -dontwarn com.google.protobuf.Parser
 -dontwarn com.google.protobuf.nano.NanoEnumValue
 -dontwarn logs.proto.wireless.performance.mobile.MemoryMetric$AndroidMemoryStats
+-dontwarn proguard.annotation.Keep
+-dontwarn proguard.annotation.KeepClassMembers
 
 -keep class com.google.common.logging.** { *; }
 -keep class com.google.protobuf.** { *; }
 -keep class logs.proto.wireless.performance.** { *; }
+-keep class proguard.annotation.** { *; }
