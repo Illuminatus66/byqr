@@ -163,7 +163,7 @@ const ARBicycleScene = () => {
         }}>
         {isTrackingNormal && (
           <Viro3DObject
-            source={require('../assets/models/SepedaFacificInvert.obj')}
+            source={require('../assets/models/Sepeda_Facific_Invert.obj')}
             resources={[
               require('../assets/models/LOGO PACIFIC.png'),
               require('../assets/models/SepedaFacificInvert.mtl'),
