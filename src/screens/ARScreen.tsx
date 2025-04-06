@@ -163,9 +163,9 @@ const ARBicycleScene = () => {
         }}>
         {isTrackingNormal && (
           <Viro3DObject
-            source={require('../assets/models/bicycle.glb')}
+            source={require('../assets/models/SepedaFacificInvert.obj')}
             scale={[1.0, 1.0, 1.0]}
-            type="GLB"
+            type='OBJ'
           />
         )}
       </ViroNode>
