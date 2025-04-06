@@ -6,11 +6,12 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
  *
  * @type {import('metro-config').MetroConfig}
  */
+const defaultConfig = getDefaultConfig(__dirname);
 
 const config = {
   resolver: {
-    assetExts: [...assetExts, 'obj', 'mtl', 'gltf', 'glb', 'bin', 'png', 'jpg'],
+    assetExts: [defaultConfig.resolver.assetExts, 'obj', 'mtl', 'gltf', 'glb', 'bin', 'png', 'jpg'],
   },
 };
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = mergeConfig(defaultConfig, config);

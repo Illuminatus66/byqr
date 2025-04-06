@@ -116,7 +116,7 @@ const ARBicycleScene = () => {
 
   return (
     <ViroARScene onTrackingUpdated={onInitialized}>
-      <ViroAmbientLight color={'#ffffff'}/>
+      <ViroAmbientLight color={'#ffffff'} />
       <ViroSpotLight
         position={[0, 2, 1]}
         color="#ffffff"
@@ -164,8 +164,21 @@ const ARBicycleScene = () => {
         {isTrackingNormal && (
           <Viro3DObject
             source={require('../assets/models/SepedaFacificInvert.obj')}
+            resources={[
+              require('../assets/models/LOGO PACIFIC.png'),
+              require('../assets/models/SepedaFacificInvert.mtl'),
+              require('../assets/models/uv_ban_kanan.png'),
+              require('../assets/models/uv_ban_kiri.png'),
+              require('../assets/models/uv_jok.png'),
+              require('../assets/models/uv_logo_sepeda_texture.png'),
+              require('../assets/models/uv_logo_texture.png'),
+              require('../assets/models/uv_pelek_kanan.png'),
+              require('../assets/models/uv_pelek_kiri.png'),
+              require('../assets/models/uv_rangka_texture.png'),
+              require('../assets/models/uv_rangka.png'),
+            ]}
             scale={[1.0, 1.0, 1.0]}
-            type='OBJ'
+            type="OBJ"
           />
         )}
       </ViroNode>
