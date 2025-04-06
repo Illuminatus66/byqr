@@ -95,9 +95,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   emptyText: {
-    fontSize: 25, 
-    textAlign: 'center', 
-    marginTop: '50%'
+    fontSize: 25,
+    textAlign: 'center',
+    marginTop: '50%',
   },
   title: {
     flexDirection: 'row',

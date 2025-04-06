@@ -18,11 +18,6 @@ interface Orders {
   total_amount: number;
   created_at: string;
 }
-interface OrdersState {
-  orders: Orders[];
-  loading: boolean;
-  error: string | null;
-}
 interface VerificationRequest {
   user_id: any;
   receipt: string;
@@ -55,7 +50,7 @@ export const fetchcreatedorder = async (amount: number) => {
 export const getordersbyuser = createAsyncThunk<
   Orders[],
   string,
-  {state: OrdersState; rejectValue: string}
+  {rejectValue: string}
 >('orders/getordersbyuser', async (user_id, {rejectWithValue}) => {
   try {
     const response = await getOrdersByUser(user_id);
@@ -70,7 +65,7 @@ export const getordersbyuser = createAsyncThunk<
 export const saveorder = createAsyncThunk<
   VerificationResponse,
   VerificationRequest,
-  {state: OrdersState; rejectValue: string}
+  {rejectValue: string}
 >('orders/saveorder', async (verificationData, {rejectWithValue}) => {
   try {
     const response = await saveOrderToBackendAfterVerification(

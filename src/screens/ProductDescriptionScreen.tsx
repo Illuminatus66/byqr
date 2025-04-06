@@ -303,7 +303,7 @@ const ProductDescriptionScreen = ({pr_id}: {pr_id: string}) => {
     }
   };
   const isInComparison = comparison.includes(pr_id);
-  const isComparisonFull = comparison.length >= 3;
+  const isComparisonFull = comparison.length >= 5;
 
   // Here we are randomly selecting up to 6 products for the "Popular Products" section.
   // Once we add metrics to track how many people have bought each product we can use it

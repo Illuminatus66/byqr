@@ -15,12 +15,6 @@ interface Cart {
   cart_no: string;
   products: CartItem[];
 }
-interface CartState {
-  cart_no: string;
-  products: CartItem[];
-  loading: boolean;
-  error: string | null;
-}
 
 interface CartData {
   cart_no: string;
@@ -36,7 +30,7 @@ interface RemoveFromCartData {
 export const fetchcartitems = createAsyncThunk<
   Cart,
   string,
-  {state: CartState; rejectValue: string}
+  {rejectValue: string}
 >('cart/fetchcartitems', async (cart_no, {rejectWithValue}) => {
   try {
     const response = await fetchCartItems(cart_no);
@@ -51,7 +45,7 @@ export const fetchcartitems = createAsyncThunk<
 export const addtocart = createAsyncThunk<
   CartItem,
   CartData,
-  {state: CartState; rejectValue: string}
+  {rejectValue: string}
 >('cart/addtocart', async (cartData, {rejectWithValue}) => {
   try {
     await addToCart(cartData);
@@ -66,7 +60,7 @@ export const addtocart = createAsyncThunk<
 export const removefromcart = createAsyncThunk<
   {pr_id: string},
   RemoveFromCartData,
-  {state: CartState; rejectValue: string}
+  {rejectValue: string}
 >('cart/removefromcart', async (cartData, {rejectWithValue}) => {
   try {
     await removeFromCart(cartData);
@@ -81,7 +75,7 @@ export const removefromcart = createAsyncThunk<
 export const updatecartqty = createAsyncThunk<
   {pr_id: string; qty: number},
   CartData,
-  {state: CartState; rejectValue: string}
+  {rejectValue: string}
 >('cart/updatecartqty', async (cartData, {rejectWithValue}) => {
   try {
     await updateCartQty(cartData);

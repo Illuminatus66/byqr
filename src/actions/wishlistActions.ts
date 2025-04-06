@@ -1,22 +1,19 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {fetchWishlist, addToWishlist, removeFromWishlist} from '../api';
 
-interface WishlistState {
-  wishlist: string[];
-  loading: boolean;
-  error: string | null;
-}
-
 interface WishlistRequest {
   pr_id: string;
   _id: string;
 }
 
+interface FetchedWishlist {
+  wishlist: string[];
+}
+
 export const fetchwishlist = createAsyncThunk<
-  string[],
+  FetchedWishlist,
   string,
-  {state: WishlistState; rejectValue: string}
-  //fix later
+  {rejectValue: string}
 >('wishlist/fetchwishlist', async (_id, {rejectWithValue}) => {
   try {
     const response = await fetchWishlist(_id);
@@ -31,7 +28,7 @@ export const fetchwishlist = createAsyncThunk<
 export const addtowishlist = createAsyncThunk<
   string,
   WishlistRequest,
-  {state: WishlistState; rejectValue: string}
+  {rejectValue: string}
 >('wishlist/addtowishlist', async (addData, {rejectWithValue}) => {
   try {
     await addToWishlist(addData);
@@ -46,7 +43,7 @@ export const addtowishlist = createAsyncThunk<
 export const removefromwishlist = createAsyncThunk<
   string,
   WishlistRequest,
-  {state: WishlistState; rejectValue: string}
+  {rejectValue: string}
 >('wishlist/removefromwishlist', async (removeData, {rejectWithValue}) => {
   try {
     await removeFromWishlist(removeData);

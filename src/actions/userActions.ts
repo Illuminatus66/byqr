@@ -42,19 +42,10 @@ interface UpdateUserResponse {
   token: string | null; // token is returned only when the email changes so it may be null sometimes
 }
 
-interface AuthState {
-  data: {
-    token: string | null;
-    user: UserWithoutWishlist | null;
-  };
-  loading: boolean;
-  error: string | null;
-}
-
 export const signup = createAsyncThunk<
   SignupResponse,
   SignupRequest,
-  {state: AuthState; rejectValue: string}
+  {rejectValue: string}
 >('user/signup', async (signupData, {rejectWithValue}) => {
   try {
     const response = await signUp(signupData);
@@ -71,7 +62,7 @@ export const signup = createAsyncThunk<
 export const login = createAsyncThunk<
   LoginResponse,
   LoginRequest,
-  {state: AuthState; rejectValue: string}
+  {rejectValue: string}
 >('user/login', async (loginData, {rejectWithValue}) => {
   try {
     const response = await logIn(loginData);
@@ -88,7 +79,7 @@ export const login = createAsyncThunk<
 export const updateuserprofile = createAsyncThunk<
   UpdateUserResponse,
   UpdateUserRequest,
-  {state: AuthState; rejectValue: string}
+  {rejectValue: string}
 >('user/updateuserprofile', async (updateData, {rejectWithValue}) => {
   try {
     const {_id, ...update} = updateData;

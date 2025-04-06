@@ -28,16 +28,10 @@ interface Product {
   stores: Store[];
 }
 
-interface ProductsState {
-  products: Product[];
-  loading: boolean;
-  error: string | null;
-}
-
 export const fetchallproducts = createAsyncThunk<
   Product[],
   void,
-  {state: ProductsState; rejectValue: string}
+  {rejectValue: string}
 >('products/fetchallproducts', async (_, {rejectWithValue}) => {
   try {
     const response = await fetchAllProducts();

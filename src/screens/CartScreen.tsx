@@ -175,7 +175,7 @@ const CartScreen = () => {
     };
 
     RazorpayCheckout.open(options)
-      .then(data => {
+      .then((data: any) => {
         const verificationData: VerificationData = {
           user_id: userProfile._id,
           receipt: order.receipt,
@@ -191,7 +191,7 @@ const CartScreen = () => {
         Alert.alert(`Order has been paid for successfully!`);
         dispatch(clearcart(userProfile._id));
       })
-      .catch(error => {
+      .catch((error: any) => {
         Alert.alert(`Error: ${error.code} | ${error.description}`);
       });
   };
