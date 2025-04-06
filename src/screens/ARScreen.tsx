@@ -116,7 +116,7 @@ const ARBicycleScene = () => {
 
   return (
     <ViroARScene onTrackingUpdated={onInitialized}>
-      <ViroAmbientLight color={'#ffffff'} intensity={0.5} />
+      <ViroAmbientLight color={'#ffffff'}/>
       <ViroSpotLight
         position={[0, 2, 1]}
         color="#ffffff"

@@ -210,7 +210,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
       return;
     }
 
-    const isInWishlist = wishlist.includes(pr_id);
+    const isInWishlist = wishlist
     const wishlistData: WishlistData = {_id: cart_no, pr_id: pr_id};
 
     if (isInWishlist) {

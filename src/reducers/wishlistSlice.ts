@@ -5,10 +5,6 @@ import {
   removefromwishlist,
 } from '../actions/wishlistActions';
 
-interface FetchedWishlist {
-  wishlist: string[];
-}
-
 interface WishlistState {
   wishlist: string[];
   loading: boolean;
@@ -39,8 +35,8 @@ const wishlistSlice = createSlice({
       })
       .addCase(
         fetchwishlist.fulfilled,
-        (state, action: PayloadAction<FetchedWishlist>) => {
-          state.wishlist = action.payload.wishlist;
+        (state, action: PayloadAction<string[]>) => {
+          state.wishlist = action.payload;
           state.loading = false;
           state.error = null;
         },

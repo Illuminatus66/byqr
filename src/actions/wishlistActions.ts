@@ -6,12 +6,8 @@ interface WishlistRequest {
   _id: string;
 }
 
-interface FetchedWishlist {
-  wishlist: string[];
-}
-
 export const fetchwishlist = createAsyncThunk<
-  FetchedWishlist,
+  string[],
   string,
   {rejectValue: string}
 >('wishlist/fetchwishlist', async (_id, {rejectWithValue}) => {
