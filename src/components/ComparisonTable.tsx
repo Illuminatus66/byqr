@@ -157,8 +157,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
     if (qty > stock && cartQty !== 0) {
       Alert.alert(
         'Maximum Amount Reached',
-        `You already have ${cartQty} of these in the cart. 
-        You cannot buy more than ${stock} at this time since that's all we have in stock.`,
+        `You already have ${cartQty} of these in the cart. You cannot buy more than ${stock} at this time since that's all we have in stock.`,
       );
     } else {
       const cartData: CartData = {
@@ -210,7 +209,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({products}) => {
       return;
     }
 
-    const isInWishlist = wishlist
+    const isInWishlist = wishlist.includes(pr_id)
     const wishlistData: WishlistData = {_id: cart_no, pr_id: pr_id};
 
     if (isInWishlist) {

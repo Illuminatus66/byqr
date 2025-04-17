@@ -340,7 +340,7 @@ const ProductDescriptionScreen = ({pr_id}: {pr_id: string}) => {
               />
             )}
             width={width}
-            height={width * 0.75}
+            height={width}
             mode="parallax"
             loop={true}
             scrollAnimationDuration={600}
@@ -558,12 +558,11 @@ const styles = StyleSheet.create({
   carouselContainer: {
     width: '100%',
     alignItems: 'center',
-    marginBottom: 20,
   },
   carouselImage: {
     width: 400,
-    height: 300,
-    borderRadius: 15,
+    height: 400,
+    borderRadius: 25,
   },
   productName: {
     fontSize: 24,
