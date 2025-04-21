@@ -270,7 +270,10 @@ const CartScreen = () => {
               Cart Total: &#8377;{totalValue}
             </Text>
             <TouchableHighlight
-              style={styles.payButton}
+              style={[
+                styles.payButton,
+                !selectedAddress && styles.payButtonDisabled,
+              ]}
               disabled={!selectedAddress}
               onPress={handlePayment}>
               <Text style={styles.payButtonText}>PAY WITH RAZORPAY</Text>
@@ -340,19 +343,20 @@ const styles = StyleSheet.create({
   payButton: {
     width: '70%',
     padding: 5,
-    borderWidth: 3,
+    borderWidth: 1,
     borderColor: 'black',
-    borderRadius: 7,
+    borderRadius: 5,
     backgroundColor: 'red',
     shadowColor: 'red',
     shadowOffset: {width: 5, height: 5},
     shadowOpacity: 100,
     alignItems: 'center',
   },
+  payButtonDisabled: {backgroundColor: '#A9A9A9'},
   payButtonText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 23,
+    fontSize: 21,
   },
 });
 
